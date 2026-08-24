@@ -1,6 +1,31 @@
 Rails.application.routes.draw do
   devise_for :users
   root to: "pages#home"
+
+  resources :artists, only: [:index, :show]
+
+  resource :artist_profile, only: [:new, :create, :edit, :update] do
+    resources :addresses, only: [:index, :create, :update, :destroy]
+    resources :availabilities, only: [:index, :create, :update, :destroy]
+    resources :portfolio_items, only: [:create]
+  end
+
+  resources :artist_profiles, only: [] do
+    resources :availabilities, only: [:index], as: :public_availabilities
+    resources :conversations, only: [:create]
+    resources :bookings, only: [:create]
+  end
+
+  resources :conversations, only: [] do
+    resources :messages, only: [:create]
+  end
+
+  resources :bookings, only: [] do
+    patch :confirm, on: :member
+  end
+
+  resources :tattoo_generations, only: [:new, :create]
+
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
