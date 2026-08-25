@@ -1,0 +1,24 @@
+.topappbar {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1050;
+  height: 64px;
+  padding: 0 1rem;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid $gray-200;
+}
+
+.topappbar-btn {
+  color: $dark;
+  text-decoration: none;
+
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
+.topappbar-logo {
+  height: 40px;
+}
