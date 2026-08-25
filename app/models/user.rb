@@ -4,6 +4,9 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
+  validates :username, presence: true, uniqueness: true
+  validates :birthdate, presence: true
+
   has_one :artist_profile, dependent: :destroy
   has_many :bookings, foreign_key: :client_id, inverse_of: :client, dependent: :destroy
   has_many :conversations, foreign_key: :client_id, inverse_of: :client, dependent: :destroy
