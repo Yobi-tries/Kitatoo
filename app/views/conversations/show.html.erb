@@ -1,2 +1,10 @@
-<h1>Conversations#show</h1>
-<p>Find me in app/views/conversations/show.html.erb</p>
+<h1>Chat with <%= @conversation.artist_profile.display_name %></h1>
+
+<div id="messages">
+  <%= render partial: "message", collection: @messages %>
+</div>
+
+<%= simple_form_for @message, url: conversation_messages_path(@conversation) do |f| %>
+  <%= f.input :body, label: "Message" %>
+  <%= f.button :submit, "Send" %>
+<% end %>
