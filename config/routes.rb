@@ -12,7 +12,7 @@ Rails.application.routes.draw do
 
   resources :artist_profiles, only: [] do
     resources :availabilities, only: [:index], as: :public_availabilities
-    resources :conversations, only: [:create]
+    resources :conversations, only: [:new, :create]
     resources :bookings, only: [:create]
   end
 
