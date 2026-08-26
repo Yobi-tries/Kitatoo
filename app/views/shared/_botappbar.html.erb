@@ -1,8 +1,8 @@
 <nav class="botappbar d-flex justify-content-around align-items-center">
-  <a class="botappbar-link active" href="#">
-    <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">explore</span>
+  <%= link_to artists_path, class: "botappbar-link" do %>
+    <span class="material-symbols-outlined">explore</span>
     <span class="botappbar-label">Explore</span>
-  </a>
+  <% end %>
   <a class="botappbar-link" href="#">
     <span class="material-symbols-outlined">event_note</span>
     <span class="botappbar-label">Bookings</span>
@@ -11,8 +11,15 @@
     <span class="material-symbols-outlined">chat_bubble</span>
     <span class="botappbar-label">Inbox</span>
   </a>
-  <a class="botappbar-link" href="#">
-    <span class="material-symbols-outlined">person</span>
-    <span class="botappbar-label">Profile</span>
-  </a>
+  <% if current_user&.artist_profile %>
+    <%= link_to artist_path(current_user.artist_profile), class: "botappbar-link" do %>
+      <span class="material-symbols-outlined">person</span>
+      <span class="botappbar-label">Profile</span>
+    <% end %>
+  <% else %>
+    <a class="botappbar-link" href="#">
+      <span class="material-symbols-outlined">person</span>
+      <span class="botappbar-label">Profile</span>
+    </a>
+  <% end %>
 </nav>
