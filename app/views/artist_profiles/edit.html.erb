@@ -1,2 +1,51 @@
-<h1>ArtistProfiles#edit</h1>
-<p>Find me in app/views/artist_profiles/edit.html.erb</p>
+<div class="container py-4" style="max-width: 640px;">
+  <h1 class="h3 mb-1">Complete your artist profile</h1>
+  <p class="text-muted mb-4">
+    Fill in your bio, styles and pricing so clients can find and evaluate you.
+  </p>
+
+  <%= simple_form_for @artist_profile, url: artist_profile_path, method: :patch do |f| %>
+    <%= f.error_notification %>
+
+    <div class="form-inputs">
+      <%= f.input :display_name,
+                  label: "Artist / studio name",
+                  required: true %>
+
+      <%= f.input :professional_status,
+                  label: "Professional status",
+                  placeholder: "e.g. Independent" %>
+
+      <%= f.input :bio,
+                  as: :text,
+                  label: "Bio",
+                  placeholder: "Tell clients about your work and experience...",
+                  input_html: { rows: 4 } %>
+
+      <%= f.input :styles,
+                  label: "Styles",
+                  placeholder: "e.g. Blackwork, Fine Line, Surrealism",
+                  hint: "Comma-separated." %>
+
+      <%= f.input :pricing_grid,
+                  as: :text,
+                  label: "Pricing",
+                  placeholder: "e.g. $200 - $400 / hr. Minimum session: 2 hours.",
+                  input_html: { rows: 3 } %>
+
+      <%= f.input :social_links,
+                  as: :text,
+                  label: "Social links",
+                  placeholder: "Instagram, website...",
+                  input_html: { rows: 2 } %>
+
+      <%= f.input :published,
+                  as: :boolean,
+                  label: "Publish my profile (visible in search)" %>
+    </div>
+
+    <div class="form-actions">
+      <%= f.button :submit, "Save profile", class: "btn btn-primary w-100" %>
+    </div>
+  <% end %>
+</div>
