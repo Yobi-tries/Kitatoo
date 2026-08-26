@@ -1,4 +1,14 @@
 class ConversationsController < ApplicationController
+  def index
+    if current_user.artist_profile
+      artist_conversations = current_user.artist_profile.conversations
+    else
+      artist_conversations = []
+    end
+
+    @conversations = (current_user.conversations + artist_conversations).uniq.sort_by(&:updated_at).reverse
+  end
+
   def show
     @conversation = Conversation.find(params[:id])
     unless @conversation.participant?(current_user)
