@@ -1,6 +1,8 @@
-<h1>Contact <%= @artist_profile.display_name %></h1>
+<div class="container py-4">
+  <h1 class="mb-4">Contact <%= @artist_profile.display_name %></h1>
 
-<%= simple_form_for @message, url: artist_profile_conversations_path(@artist_profile) do |f| %>
-  <%= f.input :body, label: "Message" %>
-  <%= f.button :submit, "Send" %>
-<% end %>
+  <%= simple_form_for @message, url: artist_profile_conversations_path(@artist_profile) do |f| %>
+    <%= f.input :body, label: "Message" %>
+    <%= f.button :submit, "Send", class: "btn-primary" %>
+  <% end %>
+</div>

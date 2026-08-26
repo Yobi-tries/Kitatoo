@@ -1,4 +1,4 @@
-<p>
+<div class="list-group-item <%= "text-end" if message.user == current_user %>">
   <strong><%= message.user == current_user ? "Me" : message.user.username %> :</strong>
   <%= message.body %>
-</p>
+</div>
