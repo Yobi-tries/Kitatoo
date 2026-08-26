@@ -1,12 +1,9 @@
 <div class="container py-4">
-  <h1 class="mb-4">Chat with <%= @conversation.artist_profile.display_name %></h1>
+  <h1 class="mb-4">Chat with <%= @conversation.other_participant_name(current_user) %></h1>
 
   <div id="messages" class="list-group mb-4">
     <%= render partial: "message", collection: @messages %>
   </div>
 
-  <%= simple_form_for @message, url: conversation_messages_path(@conversation) do |f| %>
-    <%= f.input :body, label: "Message" %>
-    <%= f.button :submit, "Send", class: "btn-primary" %>
-  <% end %>
+  <%= render "form", conversation: @conversation, message: @message %>
 </div>
