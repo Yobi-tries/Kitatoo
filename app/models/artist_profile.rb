@@ -1,6 +1,8 @@
 class ArtistProfile < ApplicationRecord
   belongs_to :user
 
+  serialize :schedule, coder: JSON
+
   validates :user_id, uniqueness: true
   validates :display_name, presence: true
 

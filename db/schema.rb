@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_25_101700) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_26_111052) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -34,6 +34,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_25_101700) do
     t.text "pricing_grid"
     t.string "professional_status"
     t.boolean "published", default: false, null: false
+    t.text "schedule"
     t.text "social_links"
     t.string "styles"
     t.datetime "updated_at", null: false

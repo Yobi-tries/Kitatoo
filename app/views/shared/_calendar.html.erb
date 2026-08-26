@@ -1,0 +1,49 @@
+<% month ||= Date.today %>
+<% schedule = artist_profile.schedule %>
+
+<%= turbo_frame_tag "calendar" do %>
+  <div class="calendar" data-controller="calendar">
+    <div class="calendar-nav">
+      <%= link_to "‹", artist_path(artist_profile, month: (month - 1.month).strftime("%Y-%m")),
+          class: "calendar-nav-btn", data: { turbo_frame: "calendar" } %>
+      <span class="calendar-month"><%= month.strftime("%B %Y") %></span>
+      <%= link_to "›", artist_path(artist_profile, month: (month + 1.month).strftime("%Y-%m")),
+          class: "calendar-nav-btn", data: { turbo_frame: "calendar" } %>
+    </div>
+
+    <div class="calendar-grid">
+      <% %w[Mon Tue Wed Thu Fri Sat Sun].each do |name| %>
+        <div class="calendar-weekday"><%= name %></div>
+      <% end %>
+
+      <% calendar_weeks(month).each do |week| %>
+        <% week.each do |day| %>
+          <% in_month = day.month == month.month %>
+          <% available = in_month && available_day?(schedule, day) %>
+          <% slots = available ? slots_for_day(schedule, day) : [] %>
+
+          <div class="calendar-day
+                      <%= 'calendar-day--outside' unless in_month %>
+                      <%= 'calendar-day--available' if available %>
+                      <%= 'calendar-day--today' if day == Date.today %>"
+               <% if available %>
+               role="button"
+               data-action="click->calendar#showSlots"
+               data-calendar-date-param="<%= l(day, format: '%A %d %B') %>"
+               data-calendar-slots-param="<%= slots.to_json %>"
+               <% end %>>
+            <%= day.day %>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+
+    <div class="calendar-popup d-none" data-calendar-target="popup">
+      <div class="calendar-popup-header">
+        <strong data-calendar-target="popupTitle"></strong>
+        <button type="button" class="btn-close btn-close-sm" data-action="calendar#hideSlots"></button>
+      </div>
+      <div class="calendar-popup-slots" data-calendar-target="popupSlots"></div>
+    </div>
+  </div>
+<% end %>

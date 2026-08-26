@@ -1,0 +1,104 @@
+.calendar {
+  position: relative;
+}
+
+.calendar-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: $spacer;
+}
+
+.calendar-nav-btn {
+  background: none;
+  border: $border-width solid $border-color;
+  border-radius: $border-radius;
+  padding: $spacer * 0.25 $spacer * 0.75;
+  font-size: $h5-font-size;
+  color: $body-color;
+  text-decoration: none;
+
+  &:hover {
+    background-color: $gray-100;
+  }
+}
+
+.calendar-month {
+  font-weight: $font-weight-semibold;
+  font-size: $font-size-lg;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+  text-align: center;
+}
+
+.calendar-weekday {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  color: $gray-600;
+  padding: $spacer * 0.5 0;
+}
+
+.calendar-day {
+  padding: $spacer * 0.5;
+  border-radius: $border-radius;
+  font-size: $font-size-sm;
+  transition: background-color 0.15s;
+}
+
+.calendar-day--outside {
+  color: $gray-400;
+}
+
+.calendar-day--available {
+  background-color: $success;
+  color: $white;
+  cursor: pointer;
+  font-weight: $font-weight-bold;
+
+  &:hover {
+    background-color: shade-color($success, 20%);
+  }
+}
+
+.calendar-day--today {
+  outline: 2px solid $primary;
+  outline-offset: -2px;
+}
+
+.calendar-popup {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: $white;
+  border: $border-width solid $border-color;
+  border-radius: $border-radius-lg;
+  box-shadow: $box-shadow-lg;
+  padding: $spacer;
+  min-width: 220px;
+  z-index: 10;
+}
+
+.calendar-popup-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: $spacer * 0.75;
+}
+
+.calendar-popup-slots {
+  max-height: 250px;
+  overflow-y: auto;
+}
+
+.calendar-slot {
+  padding: $spacer * 0.35 $spacer * 0.5;
+  margin-bottom: $spacer * 0.25;
+  background-color: $gray-100;
+  border-radius: $border-radius-sm;
+  font-size: $font-size-sm;
+}

@@ -44,6 +44,81 @@
                   label: "Publish my profile (visible in search)" %>
     </div>
 
+    <hr class="my-4">
+
+    <% schedule = @artist_profile.schedule || {} %>
+    <% days_data = schedule["days"] || {} %>
+
+    <div class="schedule" data-controller="schedule">
+      <div class="schedule-header">
+        <h4>Availability schedule</h4>
+        <p class="schedule-hint">Set your recurring weekly availability. This repeats every week during the period.</p>
+      </div>
+
+      <div class="schedule-period">
+        <div class="schedule-period-field">
+          <label class="schedule-label">Period start</label>
+          <input type="date" name="artist_profile[schedule][period_start]"
+                 value="<%= schedule["period_start"] %>" class="form-control">
+        </div>
+        <div class="schedule-period-field">
+          <label class="schedule-label">Period end</label>
+          <input type="date" name="artist_profile[schedule][period_end]"
+                 value="<%= schedule["period_end"] %>" class="form-control">
+        </div>
+      </div>
+
+      <div class="schedule-slot-duration">
+        <label class="schedule-label">Slot duration</label>
+        <select name="artist_profile[schedule][slot_duration]" class="form-select">
+          <% [15, 30, 45, 60, 75, 90, 105, 120].each do |min| %>
+            <option value="<%= min %>" <%= "selected" if schedule["slot_duration"].to_i == min %>><%= min %> min</option>
+          <% end %>
+        </select>
+      </div>
+
+      <div class="schedule-weekly">
+        <h5 class="schedule-section-title">Weekly hours</h5>
+        <% %w[monday tuesday wednesday thursday friday saturday sunday].each do |day| %>
+          <% day_data = days_data[day] %>
+          <% enabled = day_data.present? %>
+          <div class="schedule-day-row" data-schedule-target="dayRow">
+            <div class="schedule-day-toggle">
+              <input type="hidden" name="artist_profile[schedule][days][<%= day %>][enabled]" value="0">
+              <input type="checkbox" class="form-check-input" name="artist_profile[schedule][days][<%= day %>][enabled]"
+                     value="1" <%= "checked" if enabled %> data-action="schedule#toggleDay">
+              <label class="schedule-day-label"><%= day.capitalize %></label>
+            </div>
+            <div class="schedule-day-times">
+              <input type="time" name="artist_profile[schedule][days][<%= day %>][start]"
+                     value="<%= day_data&.dig("start") %>" class="form-control form-control-sm"
+                     <%= "disabled" unless enabled %> data-schedule-target="timeInput">
+              <span class="schedule-day-separator">—</span>
+              <input type="time" name="artist_profile[schedule][days][<%= day %>][end]"
+                     value="<%= day_data&.dig("end") %>" class="form-control form-control-sm"
+                     <%= "disabled" unless enabled %> data-schedule-target="timeInput">
+            </div>
+          </div>
+        <% end %>
+      </div>
+
+      <div class="schedule-days-off">
+        <h5 class="schedule-section-title">Days off</h5>
+        <div data-schedule-target="daysOffList">
+          <% (schedule["days_off"] || []).each_with_index do |date, index| %>
+            <div class="schedule-day-off-row" data-schedule-target="dayOffRow">
+              <input type="date" name="artist_profile[schedule][days_off][<%= index %>]"
+                     value="<%= date %>" class="form-control form-control-sm">
+              <button type="button" class="btn btn-outline-danger btn-sm" data-action="schedule#removeDayOff">Remove</button>
+            </div>
+          <% end %>
+        </div>
+        <button type="button" class="btn btn-outline-secondary btn-sm schedule-add-btn" data-action="schedule#addDayOff">
+          + Add a day off
+        </button>
+      </div>
+    </div>
+
     <div class="form-actions">
       <%= f.button :submit, "Save profile", class: "btn btn-primary w-100" %>
     </div>

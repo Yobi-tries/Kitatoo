@@ -33,10 +33,32 @@ class ArtistProfilesController < ApplicationController
   private
 
   def artist_profile_update_params
-    params.require(:artist_profile).permit(
+    permitted = params.require(:artist_profile).permit(
       :display_name, :bio, :styles, :professional_status,
       :pricing_grid, :social_links, :published
     )
+    permitted[:schedule] = build_schedule if params[:artist_profile][:schedule].present?
+    permitted
+  end
+
+  def build_schedule
+    s = params[:artist_profile][:schedule]
+    days = {}
+    %w[monday tuesday wednesday thursday friday saturday sunday].each do |day|
+      if s.dig(:days, day, :enabled) == "1"
+        days[day] = { "start" => s.dig(:days, day, :start), "end" => s.dig(:days, day, :end) }
+      else
+        days[day] = nil
+      end
+    end
+    days_off = (s[:days_off] || {}).values.reject(&:blank?)
+    {
+      "slot_duration" => s[:slot_duration].to_i,
+      "period_start" => s[:period_start],
+      "period_end" => s[:period_end],
+      "days" => days,
+      "days_off" => days_off
+    }
   end
 
   private
