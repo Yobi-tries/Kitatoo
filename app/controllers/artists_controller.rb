@@ -5,5 +5,6 @@ class ArtistsController < ApplicationController
   end
 
   def show
+    @artist_profile = ArtistProfile.find(params[:id])
   end
 end

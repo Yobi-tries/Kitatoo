@@ -1,2 +1,21 @@
-<h1>Artists#show</h1>
-<p>Find me in app/views/artists/show.html.erb</p>
+<%= render "shared/topappbar" %>
+
+<div class="container mt-5" style="padding-top: 64px; padding-bottom: 80px;">
+  <h2><%= @artist_profile.display_name %></h2>
+
+  <% if @artist_profile.pricing_grid.present? %>
+    <div class="card mt-4">
+      <div class="card-body">
+        <h5 class="card-title">Pricing</h5>
+        <% @artist_profile.pricing_grid.each do |item| %>
+          <div class="d-flex justify-content-between border-bottom py-2">
+            <span><%= item["prestation"] %></span>
+            <span class="fw-bold"><%= number_to_currency(item["prix"], unit: "€", format: "%n %u") %></span>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+</div>
+
+<%= render "shared/botappbar" %>
