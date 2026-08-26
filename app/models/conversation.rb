@@ -9,4 +9,8 @@ class Conversation < ApplicationRecord
   def participant?(user)
     client_id == user.id || artist_profile.user_id == user.id
   end
+
+  def other_participant_name(user)
+    user.id == client.id ? artist_profile.display_name : client.username
+  end
 end
