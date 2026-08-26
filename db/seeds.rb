@@ -28,22 +28,36 @@ client_user = User.create!(
   birthdate: Date.new(1995, 3, 20)
 )
 
-puts "Creating artist profile..."
+puts "Creating artist profile with schedule..."
 artist_profile = ArtistProfile.create!(
   user: artist_user,
   display_name: "InkMaster Studio",
   bio: "Tattoo artist specialized in blackwork and dotwork.",
   styles: "Blackwork, Dotwork, Geometric",
   professional_status: "professional",
+  published: true,
   pricing_grid: [
     { "prestation" => "Small piece (< 10cm)", "prix" => 80 },
     { "prestation" => "Medium piece", "prix" => 200 },
     { "prestation" => "Half sleeve", "prix" => 500 },
     { "prestation" => "Full back", "prix" => 1500 }
   ],
-  published: true
+  schedule: {
+    "slot_duration" => 45,
+    "period_start" => Date.today.to_s,
+    "period_end" => (Date.today + 6.months).to_s,
+    "days" => {
+      "monday" => { "start" => "09:00", "end" => "17:00" },
+      "tuesday" => { "start" => "10:00", "end" => "18:00" },
+      "wednesday" => nil,
+      "thursday" => { "start" => "09:00", "end" => "17:00" },
+      "friday" => { "start" => "09:00", "end" => "16:00" },
+      "saturday" => { "start" => "10:00", "end" => "14:00" },
+      "sunday" => nil
+    },
+    "days_off" => ["2026-12-24", "2026-12-25", "2026-12-31"]
+  },
 )
-
 puts "Creating addresses..."
 address = Address.create!(
   artist_profile: artist_profile,
@@ -132,3 +146,14 @@ User.create!(
 )
 
 puts "Total: #{User.count} users, #{ArtistProfile.count} artist profiles, #{Address.count} addresses."
+
+puts "Creating tags from styles..."
+ArtistProfile.all.each do |profile|
+  next if profile.styles.blank?
+
+  profile.styles.split(",").map { |name| name.strip }.each do |name|
+    tag = Tag.find_or_create_by_name!(name)
+    profile.tags << tag unless profile.tags.include?(tag)
+  end
+end
+puts "Tags: #{Tag.count}, links: #{ArtistProfileTag.count}"

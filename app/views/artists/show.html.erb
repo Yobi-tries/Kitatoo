@@ -102,7 +102,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <p class="text-muted mb-0">Availability calendar coming soon.</p>
+        <%= render "shared/calendar", artist_profile: @artist_profile, month: @month %>
       </div>
     </div>
   </div>

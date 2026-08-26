@@ -25,6 +25,7 @@ class ArtistProfilesController < ApplicationController
     @artist_profile = current_user.artist_profile
 
     if @artist_profile.update(artist_profile_update_params)
+      @artist_profile.tags = tag_names_param.map { |name| Tag.find_or_create_by_name!(name) }.uniq
       redirect_to edit_artist_profile_path, notice: "Your profile has been updated."
     else
       render :edit, status: :unprocessable_entity
@@ -35,19 +36,45 @@ class ArtistProfilesController < ApplicationController
 
   def artist_profile_update_params
     permitted = params.require(:artist_profile).permit(
-      :display_name, :bio, :styles, :professional_status,
-      :social_links,
+      :display_name, :bio, :professional_status,
+      :social_links, :published,
       pricing_grid: [ :prestation, :prix ]
     )
 
+    permitted[:schedule] = build_schedule if params[:artist_profile][:schedule].present?
+    
+    
     if permitted[:pricing_grid]
       permitted[:pricing_grid] = permitted[:pricing_grid].values.reject { |item| item["prestation"].blank? }
     end
-
+    
     permitted
   end
 
-  private
+
+  def tag_names_param
+    Array(params.dig(:artist_profile, :tag_names)).map(&:strip).reject(&:blank?).uniq { |name| name.downcase }
+  end
+
+  def build_schedule
+    s = params[:artist_profile][:schedule]
+    days = {}
+    %w[monday tuesday wednesday thursday friday saturday sunday].each do |day|
+      if s.dig(:days, day, :enabled) == "1"
+        days[day] = { "start" => s.dig(:days, day, :start), "end" => s.dig(:days, day, :end) }
+      else
+        days[day] = nil
+      end
+    end
+    days_off = (s[:days_off] || {}).values.reject(&:blank?)
+    {
+      "slot_duration" => s[:slot_duration].to_i,
+      "period_start" => s[:period_start],
+      "period_end" => s[:period_end],
+      "days" => days,
+      "days_off" => days_off
+    }
+  end
 
   def redirect_if_artist_profile_exists
     redirect_to edit_artist_profile_path, alert: "You already have an artist profile." if current_user.artist_profile.present?
