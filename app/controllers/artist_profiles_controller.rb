@@ -33,10 +33,17 @@ class ArtistProfilesController < ApplicationController
   private
 
   def artist_profile_update_params
-    params.require(:artist_profile).permit(
+    permitted = params.require(:artist_profile).permit(
       :display_name, :bio, :styles, :professional_status,
-      :pricing_grid, :social_links, :published
+      :social_links, :published,
+      pricing_grid: [ :prestation, :prix ]
     )
+
+    if permitted[:pricing_grid]
+      permitted[:pricing_grid] = permitted[:pricing_grid].values.reject { |item| item["prestation"].blank? }
+    end
+
+    permitted
   end
 
   private

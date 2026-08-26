@@ -27,11 +27,36 @@
                   placeholder: "e.g. Blackwork, Fine Line, Surrealism",
                   hint: "Comma-separated." %>
 
-      <%= f.input :pricing_grid,
-                  as: :text,
-                  label: "Pricing",
-                  placeholder: "e.g. $200 - $400 / hr. Minimum session: 2 hours.",
-                  input_html: { rows: 3 } %>
+      <div class="form-group mb-3">
+        <label class="form-label d-block">Pricing</label>
+
+        <div data-controller="pricing">
+          <div data-pricing-target="list">
+            <% (@artist_profile.pricing_grid.presence || [ {} ]).each_with_index do |item, index| %>
+              <div class="row mb-2 align-items-center" data-pricing-target="row">
+                <div class="col-6">
+                  <input type="text" name="artist_profile[pricing_grid][<%= index %>][prestation]"
+                         value="<%= item['prestation'] %>" class="form-control" placeholder="Service">
+                </div>
+                <div class="col-4">
+                  <div class="input-group">
+                    <input type="number" name="artist_profile[pricing_grid][<%= index %>][prix]"
+                           value="<%= item['prix'] %>" class="form-control" placeholder="Price" step="0.01" min="0">
+                    <span class="input-group-text">€</span>
+                  </div>
+                </div>
+                <div class="col-2">
+                  <button type="button" class="btn btn-outline-danger btn-sm" data-action="pricing#remove">✕</button>
+                </div>
+              </div>
+            <% end %>
+          </div>
+
+          <button type="button" class="btn btn-outline-secondary btn-sm mt-2" data-action="pricing#add">
+            + Add a service
+          </button>
+        </div>
+      </div>
 
       <%= f.input :social_links,
                   as: :text,
