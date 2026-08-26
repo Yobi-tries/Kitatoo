@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_26_111052) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_26_133855) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -25,6 +25,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_26_111052) do
     t.datetime "updated_at", null: false
     t.string "zipcode", null: false
     t.index ["artist_profile_id"], name: "index_addresses_on_artist_profile_id"
+  end
+
+  create_table "artist_profile_tags", force: :cascade do |t|
+    t.bigint "artist_profile_id", null: false
+    t.datetime "created_at", null: false
+    t.bigint "tag_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["artist_profile_id", "tag_id"], name: "index_artist_profile_tags_on_artist_profile_id_and_tag_id", unique: true
+    t.index ["artist_profile_id"], name: "index_artist_profile_tags_on_artist_profile_id"
+    t.index ["tag_id"], name: "index_artist_profile_tags_on_tag_id"
   end
 
   create_table "artist_profiles", force: :cascade do |t|
@@ -95,6 +105,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_26_111052) do
     t.index ["artist_profile_id"], name: "index_portfolio_items_on_artist_profile_id"
   end
 
+  create_table "tags", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "name", null: false
+    t.string "normalized_name", null: false
+    t.datetime "updated_at", null: false
+    t.index ["normalized_name"], name: "index_tags_on_normalized_name", unique: true
+  end
+
   create_table "tattoo_generations", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "image_url"
@@ -125,6 +143,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_26_111052) do
   end
 
   add_foreign_key "addresses", "artist_profiles"
+  add_foreign_key "artist_profile_tags", "artist_profiles"
+  add_foreign_key "artist_profile_tags", "tags"
   add_foreign_key "artist_profiles", "users"
   add_foreign_key "availabilities", "addresses"
   add_foreign_key "availabilities", "artist_profiles"

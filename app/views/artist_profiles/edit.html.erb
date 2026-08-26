@@ -22,10 +22,35 @@
                   placeholder: "Tell clients about your work and experience...",
                   input_html: { rows: 4 } %>
 
-      <%= f.input :styles,
-                  label: "Styles",
-                  placeholder: "e.g. Blackwork, Fine Line, Surrealism",
-                  hint: "Comma-separated." %>
+      <div class="form-group mb-3">
+        <label class="form-label d-block">Styles</label>
+
+        <div data-controller="tags">
+          <div data-tags-target="list">
+            <% (@artist_profile.tags.map(&:name).presence || [ "" ]).each do |name| %>
+              <div class="row mb-2 align-items-center" data-tags-target="row">
+                <div class="col-10">
+                  <input type="text" name="artist_profile[tag_names][]" value="<%= name %>"
+                         class="form-control" list="tags_datalist" placeholder="e.g. Blackwork" autocomplete="off">
+                </div>
+                <div class="col-2">
+                  <button type="button" class="btn btn-outline-danger btn-sm" data-action="tags#remove">✕</button>
+                </div>
+              </div>
+            <% end %>
+          </div>
+
+          <button type="button" class="btn btn-outline-secondary btn-sm mt-2" data-action="tags#add">
+            + Add a style
+          </button>
+        </div>
+
+        <datalist id="tags_datalist">
+          <% Tag.order(:name).pluck(:name).each do |name| %>
+            <option value="<%= name %>">
+          <% end %>
+        </datalist>
+      </div>
 
       <div class="form-group mb-3">
         <label class="form-label d-block">Pricing</label>
