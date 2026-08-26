@@ -1,6 +1,122 @@
-<div class="container py-4" style="max-width: 640px;">
-  <h2><%= @artist_profile.display_name %></h2>
+<%= render "shared/topappbar" %>
 
-  <h4 class="mt-4">Availability</h4>
-  <%= render "shared/calendar", artist_profile: @artist_profile, month: @month %>
+<div class="container artist-show px-0" style="max-width: 640px;">
+
+  <% studio = @artist_profile.addresses.first %>
+  <% if studio.present? && studio.label.present? %>
+    <div class="bg-dark text-white text-center text-uppercase small py-2">
+      <%= studio.label %>
+    </div>
+  <% end %>
+
+  <% if @artist_profile.portfolio_items.any? %>
+    <%= image_tag @artist_profile.portfolio_items.first.image_url,
+          class: "artist-cover w-100", alt: @artist_profile.display_name %>
+  <% else %>
+    <div class="artist-cover bg-dark"></div>
+  <% end %>
+
+  <div class="bg-secondary text-white p-3 mb-4">
+    <% if @artist_profile.professional_status.present? %>
+      <span class="badge text-bg-light text-uppercase mb-2"><%= @artist_profile.professional_status %></span>
+    <% end %>
+
+    <div class="d-flex align-items-center gap-3 mb-2">
+      <%= image_tag "https://ui-avatars.com/api/?size=112&background=000000&color=ffffff&name=#{@artist_profile.display_name.tr(" ", "+")}",
+            class: "rounded-circle", width: 56, height: 56, alt: @artist_profile.display_name %>
+      <h1 class="h3 mb-0"><%= @artist_profile.display_name %></h1>
+    </div>
+
+    <div class="d-flex flex-wrap gap-2">
+      <% @tags.each do |tag| %>
+        <%= link_to tag.name, root_path(style: tag.name),
+              class: "btn btn-sm btn-light font-monospace" %>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="d-flex gap-2 mb-4">
+    <%= link_to "Message", new_artist_profile_conversation_path(@artist_profile),
+          class: "btn btn-outline-primary w-50" %>
+    <button type="button" class="btn btn-primary w-50" data-bs-toggle="modal" data-bs-target="#bookingModal">
+      Book now
+    </button>
+  </div>
+
+  <% if @artist_profile.bio.present? %>
+    <h2 class="h5 mb-2">About</h2>
+    <p class="mb-4"><%= @artist_profile.bio %></p>
+  <% end %>
+
+  <% if @min_price.present? %>
+    <button type="button" class="btn btn-link p-0 text-start mb-4 text-decoration-none"
+            data-bs-toggle="modal" data-bs-target="#pricingModal">
+      <span class="d-block fw-bold text-dark">
+        <%= @min_price %> – <%= @max_price %> CHF
+      </span>
+      <span class="small text-muted">See the full price list</span>
+    </button>
+  <% end %>
+
+  <% @artist_profile.addresses.each do |address| %>
+    <div class="mb-3">
+      <div class="fw-bold"><%= address.label.presence || "Studio" %></div>
+      <div class="text-muted small"><%= address.street %>, <%= address.zipcode %> <%= address.city %></div>
+    </div>
+  <% end %>
+
+  <div class="bg-light rounded-3 text-center text-muted small py-5 mb-4">
+    Map coming soon
+  </div>
+
+  <h2 class="h5 mb-3">Portfolio</h2>
+  <% if @artist_profile.portfolio_items.any? %>
+    <div class="row g-2 mb-4">
+      <% @artist_profile.portfolio_items.each do |item| %>
+        <div class="col-4">
+          <%= image_tag item.image_url, class: "img-fluid rounded-2", alt: item.caption %>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <p class="text-muted small">No photos yet.</p>
+  <% end %>
+
 </div>
+
+<div class="modal fade" id="pricingModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Prices</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <ul class="list-unstyled mb-0">
+          <% @prices.each do |row| %>
+            <li class="d-flex justify-content-between border-bottom py-2">
+              <span><%= row["prestation"] %></span>
+              <span class="fw-bold"><%= row["prix"] %> CHF</span>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="bookingModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Book a session</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <%= render "shared/calendar", artist_profile: @artist_profile, month: @month %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%= render "shared/botappbar" %>
