@@ -1,2 +1,111 @@
-<h1>Artists#show</h1>
-<p>Find me in app/views/artists/show.html.erb</p>
+<%= render "shared/topappbar" %>
+
+<div class="container artist-show" style="max-width: 640px;">
+
+  <% if @artist_profile.portfolio_items.any? %>
+    <%= image_tag @artist_profile.portfolio_items.first.image_url,
+          class: "artist-cover w-100 rounded-3 mb-3", alt: @artist_profile.display_name %>
+  <% else %>
+    <div class="artist-cover bg-dark rounded-3 mb-3"></div>
+  <% end %>
+
+  <% if @artist_profile.professional_status.present? %>
+    <span class="badge text-bg-primary text-uppercase mb-2"><%= @artist_profile.professional_status %></span>
+  <% end %>
+
+  <div class="d-flex align-items-center gap-3 mb-2">
+    <%= image_tag "https://kitt.lewagon.com/placeholder/users/#{@artist_profile.user.username}",
+          class: "avatar-large", alt: @artist_profile.display_name %>
+    <h1 class="h3 mb-0"><%= @artist_profile.display_name %></h1>
+  </div>
+
+  <% if @artist_profile.bio.present? %>
+    <p class="text-muted"><%= @artist_profile.bio %></p>
+  <% end %>
+
+  <div class="d-flex flex-wrap gap-2 mb-4">
+    <% @tags.each do |tag| %>
+      <%= link_to tag, root_path(style: tag), class: "btn btn-outline-dark btn-sm" %>
+    <% end %>
+  </div>
+
+  <div class="d-flex gap-2 mb-4">
+    <%= link_to "Message", new_artist_profile_conversation_path(@artist_profile),
+          class: "btn btn-outline-primary w-50" %>
+    <button type="button" class="btn btn-primary w-50" data-bs-toggle="modal" data-bs-target="#bookingModal">
+      Book now
+    </button>
+  </div>
+
+  <% if @min_price.present? %>
+    <button type="button" class="btn btn-link p-0 text-start mb-4 text-decoration-none"
+            data-bs-toggle="modal" data-bs-target="#pricingModal">
+      <span class="d-block fw-bold text-dark">
+        <%= @min_price %> – <%= @max_price %> CHF
+      </span>
+      <span class="small text-muted">See the full price list</span>
+    </button>
+  <% end %>
+
+  <% @artist_profile.addresses.each do |address| %>
+    <div class="mb-3">
+      <div class="fw-bold"><%= address.label.presence || "Studio" %></div>
+      <div class="text-muted small"><%= address.street %>, <%= address.zipcode %> <%= address.city %></div>
+    </div>
+  <% end %>
+
+  <div class="bg-light rounded-3 text-center text-muted small py-5 mb-4">
+    Map coming soon
+  </div>
+
+  <h2 class="h5 mb-3">Portfolio</h2>
+  <% if @artist_profile.portfolio_items.any? %>
+    <div class="row g-2 mb-4">
+      <% @artist_profile.portfolio_items.each do |item| %>
+        <div class="col-4">
+          <%= image_tag item.image_url, class: "img-fluid rounded-2", alt: item.caption %>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <p class="text-muted small">No photos yet.</p>
+  <% end %>
+
+</div>
+
+<div class="modal fade" id="pricingModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Prices</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <ul class="list-unstyled mb-0">
+          <% @prices.each do |row| %>
+            <li class="d-flex justify-content-between border-bottom py-2">
+              <span><%= row["prestation"] %></span>
+              <span class="fw-bold"><%= row["prix"] %> CHF</span>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="bookingModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Book a session</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p class="text-muted mb-0">Availability calendar coming soon.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%= render "shared/botappbar" %>

@@ -34,5 +34,12 @@ class ArtistsController < ApplicationController
   end
 
   def show
+    @artist_profile = ArtistProfile.find(params[:id])
+    @tags = @artist_profile.styles.to_s.split(",").map { |tag| tag.strip }
+    @prices = @artist_profile.pricing_grid || []
+    amounts = @prices.map { |row| row["prix"] }
+    @min_price = amounts.min
+    @max_price = amounts.max
   end
+
 end
