@@ -7,6 +7,7 @@ class ArtistProfilesController < ApplicationController
 
   def create
     @artist_profile = current_user.build_artist_profile(artist_profile_params)
+    @artist_profile.published = true
 
     if @artist_profile.save
       redirect_to edit_artist_profile_path, notice: "Your artist profile has been created! Complete it to be visible in search."
