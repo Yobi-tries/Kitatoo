@@ -1,0 +1,9 @@
+<%= link_to conversation_path(conversation), class: "list-group-item list-group-item-action" do %>
+  <div class="d-flex justify-content-between">
+    <strong><%= conversation.other_participant_name(current_user) %></strong>
+    <small class="text-muted"><%= format_conversation_time(conversation.updated_at) %></small>
+  </div>
+  <% if (last_message = conversation.messages.last) %>
+    <p class="mb-0 text-truncate text-muted"><%= last_message.body %></p>
+  <% end %>
+<% end %>
