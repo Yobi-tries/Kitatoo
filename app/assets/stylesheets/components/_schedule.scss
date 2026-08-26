@@ -1,0 +1,90 @@
+.schedule {
+  margin-top: $spacer;
+}
+
+.schedule-header {
+  margin-bottom: $spacer * 1.5;
+}
+
+.schedule-hint {
+  color: $gray-600;
+  font-size: $font-size-sm;
+  margin-bottom: 0;
+}
+
+.schedule-label {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  margin-bottom: $spacer * 0.25;
+  display: block;
+}
+
+.schedule-period {
+  display: flex;
+  gap: $spacer;
+  margin-bottom: $spacer;
+}
+
+.schedule-period-field {
+  flex: 1;
+}
+
+.schedule-slot-duration {
+  margin-bottom: $spacer * 1.5;
+}
+
+.schedule-section-title {
+  font-size: $font-size-base;
+  font-weight: $font-weight-semibold;
+  margin-bottom: $spacer * 0.75;
+}
+
+.schedule-weekly {
+  margin-bottom: $spacer * 1.5;
+}
+
+.schedule-day-row {
+  display: flex;
+  align-items: center;
+  gap: $spacer * 0.75;
+  padding: $spacer * 0.5 0;
+  border-bottom: $border-width solid $border-color;
+}
+
+.schedule-day-toggle {
+  display: flex;
+  align-items: center;
+  gap: $spacer * 0.5;
+  min-width: 120px;
+}
+
+.schedule-day-label {
+  font-size: $font-size-sm;
+  margin-bottom: 0;
+}
+
+.schedule-day-times {
+  display: flex;
+  align-items: center;
+  gap: $spacer * 0.5;
+  flex: 1;
+}
+
+.schedule-day-separator {
+  color: $gray-500;
+}
+
+.schedule-days-off {
+  margin-top: $spacer * 1.5;
+}
+
+.schedule-day-off-row {
+  display: flex;
+  align-items: center;
+  gap: $spacer * 0.75;
+  margin-bottom: $spacer * 0.5;
+}
+
+.schedule-add-btn {
+  margin-top: $spacer * 0.5;
+}

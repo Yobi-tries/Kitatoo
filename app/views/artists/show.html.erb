@@ -1,2 +1,6 @@
-<h1>Artists#show</h1>
-<p>Find me in app/views/artists/show.html.erb</p>
+<div class="container py-4" style="max-width: 640px;">
+  <h2><%= @artist_profile.display_name %></h2>
+
+  <h4 class="mt-4">Availability</h4>
+  <%= render "shared/calendar", artist_profile: @artist_profile, month: @month %>
+</div>

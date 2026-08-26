@@ -41,18 +41,40 @@ class ArtistProfilesController < ApplicationController
       pricing_grid: [ :prestation, :prix ]
     )
 
+    permitted[:schedule] = build_schedule if params[:artist_profile][:schedule].present?
+    
+    
     if permitted[:pricing_grid]
       permitted[:pricing_grid] = permitted[:pricing_grid].values.reject { |item| item["prestation"].blank? }
     end
-
+    
     permitted
   end
+
 
   def tag_names_param
     Array(params.dig(:artist_profile, :tag_names)).map(&:strip).reject(&:blank?).uniq { |name| name.downcase }
   end
 
-  private
+  def build_schedule
+    s = params[:artist_profile][:schedule]
+    days = {}
+    %w[monday tuesday wednesday thursday friday saturday sunday].each do |day|
+      if s.dig(:days, day, :enabled) == "1"
+        days[day] = { "start" => s.dig(:days, day, :start), "end" => s.dig(:days, day, :end) }
+      else
+        days[day] = nil
+      end
+    end
+    days_off = (s[:days_off] || {}).values.reject(&:blank?)
+    {
+      "slot_duration" => s[:slot_duration].to_i,
+      "period_start" => s[:period_start],
+      "period_end" => s[:period_end],
+      "days" => days,
+      "days_off" => days_off
+    }
+  end
 
   def redirect_if_artist_profile_exists
     redirect_to edit_artist_profile_path, alert: "You already have an artist profile." if current_user.artist_profile.present?

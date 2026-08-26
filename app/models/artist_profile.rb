@@ -1,6 +1,7 @@
 class ArtistProfile < ApplicationRecord
   belongs_to :user
 
+  serialize :schedule, coder: JSON
   serialize :pricing_grid, coder: JSON
 
   validates :user_id, uniqueness: true
