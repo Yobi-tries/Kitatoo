@@ -19,8 +19,8 @@
       <% calendar_weeks(month).each do |week| %>
         <% week.each do |day| %>
           <% in_month = day.month == month.month %>
-          <% available = in_month && available_day?(schedule, day) %>
-          <% slots = available ? slots_for_day(schedule, day) : [] %>
+          <% slots = in_month ? slots_for_day(schedule, day, artist_profile: artist_profile) : [] %>
+          <% available = slots.any? %>
 
           <div class="calendar-day
                       <%= 'calendar-day--outside' unless in_month %>

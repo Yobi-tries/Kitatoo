@@ -1,0 +1,67 @@
+.booking-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: $spacer;
+  margin-bottom: $spacer;
+  background-color: $light;
+  border: $border-width solid $border-color;
+  border-radius: $border-radius;
+}
+
+.booking-card--pending {
+  border-color: $warning;
+  background-color: tint-color($warning, 90%);
+}
+
+.booking-card--waiting {
+  border-color: $gray-400;
+  background-color: $gray-100;
+}
+
+.booking-card--confirmed {
+  border-color: $success;
+  background-color: tint-color($success, 90%);
+}
+
+.booking-card-info {
+  display: flex;
+  flex-direction: column;
+  gap: $spacer * 0.25;
+}
+
+.booking-card-date {
+  font-size: $font-size-sm;
+  color: $gray-600;
+}
+
+.booking-card-form {
+  display: flex;
+  align-items: center;
+  gap: $spacer;
+}
+
+.booking-duration {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.booking-duration-label {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  margin-bottom: $spacer * 0.25;
+}
+
+.booking-duration-counter {
+  display: flex;
+  align-items: center;
+  gap: $spacer * 0.5;
+}
+
+.booking-duration-display {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-bold;
+  min-width: 60px;
+  text-align: center;
+}

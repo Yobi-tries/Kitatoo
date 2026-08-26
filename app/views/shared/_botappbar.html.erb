@@ -7,10 +7,10 @@
     <span class="material-symbols-outlined">event_note</span>
     <span class="botappbar-label">Bookings</span>
   </a>
-  <a class="botappbar-link" href="#">
+  <%= link_to conversations_path, class: "botappbar-link" do %>
     <span class="material-symbols-outlined">chat_bubble</span>
     <span class="botappbar-label">Inbox</span>
-  </a>
+  <% end %>
   <a class="botappbar-link" href="#">
     <span class="material-symbols-outlined">person</span>
     <span class="botappbar-label">Profile</span>
