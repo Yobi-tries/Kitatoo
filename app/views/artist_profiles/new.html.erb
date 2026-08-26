@@ -1,2 +1,6 @@
-<h1>ArtistProfiles#new</h1>
-<p>Find me in app/views/artist_profiles/new.html.erb</p>
+<h1>Devenir tatoueur</h1>
+
+<%= simple_form_for @artist_profile, url: artist_profile_path do |f| %>
+  <%= f.input :display_name, label: "Nom d'artiste" %>
+  <%= f.button :submit, "Créer mon profil" %>
+<% end %>
