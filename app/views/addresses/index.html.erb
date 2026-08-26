@@ -1,2 +1,45 @@
-<h1>Addresses#index</h1>
-<p>Find me in app/views/addresses/index.html.erb</p>
+<div class="container py-4" style="max-width: 640px;">
+  <h1 class="h3 mb-1">My addresses</h1>
+  <p class="text-muted mb-4">
+    Add the studios or locations where clients can book you.
+  </p>
+
+  <% @addresses.each do |address| %>
+    <div class="mb-4 pb-3 border-bottom">
+      <%= simple_form_for address, url: artist_profile_address_path(address), method: :patch do |f| %>
+        <%= f.error_notification %>
+
+        <div class="form-inputs">
+          <%= f.input :label, placeholder: "e.g. Downtown Studio" %>
+          <%= f.input :street, required: true %>
+          <%= f.input :zipcode, required: true %>
+          <%= f.input :city, required: true %>
+        </div>
+
+        <div class="form-actions d-flex gap-2">
+          <%= f.button :submit, "Save", class: "btn btn-primary" %>
+          <%= button_to "Delete", artist_profile_address_path(address),
+                        method: :delete,
+                        class: "btn btn-outline-danger",
+                        form: { data: { turbo_confirm: "Remove this address?" } } %>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+
+  <h2 class="h5 mb-3">Add a new address</h2>
+  <%= simple_form_for @new_address, url: artist_profile_addresses_path, method: :post do |f| %>
+    <%= f.error_notification %>
+
+    <div class="form-inputs">
+      <%= f.input :label, placeholder: "e.g. Downtown Studio" %>
+      <%= f.input :street, required: true %>
+      <%= f.input :zipcode, required: true %>
+      <%= f.input :city, required: true %>
+    </div>
+
+    <div class="form-actions">
+      <%= f.button :submit, "Add address", class: "btn btn-primary w-100" %>
+    </div>
+  <% end %>
+</div>
