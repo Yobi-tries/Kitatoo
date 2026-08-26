@@ -1,9 +1,5 @@
 <div class="container py-4" style="max-width: 480px;">
   <h1 class="h3 mb-1">Become a tattoo artist on KiTatoo</h1>
-  <p class="text-muted mb-4">
-    Choose the name that will appear on your public profile. You'll be able to
-    complete your bio, styles and pricing right after.
-  </p>
 
   <%= simple_form_for @artist_profile, url: artist_profile_path, method: :post do |f| %>
     <%= f.error_notification %>
