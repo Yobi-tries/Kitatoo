@@ -7,6 +7,7 @@ class ArtistProfilesController < ApplicationController
 
   def create
     @artist_profile = current_user.build_artist_profile(artist_profile_params)
+    @artist_profile.published = true
 
     if @artist_profile.save
       redirect_to edit_artist_profile_path, notice: "Your artist profile has been created! Complete it to be visible in search."
@@ -35,9 +36,17 @@ class ArtistProfilesController < ApplicationController
   def artist_profile_update_params
     permitted = params.require(:artist_profile).permit(
       :display_name, :bio, :styles, :professional_status,
-      :pricing_grid, :social_links, :published
+      :social_links,
+      pricing_grid: [ :prestation, :prix ]
     )
+
     permitted[:schedule] = build_schedule if params[:artist_profile][:schedule].present?
+    
+    
+    if permitted[:pricing_grid]
+      permitted[:pricing_grid] = permitted[:pricing_grid].values.reject { |item| item["prestation"].blank? }
+    end
+    
     permitted
   end
 
