@@ -1,5 +1,6 @@
+  <%= render "shared/topappbar" %>
 <div class="container py-4">
-  <h1 class="mb-4">My conversations</h1>
+  <h1 class="my-5">My conversations</h1>
 
   <% if @conversations.empty? %>
     <p class="text-muted">You don't have any conversations yet.</p>
@@ -9,3 +10,4 @@
     </div>
   <% end %>
 </div>
+  <%= render "shared/botappbar" %>

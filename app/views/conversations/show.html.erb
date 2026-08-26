@@ -1,3 +1,4 @@
+<%= render "shared/topappbar" %>
 <div class="container py-4">
   <h1 class="mb-4">Chat with <%= @conversation.other_participant_name(current_user) %></h1>
 
@@ -7,3 +8,4 @@
 
   <%= render "form", conversation: @conversation, message: @message %>
 </div>
+<%= render "shared/botappbar" %>
