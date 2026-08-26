@@ -12,11 +12,11 @@ Rails.application.routes.draw do
 
   resources :artist_profiles, only: [] do
     resources :availabilities, only: [:index], as: :public_availabilities
-    resources :conversations, only: [:create]
+    resources :conversations, only: [:new, :create]
     resources :bookings, only: [:create]
   end
 
-  resources :conversations, only: [:show] do
+  resources :conversations, only: [:index, :show] do
     resources :messages, only: [:create]
   end
 

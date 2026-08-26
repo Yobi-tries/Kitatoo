@@ -1,2 +1,9 @@
-<h1>Conversations#show</h1>
-<p>Find me in app/views/conversations/show.html.erb</p>
+<div class="container py-4">
+  <h1 class="mb-4">Chat with <%= @conversation.other_participant_name(current_user) %></h1>
+
+  <div id="messages" class="list-group mb-4">
+    <%= render partial: "message", collection: @messages %>
+  </div>
+
+  <%= render "form", conversation: @conversation, message: @message %>
+</div>

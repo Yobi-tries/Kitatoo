@@ -1,0 +1,13 @@
+<% if @message.persisted? %>
+  <%= turbo_stream.append "messages" do %>
+    <%= render "conversations/message", message: @message %>
+  <% end %>
+
+  <%= turbo_stream.replace "new_message" do %>
+    <%= render "conversations/form", conversation: @conversation, message: @conversation.messages.new %>
+  <% end %>
+<% else %>
+  <%= turbo_stream.replace "new_message" do %>
+    <%= render "conversations/form", conversation: @conversation, message: @message %>
+  <% end %>
+<% end %>

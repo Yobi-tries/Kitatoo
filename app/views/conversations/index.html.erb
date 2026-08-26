@@ -1,0 +1,11 @@
+<div class="container py-4">
+  <h1 class="mb-4">My conversations</h1>
+
+  <% if @conversations.empty? %>
+    <p class="text-muted">You don't have any conversations yet.</p>
+  <% else %>
+    <div class="list-group">
+      <%= render partial: "conversation", collection: @conversations %>
+    </div>
+  <% end %>
+</div>
