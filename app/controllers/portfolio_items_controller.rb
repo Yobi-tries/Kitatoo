@@ -44,6 +44,12 @@ class PortfolioItemsController < ApplicationController
                   notice: "Photo removed."
   end
 
+  def bulk_destroy
+    removed = current_user.artist_profile.portfolio_items.where(id: params[:ids]).destroy_all
+    redirect_back fallback_location: artist_path(current_user.artist_profile),
+                  notice: "#{removed.size} photo(s) removed."
+  end
+
   private
 
   def set_portfolio_item

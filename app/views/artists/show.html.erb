@@ -77,27 +77,58 @@
     Map coming soon
   </div>
 
-    <div class="d-flex justify-content-between align-items-center mb-3">
-    <h2 class="h5 mb-0">Portfolio</h2>
-    <% if owner %>
-      <button type="button" class="btn btn-link p-0" data-bs-toggle="modal"
-              data-bs-target="#portfolioUploadModal" aria-label="Add photos">
-        <i class="fa-solid fa-plus"></i>
-      </button>
-    <% end %>
-  </div>
+      <% if owner %>
+    <%= form_with url: bulk_destroy_artist_profile_portfolio_items_path, method: :delete,
+                  data: { controller: "portfolio", turbo_confirm: "Remove the selected photos?" } do %>
 
-  <% if @artist_profile.portfolio_items.any? %>
-    <div class="row g-2 mb-4">
-      <% @artist_profile.portfolio_items.each do |item| %>
-        <div class="col-4">
-          <%= image_tag item.image_url, class: "img-fluid rounded-2", alt: item.caption %>
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="h5 mb-0">Portfolio</h2>
+        <div class="d-flex align-items-center gap-3">
+          <button type="button" class="btn btn-link p-0" data-bs-toggle="modal"
+                  data-bs-target="#portfolioUploadModal" aria-label="Add photos">
+            <i class="fa-solid fa-plus"></i>
+          </button>
+          <% if @artist_profile.portfolio_items.any? %>
+            <button type="button" class="btn btn-link p-0 text-danger"
+                    data-portfolio-target="trash"
+                    data-action="portfolio#enable" aria-label="Delete photos">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+            <%= submit_tag "Delete", class: "btn btn-danger btn-sm d-none",
+                  data: { portfolio_target: "confirm" } %>
+          <% end %>
         </div>
-      <% end %>
-    </div>
+      </div>
+
+      <div class="row g-2 mb-4">
+        <% @artist_profile.portfolio_items.each do |item| %>
+          <div class="col-4">
+            <label class="d-block position-relative">
+              <%= check_box_tag "ids[]", item.id, false,
+                    class: "form-check-input position-absolute m-2 d-none",
+                    data: { portfolio_target: "checkbox" } %>
+              <%= image_tag item.image_url, class: "img-fluid rounded-2", alt: item.caption %>
+            </label>
+          </div>
+        <% end %>
+      </div>
+
+    <% end %>
   <% else %>
-    <p class="text-muted small">No photos yet.</p>
+    <h2 class="h5 mb-3">Portfolio</h2>
+    <% if @artist_profile.portfolio_items.any? %>
+      <div class="row g-2 mb-4">
+        <% @artist_profile.portfolio_items.each do |item| %>
+          <div class="col-4">
+            <%= image_tag item.image_url, class: "img-fluid rounded-2", alt: item.caption %>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <p class="text-muted small">No photos yet.</p>
+    <% end %>
   <% end %>
+
 
 </div>
 

@@ -8,7 +8,12 @@ Rails.application.routes.draw do
   resource :artist_profile, only: [:new, :create, :edit, :update] do
     resources :addresses, only: [:index, :create, :update, :destroy]
     resources :availabilities, only: [:index, :create, :update, :destroy]
-    resources :portfolio_items, only: [ :create, :update, :destroy ]
+    resources :portfolio_items, only: [ :create, :update, :destroy ] do
+      collection do
+        delete :bulk_destroy
+      end
+    end
+
 
   end
 
