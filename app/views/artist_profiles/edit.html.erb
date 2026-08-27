@@ -37,31 +37,32 @@
       <div class="form-group mb-3">
         <label class="form-label d-block">Styles</label>
 
-        <div data-controller="tags">
-          <div data-tags-target="list">
-            <% (@artist_profile.tags.map(&:name).presence || [ "" ]).each do |name| %>
-              <div class="row mb-2 align-items-center" data-tags-target="row">
-                <div class="col-10">
-                  <input type="text" name="artist_profile[tag_names][]" value="<%= name %>"
-                         class="form-control" list="tags_datalist" placeholder="e.g. Blackwork" autocomplete="off">
-                </div>
-                <div class="col-2">
-                  <button type="button" class="btn btn-outline-danger btn-sm" data-action="tags#remove">✕</button>
-                </div>
-              </div>
+        <div class="tags-field"
+             data-controller="tags"
+             data-tags-available-value="<%= Tag.order(:name).pluck(:name).to_json %>"
+             data-action="click@document->tags#outsideClick">
+          <div class="d-flex flex-wrap gap-2 mb-2" data-tags-target="pills">
+            <% @artist_profile.tags.map(&:name).each do |name| %>
+              <span class="badge rounded-pill text-bg-dark d-inline-flex align-items-center gap-2 py-2 px-3"
+                    data-tags-target="pill" data-name="<%= name.downcase %>">
+                <%= name %>
+                <input type="hidden" name="artist_profile[tag_names][]" value="<%= name %>">
+                <button type="button" class="btn-close btn-close-white" style="font-size: 0.55rem;"
+                        data-action="tags#remove" aria-label="Remove"></button>
+              </span>
             <% end %>
           </div>
 
-          <button type="button" class="btn btn-outline-secondary btn-sm mt-2" data-action="tags#add">
-            + Add a style
-          </button>
-        </div>
+          <div class="tags-autocomplete">
+            <input type="text" class="form-control" placeholder="Add a style..." autocomplete="off"
+                   data-tags-target="input"
+                   data-action="focus->tags#onFocus input->tags#onInput
+                                 keydown.down->tags#moveDown keydown.up->tags#moveUp
+                                 keydown.enter->tags#commit keydown.escape->tags#closeDropdown">
 
-        <datalist id="tags_datalist">
-          <% Tag.order(:name).pluck(:name).each do |name| %>
-            <option value="<%= name %>">
-          <% end %>
-        </datalist>
+            <div class="tags-dropdown d-none" data-tags-target="dropdown"></div>
+          </div>
+        </div>
       </div>
 
       <div class="form-group mb-3">
