@@ -1,1 +1,215 @@
-// Specific CSS for your home-page
+.home {
+  max-width: 640px;
+  padding: 72px 20px 90px;
+}
+
+.home-search {
+  width: 100%;
+  height: 48px;
+  padding: 0 14px;
+  border-radius: 12px;
+  border: none;
+  background: $surface;
+  box-shadow: inset 0 -2px 0 rgba($ink, 0.10);
+  font-size: 15px;
+  color: $ink;
+
+  &::placeholder {
+    color: $text-muted-custom;
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: inset 0 0 0 2px $primary-custom;
+  }
+}
+
+.home-section-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 24px 0 12px;
+}
+
+.home-section-title {
+  font-family: $headers-font;
+  font-size: 19px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: $ink;
+  margin: 0;
+}
+
+.home-section-action {
+  font-size: 13px;
+  font-weight: 700;
+  color: $primary-custom;
+  cursor: pointer;
+}
+
+.home-section-meta {
+  font-size: 13px;
+  font-weight: 600;
+  color: $text-muted-custom;
+}
+
+.home-styles-scroller {
+  display: flex;
+  gap: 10px;
+  padding: 2px 0 4px;
+  overflow-x: auto;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.style-tile {
+  flex: 0 0 132px;
+  box-sizing: border-box;
+  height: 92px;
+  border-radius: 14px;
+  background: $ink;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  box-shadow: 0 2px 0 rgba($ink, 0.14);
+  text-decoration: none;
+  transition: background-color 150ms ease;
+
+  &:hover {
+    opacity: 0.9;
+  }
+}
+
+.style-tile--primary {
+  background: $primary-custom;
+}
+
+.style-tile-count {
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba($on-primary, 0.6);
+}
+
+.style-tile-name {
+  font-family: $headers-font;
+  font-size: 15px;
+  font-weight: 700;
+  color: $on-primary;
+}
+
+.home-scroll-indicator {
+  display: flex;
+  gap: 6px;
+  padding: 8px 0 0;
+}
+
+.home-scroll-dot {
+  width: 10px;
+  height: 3px;
+  border-radius: 2px;
+  background: $placeholder-bg-alt;
+}
+
+.home-scroll-dot--active {
+  width: 22px;
+  background: $ink;
+}
+
+.home-artists-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.artist-card {
+  background: $surface;
+  border-radius: 14px;
+  padding: 12px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  box-shadow: 0 2px 0 rgba($ink, 0.10), 0 10px 20px -16px rgba($ink, 0.5);
+  position: relative;
+}
+
+.artist-card-thumb {
+  width: 62px;
+  height: 62px;
+  border-radius: 10px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.artist-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex: 1;
+  min-width: 0;
+}
+
+.artist-card-name {
+  font-family: $headers-font;
+  font-size: 16px;
+  font-weight: 700;
+  color: $ink;
+  margin: 0;
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+}
+
+.artist-card-meta {
+  font-size: 13px;
+  color: $text-secondary;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.artist-card-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #46423C;
+}
+
+.artist-card-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: $accent;
+}
+
+.artist-card-chevron {
+  color: $disabled;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+.home-see-more {
+  width: 100%;
+  height: 46px;
+  margin-top: 10px;
+  border-radius: 14px;
+  border: none;
+  background: $surface;
+  box-shadow: inset 0 -2px 0 rgba($ink, 0.10);
+  font-size: 14px;
+  font-weight: 600;
+  color: $primary-custom;
+  cursor: pointer;
+  transition: background-color 150ms ease;
+
+  &:hover {
+    background: $surface-dim;
+  }
+}
