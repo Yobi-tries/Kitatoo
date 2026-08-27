@@ -4,8 +4,20 @@
     Fill in your bio, styles and pricing so clients can find and evaluate you.
   </p>
 
-  <%= simple_form_for @artist_profile, url: artist_profile_path, method: :patch do |f| %>
+  <%= simple_form_for @artist_profile, url: artist_profile_path, method: :patch, html: { multipart: true } do |f| %>
     <%= f.error_notification %>
+
+    <div class="avatar-edit-wrapper mb-4" data-controller="avatar">
+      <label class="avatar-edit-label" for="artist_profile_avatar">
+        <%= image_tag @artist_profile.avatar_url.presence || "https://ui-avatars.com/api/?size=176&background=000000&color=ffffff&name=#{@artist_profile.display_name.tr(" ", "+")}",
+              class: "avatar-edit-preview", alt: @artist_profile.display_name, data: { avatar_target: "preview" } %>
+        <span class="avatar-edit-icon">
+          <span class="material-symbols-outlined">photo_camera</span>
+        </span>
+      </label>
+      <%= f.file_field :avatar, accept: "image/*", class: "d-none",
+            data: { avatar_target: "input", action: "change->avatar#preview" } %>
+    </div>
 
     <div class="form-inputs">
       <%= f.input :display_name,

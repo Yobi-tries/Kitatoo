@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_26_172441) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_27_121029) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -38,6 +38,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_26_172441) do
   end
 
   create_table "artist_profiles", force: :cascade do |t|
+    t.string "avatar_public_id"
+    t.string "avatar_url"
     t.text "bio"
     t.datetime "created_at", null: false
     t.string "display_name", null: false

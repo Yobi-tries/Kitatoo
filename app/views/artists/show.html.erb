@@ -22,7 +22,7 @@
     <% end %>
 
     <div class="d-flex align-items-center gap-3 mb-2">
-      <%= image_tag "https://ui-avatars.com/api/?size=112&background=000000&color=ffffff&name=#{@artist_profile.display_name.tr(" ", "+")}",
+      <%= image_tag @artist_profile.avatar_url.presence || "https://ui-avatars.com/api/?size=112&background=000000&color=ffffff&name=#{@artist_profile.display_name.tr(" ", "+")}",
             class: "rounded-circle", width: 56, height: 56, alt: @artist_profile.display_name %>
       <h1 class="h3 mb-0"><%= @artist_profile.display_name %></h1>
     </div>
