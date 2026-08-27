@@ -15,7 +15,7 @@ class ArtistsController < ApplicationController
     end
 
     if params[:style].present?
-      @artists = @artists.where("artist_profiles.styles ILIKE ?", "%#{params[:style]}%")
+      @artists = @artists.joins(:tags).where(tags: { normalized_name: Tag.normalize(params[:style]) })
     end
 
     if params[:location].present?
@@ -26,9 +26,9 @@ class ArtistsController < ApplicationController
     @artists = @searching ? @artists.order(:display_name) : @artists.to_a.sample(6)
 
 
-    @styles = ArtistProfile.where(published: true).pluck(:styles).compact
-                           .flat_map { |s| s.split(",") }.map(&:strip)
-                           .tally.sort_by { |name, count| [ -count, name ] }.map(&:first)
+    @styles = Tag.joins(:artist_profiles).where(artist_profiles: { published: true })
+                 .pluck(:name)
+                 .tally.sort_by { |name, count| [ -count, name ] }.map { |name, count| name }
     @cities = Address.joins(:artist_profile).where(artist_profiles: { published: true })
                      .distinct.order(:city).pluck(:city)
   end
@@ -36,5 +36,11 @@ class ArtistsController < ApplicationController
   def show
     @artist_profile = ArtistProfile.find(params[:id])
     @month = params[:month] ? Date.parse("#{params[:month]}-01") : Date.today
+    @tags = @artist_profile.tags.order(:name)
+    @prices = @artist_profile.pricing_grid || []
+    amounts = @prices.map { |row| row["prix"] }
+    @min_price = amounts.min
+    @max_price = amounts.max
   end
+
 end

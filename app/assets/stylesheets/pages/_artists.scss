@@ -1,4 +1,10 @@
-.artists-index {
+.artists-index,
+.artist-show {
   padding-top: 80px;
   padding-bottom: 96px;
+}
+
+.artist-cover {
+  height: 220px;
+  object-fit: cover;
 }
