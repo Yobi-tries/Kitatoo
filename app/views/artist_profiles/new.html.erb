@@ -1,19 +1,24 @@
-<div class="container py-4" style="max-width: 480px;">
-  <h1 class="h3 mb-1">Become a tattoo artist on KiTatoo</h1>
+<%= render "shared/topappbar" %>
 
-  <%= simple_form_for @artist_profile, url: artist_profile_path, method: :post do |f| %>
-    <%= f.error_notification %>
+<div class="container profile-form">
+  <div class="profile-form-card">
+    <h1 class="profile-form-title">Become a tattoo artist on Kitatoo</h1>
+    <p class="profile-form-hint">Create your artist profile to be visible to clients.</p>
 
-    <div class="form-inputs">
+    <%= simple_form_for @artist_profile, url: artist_profile_path, method: :post do |f| %>
+      <%= f.error_notification %>
+
       <%= f.input :display_name,
                   label: "Artist / studio name",
                   placeholder: "e.g. Jax Blackwood",
                   required: true,
                   input_html: { autofocus: true } %>
-    </div>
 
-    <div class="form-actions">
-      <%= f.button :submit, "Create my artist profile", class: "btn btn-primary w-100" %>
-    </div>
-  <% end %>
+      <div class="profile-form-actions">
+        <button type="submit" class="profile-form-submit">Create my artist profile</button>
+      </div>
+    <% end %>
+  </div>
 </div>
+
+<%= render "shared/botappbar" %>

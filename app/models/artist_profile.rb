@@ -3,6 +3,7 @@ class ArtistProfile < ApplicationRecord
 
   serialize :schedule, coder: JSON
   serialize :pricing_grid, coder: JSON
+  serialize :social_links, coder: JSON
 
   validates :user_id, uniqueness: true
   validates :display_name, presence: true

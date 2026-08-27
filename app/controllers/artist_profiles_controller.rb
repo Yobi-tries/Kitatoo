@@ -38,17 +38,24 @@ class ArtistProfilesController < ApplicationController
   def artist_profile_update_params
     permitted = params.require(:artist_profile).permit(
       :display_name, :bio, :professional_status,
-      :social_links, :published,
+      :published,
       pricing_grid: [ :prestation, :prix ]
     )
 
     permitted[:schedule] = build_schedule if params[:artist_profile][:schedule].present?
-    
-    
+
     if permitted[:pricing_grid]
       permitted[:pricing_grid] = permitted[:pricing_grid].values.reject { |item| item["prestation"].blank? }
     end
-    
+
+    if params[:artist_profile][:social_links].present?
+      sl = params[:artist_profile][:social_links]
+      permitted[:social_links] = {
+        "instagram" => sl[:instagram].presence,
+        "pinterest" => sl[:pinterest].presence
+      }
+    end
+
     permitted
   end
 

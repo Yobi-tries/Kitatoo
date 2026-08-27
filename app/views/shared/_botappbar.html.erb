@@ -11,7 +11,7 @@
     <span class="material-symbols-outlined">chat_bubble</span>
     <span class="botappbar-label">Inbox</span>
   <% end %>
-  <% if current_user&.artist_profile %>
+  <% if current_user&.artist_profile&.persisted? %>
     <%= link_to artist_path(current_user.artist_profile), class: "botappbar-link #{'active' if controller_name == 'artists' && action_name == 'show'}" do %>
       <span class="material-symbols-outlined">person</span>
       <span class="botappbar-label">Profile</span>
