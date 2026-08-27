@@ -4,5 +4,5 @@ class Booking < ApplicationRecord
 
   validates :availability_id, uniqueness: true
 
-  enum :status, { selected: 0, confirmed: 1 }
+  enum :status, { selected: 0, artist_confirmed: 1, confirmed: 2 }
 end
