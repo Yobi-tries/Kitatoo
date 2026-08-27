@@ -18,13 +18,16 @@ class ArtistsController < ApplicationController
       @artists = @artists.joins(:tags).where(tags: { normalized_name: Tag.normalize(params[:style]) })
     end
 
-    if params[:location].present?
-      @artists = @artists.where("addresses.city ILIKE ?", "%#{params[:location]}%")
-    end
-
     @searching = params[:query].present? || params[:style].present? || params[:location].present?
-    @artists = @searching ? @artists.order(:display_name) : @artists.to_a.sample(6)
 
+    if params[:location].present?
+      ordered_ids = Address.near(params[:location], 100).map(&:artist_profile_id).uniq
+      @artists = @artists.where(id: ordered_ids).to_a.sort_by { |artist| ordered_ids.index(artist.id) }
+    elsif @searching
+      @artists = @artists.order(:display_name)
+    else
+      @artists = @artists.to_a.sample(6)
+    end
 
     @styles = Tag.joins(:artist_profiles).where(artist_profiles: { published: true })
                  .pluck(:name)
