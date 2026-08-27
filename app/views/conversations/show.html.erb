@@ -1,4 +1,6 @@
-<div class="container py-4">
+<%= render "shared/topappbar" %>
+
+<div class="container py-4" style="padding-top: 64px; padding-bottom: 80px;">
   <h1 class="mb-4">Chat with <%= @conversation.other_participant_name(current_user) %></h1>
 
   <% booking = Booking.joins(:availability)
@@ -69,3 +71,5 @@
 
   <%= render "form", conversation: @conversation, message: @message %>
 </div>
+
+<%= render "shared/botappbar" %>

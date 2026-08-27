@@ -1,4 +1,6 @@
-<div class="container py-4">
+<%= render "shared/topappbar" %>
+
+<div class="container py-4" style="padding-top: 64px; padding-bottom: 80px;">
   <h1 class="mb-4">Contact <%= @artist_profile.display_name %></h1>
 
   <%= simple_form_for @message, url: artist_profile_conversations_path(@artist_profile) do |f| %>
@@ -6,3 +8,5 @@
     <%= f.button :submit, "Send", class: "btn-primary" %>
   <% end %>
 </div>
+
+<%= render "shared/botappbar" %>
