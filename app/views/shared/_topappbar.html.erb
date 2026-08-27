@@ -1,11 +1,39 @@
 <header class="topappbar d-flex justify-content-between align-items-center">
+  <% if user_signed_in? && current_user.artist_profile.present? %>
+  <div class="dropdown">
+    <button
+      class="topappbar-btn btn btn-link p-0"
+      type="button"
+      data-bs-toggle="dropdown"
+      aria-expanded="false">
+      <span class="material-symbols-outlined">menu</span>
+    </button>
+
+    <ul class="dropdown-menu">
+      <li>
+        <button
+          type="button"
+          class="dropdown-item"
+          data-bs-toggle="modal"
+          data-bs-target="#portfolioUploadModal">
+          Manage my portfolio
+        </button>
+      </li>
+    </ul>
+  </div>
+<% else %>
   <button class="topappbar-btn btn btn-link p-0">
     <span class="material-symbols-outlined">menu</span>
   </button>
+<% end %>
+
   <%= link_to root_path do %>
     <%= image_tag "kitatoo-logo-ink.png", alt: "Kitatoo", class: "topappbar-logo" %>
   <% end %>
+
   <button class="topappbar-btn btn btn-link p-0">
     <span class="material-symbols-outlined">search</span>
   </button>
 </header>
+
+<%= render "shared/portfolio_upload_modal" if user_signed_in? && current_user.artist_profile.present? %>
