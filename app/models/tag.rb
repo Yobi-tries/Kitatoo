@@ -13,9 +13,15 @@ class Tag < ApplicationRecord
 
   def self.find_or_create_by_name!(raw_name)
     normalized = normalize(raw_name)
-    find_by(normalized_name: normalized) || create!(name: raw_name.to_s.strip, normalized_name: normalized)
+    find_by(normalized_name: normalized) || create!(name: capitalized(raw_name), normalized_name: normalized)
   rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique
     find_by!(normalized_name: normalized)
+  end
+
+  # Only used for brand-new tags: existing tags keep whatever casing they
+  # were first created with, never rewritten by a later submission.
+  def self.capitalized(raw_name)
+    raw_name.to_s.strip.downcase.gsub(/\b\w/) { |char| char.upcase }
   end
 
   private
