@@ -7,7 +7,7 @@ class PortfolioItemsController < ApplicationController
       return
     end
 
-    images = Array(params[:images])
+    images = Array(params[:images]).reject(&:blank?)
 
     if images.empty?
       redirect_back fallback_location: edit_artist_profile_path,
