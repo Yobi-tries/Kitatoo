@@ -70,6 +70,26 @@ class BookingsController < ApplicationController
     redirect_to conversation_path(conversation), notice: "Booking confirmed!"
   end
 
+  def cancel
+    @booking = Booking.find(params[:id])
+    artist_profile = @booking.availability.artist_profile
+    is_artist = current_user.artist_profile == artist_profile
+    is_client = current_user == @booking.client
+    authorized = @booking.confirmed? ? is_artist : (is_artist || is_client)
+
+    return redirect_to root_path, alert: "Not authorized." unless authorized
+
+    conversation = Conversation.find_by(client_id: @booking.client_id, artist_profile: artist_profile)
+    conversation.messages.create!(
+      user: current_user,
+      body: "Booking cancelled: #{@booking.availability.starts_at.strftime('%A %d %B, %H:%M')} — " \
+            "cancelled by #{is_artist ? 'the artist' : 'the client'}."
+    )
+    @booking.availability.destroy
+
+    redirect_to conversation_path(conversation), notice: "Booking cancelled."
+  end
+
   private
 
   def shift_and_redirect(starts_at:, ends_at:, address_id:, description:)

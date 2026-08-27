@@ -11,6 +11,9 @@
   <% is_artist = current_user.artist_profile == @conversation.artist_profile %>
 
   <% pending_bookings.each do |booking| %>
+    <% cancel_button = button_to "Cancel", cancel_booking_path(booking), method: :patch,
+         class: "btn btn-outline-danger btn-sm", form: { data: { turbo_confirm: "Cancel this booking?" } } %>
+
     <% if booking.selected? && is_artist %>
       <div class="booking-card">
         <div class="booking-card-info">
@@ -31,6 +34,17 @@
           </div>
           <%= f.submit "Confirm", class: "btn btn-success btn-sm" %>
         <% end %>
+        <%= cancel_button %>
+      </div>
+
+    <% elsif booking.selected? && !is_artist %>
+      <div class="booking-card">
+        <div class="booking-card-info">
+          <strong>Booking request sent</strong>
+          <span class="booking-card-date"><%= booking.availability.starts_at.strftime("%d/%m/%Y %H:%M") %></span>
+        </div>
+        <span class="badge bg-warning">Waiting for artist</span>
+        <%= cancel_button %>
       </div>
 
     <% elsif booking.artist_confirmed? && !is_artist %>
@@ -41,6 +55,7 @@
         </div>
         <%= button_to "Accept", accept_booking_path(booking),
             method: :patch, class: "btn btn-success btn-sm" %>
+        <%= cancel_button %>
       </div>
 
     <% elsif booking.artist_confirmed? && is_artist %>
@@ -50,6 +65,7 @@
           <span class="booking-card-date"><%= booking.availability.starts_at.strftime("%d/%m/%Y %H:%M") %> — <%= booking.duration %> min</span>
         </div>
         <span class="badge bg-warning">Pending</span>
+        <%= cancel_button %>
       </div>
     <% end %>
   <% end %>
@@ -64,6 +80,10 @@
         <span class="booking-card-date"><%= confirmed_booking.availability.starts_at.strftime("%d/%m/%Y %H:%M") %> — <%= confirmed_booking.duration %> min</span>
       </div>
       <span class="badge bg-success">Confirmed</span>
+      <% if is_artist %>
+        <%= button_to "Cancel", cancel_booking_path(confirmed_booking), method: :patch,
+              class: "btn btn-outline-danger btn-sm", form: { data: { turbo_confirm: "Cancel this confirmed booking?" } } %>
+      <% end %>
     </div>
   <% end %>
 
