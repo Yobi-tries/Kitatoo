@@ -1,90 +1,218 @@
 .schedule {
-  margin-top: $spacer;
+  margin-top: 16px;
 }
 
 .schedule-header {
-  margin-bottom: $spacer * 1.5;
+  margin-bottom: 22px;
+
+  h4 {
+    font-family: $headers-font;
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    margin-bottom: 4px;
+  }
 }
 
 .schedule-hint {
-  color: $gray-600;
-  font-size: $font-size-sm;
+  font-size: 14px;
+  line-height: 22px;
+  color: $text-secondary;
   margin-bottom: 0;
 }
 
 .schedule-label {
-  font-size: $font-size-sm;
-  font-weight: $font-weight-medium;
-  margin-bottom: $spacer * 0.25;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: $text-secondary;
+  margin-bottom: 7px;
   display: block;
 }
 
 .schedule-period {
-  display: flex;
-  gap: $spacer;
-  margin-bottom: $spacer;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 22px;
 }
 
 .schedule-period-field {
-  flex: 1;
+  .form-control,
+  .form-select {
+    height: 46px;
+    border-radius: 10px;
+    background: $surface;
+    border: none;
+    box-shadow: inset 0 -2px 0 rgba($ink, 0.10);
+    font-size: 15px;
+  }
 }
 
 .schedule-slot-duration {
-  margin-bottom: $spacer * 1.5;
+  margin-bottom: 22px;
+
+  .form-select {
+    height: 46px;
+    border-radius: 10px;
+    background: $surface;
+    border: none;
+    box-shadow: inset 0 -2px 0 rgba($ink, 0.10);
+    font-size: 15px;
+  }
 }
 
 .schedule-section-title {
-  font-size: $font-size-base;
-  font-weight: $font-weight-semibold;
-  margin-bottom: $spacer * 0.75;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: $text-secondary;
+  margin-bottom: 10px;
 }
 
 .schedule-weekly {
-  margin-bottom: $spacer * 1.5;
+  margin-bottom: 22px;
+  background: $surface;
+  border-radius: 12px;
+  padding: 4px 16px 8px;
+  box-shadow: 0 2px 0 rgba($ink, 0.10);
 }
 
 .schedule-day-row {
-  display: flex;
+  display: grid;
+  grid-template-columns: 190px 1fr;
+  gap: 16px;
   align-items: center;
-  gap: $spacer * 0.75;
-  padding: $spacer * 0.5 0;
-  border-bottom: $border-width solid $border-color;
+  padding: 12px 0;
+
+  & + & {
+    border-top: 1px solid $hairline;
+  }
 }
 
 .schedule-day-toggle {
   display: flex;
   align-items: center;
-  gap: $spacer * 0.5;
-  min-width: 120px;
+  gap: 12px;
+
+  .form-check-input {
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    margin: 0;
+
+    &:checked {
+      background-color: $primary-custom;
+      border-color: $primary-custom;
+    }
+
+    &:not(:checked) {
+      background-color: $canvas;
+      border: 1px solid $placeholder-bg-alt;
+    }
+  }
 }
 
 .schedule-day-label {
-  font-size: $font-size-sm;
+  font-size: 15px;
+  font-weight: 600;
+  color: $ink;
   margin-bottom: 0;
+
+  .form-check-input:not(:checked) ~ & {
+    color: $text-muted-custom;
+  }
 }
 
 .schedule-day-times {
   display: flex;
   align-items: center;
-  gap: $spacer * 0.5;
+  gap: 10px;
   flex: 1;
+
+  .form-control {
+    height: 38px;
+    padding: 0 12px;
+    border-radius: 8px;
+    background: $canvas;
+    border: none;
+    font-size: 14px;
+
+    &:disabled {
+      background: transparent;
+      opacity: 0;
+    }
+  }
 }
 
 .schedule-day-separator {
-  color: $gray-500;
+  color: $ink;
+}
+
+.schedule-day-closed {
+  font-size: 14px;
+  color: $disabled;
 }
 
 .schedule-days-off {
-  margin-top: $spacer * 1.5;
+  margin-top: 22px;
 }
 
 .schedule-day-off-row {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: $spacer * 0.75;
-  margin-bottom: $spacer * 0.5;
+  gap: 9px;
+  height: 38px;
+  padding: 0 8px 0 14px;
+  border-radius: 8px;
+  background: $surface;
+  box-shadow: inset 0 -2px 0 rgba($ink, 0.10);
+  margin-right: 8px;
+  margin-bottom: 8px;
+
+  .form-control {
+    border: none;
+    background: transparent;
+    padding: 0;
+    height: auto;
+    font-size: 13px;
+    font-weight: 600;
+    box-shadow: none;
+  }
+
+  .btn {
+    width: 22px;
+    height: 22px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    background: $canvas;
+    border: none;
+    font-size: 12px;
+    color: $text-muted-custom;
+  }
 }
 
 .schedule-add-btn {
-  margin-top: $spacer * 0.5;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 38px;
+  padding: 0 14px;
+  border-radius: 8px;
+  background: $surface;
+  box-shadow: inset 0 -2px 0 rgba($ink, 0.10);
+  font-size: 13px;
+  font-weight: 700;
+  color: $primary-custom;
+  border: none;
+  margin-top: 4px;
+
+  &:hover {
+    background: $surface-dim;
+  }
 }
