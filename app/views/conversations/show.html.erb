@@ -35,55 +35,96 @@
 
 </div>
 
+<% format_duration = ->(min) { min ? "#{min / 60}h#{format('%02d', min % 60)}" : "" } %>
+
 <div class="conversation-bottom">
   <% if booking&.selected? && is_artist %>
-    <div class="booking-card">
+    <div class="booking-card booking-card--pending">
       <div class="booking-card-info">
-        <strong>Booking request</strong>
-        <span class="booking-card-date"><%= booking.availability.starts_at.strftime("%d/%m %H:%M") %></span>
+        <div class="booking-card-info-left">
+          <span class="booking-card-label">slot requested</span>
+          <span class="booking-card-date"><%= booking.availability.starts_at.strftime("%a %d %b · %H:%M") %></span>
+        </div>
+        <span class="booking-card-pill">pending</span>
       </div>
-      <%= simple_form_for booking, url: confirm_booking_path(booking), method: :patch, html: { class: "booking-card-form" } do |f| %>
-        <div class="booking-duration" data-controller="duration" data-duration-step-value="15">
-          <label class="booking-duration-label">Duration</label>
-          <div class="booking-duration-counter">
-            <button type="button" class="btn" data-action="duration#decrement">−</button>
+      <%= simple_form_for booking, url: confirm_booking_path(booking), method: :patch do |f| %>
+        <div class="booking-card-strip">
+          <div class="booking-stepper" data-controller="duration" data-duration-step-value="30">
+            <button type="button" class="booking-stepper-btn" data-action="duration#decrement">−</button>
             <%= f.input :duration, as: :hidden, input_html: {
               value: slot_duration, data: { duration_target: "input" }
             } %>
-            <span class="booking-duration-display" data-duration-target="display"><%= slot_duration %> min</span>
-            <button type="button" class="btn" data-action="duration#increment">+</button>
+            <span class="booking-stepper-display" data-duration-target="display"><%= format_duration.call(slot_duration) %></span>
+            <button type="button" class="booking-stepper-btn" data-action="duration#increment">+</button>
           </div>
+          <%= f.submit "Confirm", class: "booking-card-confirm" %>
+          <button type="button" class="booking-card-cancel" disabled title="Cancel (coming soon)">✕</button>
         </div>
-        <%= f.submit "Confirm", class: "btn" %>
       <% end %>
     </div>
-  <% elsif booking&.artist_confirmed? && !is_artist %>
+
+  <% elsif booking&.selected? && !is_artist %>
     <div class="booking-card booking-card--pending">
       <div class="booking-card-info">
-        <strong>Booking proposal</strong>
-        <span class="booking-card-date"><%= booking.availability.starts_at.strftime("%d/%m/%Y %H:%M") %> — <%= booking.duration %> min</span>
+        <div class="booking-card-info-left">
+          <span class="booking-card-label">slot requested</span>
+          <span class="booking-card-date"><%= booking.availability.starts_at.strftime("%a %d %b · %H:%M") %></span>
+        </div>
+        <span class="booking-card-pill">pending</span>
       </div>
-      <%= button_to "Accept", accept_booking_path(booking),
-          method: :patch, class: "btn" %>
+      <div class="booking-card-strip">
+        <span class="booking-card-label" style="flex:1;">Waiting for artist</span>
+        <button type="button" class="booking-card-cancel" disabled title="Cancel (coming soon)">✕</button>
+      </div>
     </div>
-  <% elsif booking&.artist_confirmed? && is_artist %>
-    <div class="booking-card booking-card--waiting">
+
+  <% elsif booking&.artist_confirmed? && !is_artist %>
+    <div class="booking-card booking-card--artist-confirmed">
       <div class="booking-card-info">
-        <strong>Waiting for client</strong>
-        <span class="booking-card-date"><%= booking.availability.starts_at.strftime("%d/%m/%Y %H:%M") %> — <%= booking.duration %> min</span>
+        <div class="booking-card-info-left">
+          <span class="booking-card-label">slot · duration <%= format_duration.call(booking.duration) %></span>
+          <span class="booking-card-date"><%= booking.availability.starts_at.strftime("%a %d %b · %H:%M") %></span>
+        </div>
+        <span class="booking-card-pill">confirmed</span>
       </div>
-      <span class="badge bg-warning">Pending</span>
+      <div class="booking-card-strip">
+        <%= button_to "Accept #{format_duration.call(booking.duration)}", accept_booking_path(booking),
+            method: :patch, class: "booking-card-accept" %>
+        <button type="button" class="booking-card-cancel" disabled title="Cancel (coming soon)">✕</button>
+      </div>
+    </div>
+
+  <% elsif booking&.artist_confirmed? && is_artist %>
+    <div class="booking-card booking-card--artist-confirmed">
+      <div class="booking-card-info">
+        <div class="booking-card-info-left">
+          <span class="booking-card-label">slot · duration <%= format_duration.call(booking.duration) %></span>
+          <span class="booking-card-date"><%= booking.availability.starts_at.strftime("%a %d %b · %H:%M") %></span>
+        </div>
+        <span class="booking-card-pill">confirmed</span>
+      </div>
+      <div class="booking-card-strip">
+        <span class="booking-card-label" style="flex:1;">Waiting for client</span>
+        <button type="button" class="booking-card-cancel" disabled title="Cancel (coming soon)">✕</button>
+      </div>
     </div>
   <% end %>
+
   <% if confirmed_booking %>
     <div class="booking-card booking-card--confirmed">
       <div class="booking-card-info">
-        <strong>Booking confirmed</strong>
-        <span class="booking-card-date"><%= confirmed_booking.availability.starts_at.strftime("%d/%m/%Y %H:%M") %> — <%= confirmed_booking.duration %> min</span>
+        <div class="booking-card-info-left">
+          <span class="booking-card-label">booked · <%= format_duration.call(confirmed_booking.duration) %></span>
+          <span class="booking-card-date"><%= confirmed_booking.availability.starts_at.strftime("%a %d %b · %H:%M") %></span>
+        </div>
+        <span class="booking-card-pill">set</span>
       </div>
-      <%= link_to artist_path(@conversation.artist_profile), class: "btn" do %>
-        Go to profile
-      <% end %>
+      <div class="booking-card-strip">
+        <%= link_to "Go to profile", artist_path(@conversation.artist_profile), class: "booking-card-profile" %>
+        <% if is_artist %>
+          <button type="button" class="booking-card-cancel" disabled title="Cancel (coming soon)">✕</button>
+        <% end %>
+      </div>
     </div>
   <% end %>
 
