@@ -94,7 +94,8 @@ availability = Availability.first
 Booking.create!(
   availability: availability,
   client: client_user,
-  status: :selected
+  status: :selected,
+  description: "Small piece on my forearm, blackwork style."
 )
 
 puts "Done!"
