@@ -34,7 +34,11 @@ module CalendarHelper
       slot_end = current + duration.minutes
 
       unless booked_ranges.any? { |r| slot_start < r[:end] && slot_end > r[:start] }
-        slots << "#{slot_start.strftime('%H:%M')} — #{slot_end.strftime('%H:%M')}"
+        slots << {
+          label: "#{slot_start.strftime('%H:%M')} — #{slot_end.strftime('%H:%M')}",
+          starts_at: date.to_time.change(hour: slot_start.hour, min: slot_start.min).iso8601,
+          ends_at: date.to_time.change(hour: slot_end.hour, min: slot_end.min).iso8601
+        }
       end
 
       current += duration.minutes
@@ -45,16 +49,18 @@ module CalendarHelper
   def booked_ranges_for_day(date, artist_profile)
     return [] unless artist_profile
 
+    default_duration = (artist_profile.schedule&.dig("slot_duration") || 30).to_i
+
     bookings = Booking.joins(:availability)
-      .where(availabilities: { artist_profile_id: artist_profile.id }, status: :confirmed)
-      .where.not(duration: nil)
+                      .where(availabilities: { artist_profile_id: artist_profile.id })
 
     bookings.filter_map do |booking|
       booking_date = booking.availability.starts_at.to_date
       next unless booking_date == date
 
+      duration = booking.duration || default_duration
       start_time = Time.parse(booking.availability.starts_at.strftime("%H:%M"))
-      end_time = start_time + booking.duration.minutes
+      end_time = start_time + duration.minutes
       { start: start_time, end: end_time }
     end
   end
