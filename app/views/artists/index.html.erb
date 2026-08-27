@@ -53,6 +53,10 @@
               <% if artist.addresses.any? %>
                 &middot; <%= artist.addresses.map { |address| address.city }.uniq.join(", ") %>
               <% end %>
+              <% if @distances[artist.id] %>
+                &middot; <%= @distances[artist.id].round(1) %> km
+              <% end %>
+
             </p>
           </div>
         </div>

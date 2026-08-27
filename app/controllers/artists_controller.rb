@@ -20,8 +20,12 @@ class ArtistsController < ApplicationController
 
     @searching = params[:query].present? || params[:style].present? || params[:location].present?
 
+    @distances = {}
+
     if params[:location].present?
-      ordered_ids = Address.near(params[:location], 100).map(&:artist_profile_id).uniq
+      nearby = Address.near(params[:location], 20_000).to_a
+      nearby.each { |address| @distances[address.artist_profile_id] ||= address.distance }
+      ordered_ids = nearby.map(&:artist_profile_id).uniq
       @artists = @artists.where(id: ordered_ids).to_a.sort_by { |artist| ordered_ids.index(artist.id) }
     elsif @searching
       @artists = @artists.order(:display_name)
