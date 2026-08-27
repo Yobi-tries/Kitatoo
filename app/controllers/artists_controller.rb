@@ -18,13 +18,20 @@ class ArtistsController < ApplicationController
       @artists = @artists.joins(:tags).where(tags: { normalized_name: Tag.normalize(params[:style]) })
     end
 
-    if params[:location].present?
-      @artists = @artists.where("addresses.city ILIKE ?", "%#{params[:location]}%")
-    end
-
     @searching = params[:query].present? || params[:style].present? || params[:location].present?
-    @artists = @searching ? @artists.order(:display_name) : @artists.to_a.sample(6)
 
+    @distances = {}
+
+    if params[:location].present?
+      nearby = Address.near(params[:location], 20_000).to_a
+      nearby.each { |address| @distances[address.artist_profile_id] ||= address.distance }
+      ordered_ids = nearby.map(&:artist_profile_id).uniq
+      @artists = @artists.where(id: ordered_ids).to_a.sort_by { |artist| ordered_ids.index(artist.id) }
+    elsif @searching
+      @artists = @artists.order(:display_name)
+    else
+      @artists = @artists.to_a.sample(6)
+    end
 
     @styles = Tag.joins(:artist_profiles).where(artist_profiles: { published: true })
                  .pluck(:name)
@@ -41,6 +48,8 @@ class ArtistsController < ApplicationController
     amounts = @prices.map { |row| row["prix"] }
     @min_price = amounts.min
     @max_price = amounts.max
+    @markers = @artist_profile.addresses.geocoded.map do |address|
+      { lat: address.latitude, lng: address.longitude }
+    end
   end
-
 end
