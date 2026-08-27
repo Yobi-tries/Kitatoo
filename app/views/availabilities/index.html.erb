@@ -1,2 +1,37 @@
-<h1>Availabilities#index</h1>
-<p>Find me in app/views/availabilities/index.html.erb</p>
+<%= render "shared/topappbar" %>
+
+<div class="container py-4" style="max-width: 640px; padding-top: 64px; padding-bottom: 80px;">
+  <%= link_to "‹ Back to profile", artist_path(@artist_profile), class: "small text-muted d-inline-block mb-3" %>
+
+  <h1 class="h4 mb-1">Book a session with <%= @artist_profile.display_name %></h1>
+  <p class="text-muted mb-4">Choose a location, pick an available slot, and describe your tattoo idea.</p>
+
+  <% if @addresses.empty? %>
+    <p class="text-muted">This artist hasn't added a location yet — booking isn't available.</p>
+  <% elsif @artist_profile.schedule.blank? %>
+    <p class="text-muted">This artist hasn't set their availability yet — booking isn't available.</p>
+  <% else %>
+    <%= simple_form_for @booking, url: artist_profile_bookings_path(@artist_profile) do |f| %>
+      <%= f.error_notification %>
+
+      <div class="mb-4">
+        <label class="form-label fw-semibold">Location</label>
+        <%= select_tag "booking[address_id]",
+              options_for_select(@addresses.map { |a| ["#{a.label.presence || 'Studio'} — #{a.city}", a.id] }),
+              class: "form-select" %>
+      </div>
+
+      <div class="mb-4">
+        <label class="form-label fw-semibold d-block mb-2">Date & time</label>
+        <%= render "shared/calendar", artist_profile: @artist_profile, month: @month %>
+      </div>
+
+      <%= f.input :description, as: :text, required: true, label: "Describe your tattoo idea",
+            placeholder: "Style, size, placement..." %>
+
+      <%= f.button :submit, "Request booking", class: "btn btn-primary w-100" %>
+    <% end %>
+  <% end %>
+</div>
+
+<%= render "shared/botappbar" %>
