@@ -24,6 +24,7 @@
 
             <%= f.file_field :images,
                               multiple: true,
+                              include_hidden: false,
                               accept: "image/*",
                               class: "form-control",
                               required: true %>
