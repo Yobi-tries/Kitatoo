@@ -4,6 +4,21 @@ class Booking < ApplicationRecord
 
   validates :availability_id, uniqueness: { message: "has already been booked" }
   validates :description, presence: true
+  validate :max_active_bookings_per_artist, on: :create
 
   enum :status, { selected: 0, artist_confirmed: 1, confirmed: 2 }
+
+  private
+
+  def max_active_bookings_per_artist
+    return unless client && availability&.artist_profile
+
+    exists = Booking.joins(:availability)
+      .where(client: client, availabilities: { artist_profile_id: availability.artist_profile_id })
+      .exists?
+
+    if exists
+      errors.add(:base, "You can only have 1 ongoing booking with this artist.")
+    end
+  end
 end

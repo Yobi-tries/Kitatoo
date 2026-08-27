@@ -1,51 +1,73 @@
 <%= render "shared/topappbar" %>
 
-<div class="container booking-page" style="max-width: 640px;">
-  <%= link_to "‹ Back to profile", artist_path(@artist_profile), class: "small text-muted d-inline-block mb-3" %>
-
-  <h1 class="h4 mb-1">Book a session with <%= @artist_profile.display_name %></h1>
-  <p class="text-muted mb-4">Choose a location, pick an available slot, and describe your tattoo idea.</p>
+<div class="container booking-page">
+  <div class="booking-header">
+    <%= link_to artist_path(@artist_profile), class: "booking-header-back" do %>
+      <i class="fa-solid fa-arrow-left"></i>
+    <% end %>
+    <span class="booking-header-title">Book a session</span>
+    <span class="booking-header-spacer"></span>
+  </div>
 
   <% if @addresses.empty? %>
-    <p class="text-muted">This artist hasn't added a location yet — booking isn't available.</p>
+    <p class="booking-empty">This artist hasn't added a location yet.</p>
   <% elsif @artist_profile.schedule.blank? %>
-    <p class="text-muted">This artist hasn't set their availability yet — booking isn't available.</p>
+    <p class="booking-empty">This artist hasn't set their availability yet.</p>
   <% else %>
+    <div class="booking-artist-row">
+      <%= image_tag @artist_profile.avatar_url.presence || "https://ui-avatars.com/api/?size=112&background=16130F&color=FBF9F5&name=#{@artist_profile.display_name.tr(" ", "+")}",
+            class: "booking-artist-avatar", alt: @artist_profile.display_name %>
+      <div>
+        <h2 class="booking-artist-name"><%= @artist_profile.display_name %></h2>
+        <span class="booking-artist-styles"><%= @artist_profile.tags.map(&:name).join(" / ") %></span>
+      </div>
+    </div>
+
+    <% address = @addresses.first %>
+    <div class="booking-location-card">
+      <div class="booking-location-top">
+        <i class="fa-solid fa-store booking-location-icon"></i>
+        <i class="fa-solid fa-check booking-location-check"></i>
+      </div>
+      <span class="booking-location-name"><%= address.label.presence || "Studio" %></span>
+      <span class="booking-location-detail"><%= address.street %>, <%= address.zipcode %> <%= address.city %></span>
+    </div>
+
     <% if @prefill_starts_at.present? %>
-      <div class="alert alert-warning mb-3">
-        We've proposed a new time below because your original choice was just booked. Please review and confirm.
+      <div class="booking-warning">
+        Your original slot was just booked. We've proposed the next available time below.
       </div>
     <% end %>
 
     <%= simple_form_for @booking, url: artist_profile_bookings_path(@artist_profile),
           html: { data: { controller: "booking-form" } } do |f| %>
       <%= f.error_notification %>
+      <%= hidden_field_tag "booking[address_id]", address.id %>
 
-      <div class="mb-4">
-        <label class="form-label fw-semibold">Location</label>
-        <%= select_tag "booking[address_id]",
-              options_for_select(@addresses.map { |a| ["#{a.label.presence || 'Studio'} — #{a.city}", a.id] }, @prefill_address_id),
-              class: "form-select",
-              data: { booking_form_target: "address", action: "change->booking-form#update" } %>
-      </div>
-
-      <div class="mb-4" data-action="calendar:slotSelected->booking-form#onSlotSelected">
-        <label class="form-label fw-semibold d-block mb-2">Date & time</label>
+      <div class="booking-section" data-action="calendar:slotSelected->booking-form#onSlotSelected">
+        <label class="booking-label">Date & time</label>
         <%= render "shared/calendar", artist_profile: @artist_profile, month: @month,
               prefill_starts_at: @prefill_starts_at, prefill_ends_at: @prefill_ends_at %>
       </div>
 
-      <%= f.input :description, as: :text, required: true, label: "Describe your tattoo idea",
-            placeholder: "Style, size, placement...",
-            input_html: { data: { booking_form_target: "description", action: "input->booking-form#update" } } %>
-
-      <div class="mb-4">
-        <h2 class="h6 fw-semibold">Summary</h2>
-        <dl class="booking-summary mb-0" data-booking-form-target="summary"></dl>
+      <div class="booking-section">
+        <%= f.input :description, as: :text, required: true, label: false,
+              placeholder: "Describe your tattoo idea: style, size, placement...",
+              input_html: {
+                class: "booking-description",
+                data: { booking_form_target: "description", action: "input->booking-form#update" }
+              } %>
       </div>
 
-      <%= f.button :submit, "Request booking", class: "btn btn-primary w-100",
-            data: { booking_form_target: "submit" } %>
+      <div class="booking-summary" data-booking-form-target="summary">
+        <span class="booking-summary-label">Selected session</span>
+        <span class="booking-summary-value" data-booking-form-target="summaryDate">Pick a slot above</span>
+        <span class="booking-summary-detail" data-booking-form-target="summaryLocation"><%= address.label.presence || address.city %></span>
+      </div>
+
+      <button type="submit" class="booking-submit" data-booking-form-target="submit" disabled>
+        Request booking <i class="fa-solid fa-arrow-right"></i>
+      </button>
     <% end %>
   <% end %>
 </div>
