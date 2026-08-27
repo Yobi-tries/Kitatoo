@@ -26,6 +26,7 @@ export default class extends Controller {
     this.startsAtTarget.value = startsAt
     this.endsAtTarget.value = endsAt
     this.selectedTarget.textContent = `Selected: ${event.target.dataset.label}`
+    this.dispatch("slotSelected", { detail: { label: event.target.dataset.label }, bubbles: true })
     this.hideSlots()
   }
 

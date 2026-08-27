@@ -1,6 +1,6 @@
 <%= render "shared/topappbar" %>
 
-<div class="container py-4" style="max-width: 640px; padding-top: 64px; padding-bottom: 80px;">
+<div class="container booking-page" style="max-width: 640px;">
   <%= link_to "‹ Back to profile", artist_path(@artist_profile), class: "small text-muted d-inline-block mb-3" %>
 
   <h1 class="h4 mb-1">Book a session with <%= @artist_profile.display_name %></h1>
@@ -11,25 +11,34 @@
   <% elsif @artist_profile.schedule.blank? %>
     <p class="text-muted">This artist hasn't set their availability yet — booking isn't available.</p>
   <% else %>
-    <%= simple_form_for @booking, url: artist_profile_bookings_path(@artist_profile) do |f| %>
+    <%= simple_form_for @booking, url: artist_profile_bookings_path(@artist_profile),
+          html: { data: { controller: "booking-form" } } do |f| %>
       <%= f.error_notification %>
 
       <div class="mb-4">
         <label class="form-label fw-semibold">Location</label>
         <%= select_tag "booking[address_id]",
               options_for_select(@addresses.map { |a| ["#{a.label.presence || 'Studio'} — #{a.city}", a.id] }),
-              class: "form-select" %>
+              class: "form-select",
+              data: { booking_form_target: "address", action: "change->booking-form#update" } %>
       </div>
 
-      <div class="mb-4">
+      <div class="mb-4" data-action="calendar:slotSelected->booking-form#onSlotSelected">
         <label class="form-label fw-semibold d-block mb-2">Date & time</label>
         <%= render "shared/calendar", artist_profile: @artist_profile, month: @month %>
       </div>
 
       <%= f.input :description, as: :text, required: true, label: "Describe your tattoo idea",
-            placeholder: "Style, size, placement..." %>
+            placeholder: "Style, size, placement...",
+            input_html: { data: { booking_form_target: "description", action: "input->booking-form#update" } } %>
 
-      <%= f.button :submit, "Request booking", class: "btn btn-primary w-100" %>
+      <div class="mb-4">
+        <h2 class="h6 fw-semibold">Summary</h2>
+        <dl class="booking-summary mb-0" data-booking-form-target="summary"></dl>
+      </div>
+
+      <%= f.button :submit, "Request booking", class: "btn btn-primary w-100",
+            data: { booking_form_target: "submit" } %>
     <% end %>
   <% end %>
 </div>
