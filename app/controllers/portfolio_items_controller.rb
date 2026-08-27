@@ -1,4 +1,6 @@
 class PortfolioItemsController < ApplicationController
+  before_action :set_portfolio_item, only: [ :update, :destroy ]
+
   def create
     artist_profile = current_user.artist_profile
 
@@ -25,5 +27,26 @@ class PortfolioItemsController < ApplicationController
 
     redirect_back fallback_location: edit_artist_profile_path,
                   notice: "#{images.size} photo(s) added to your portfolio."
+  end
+
+  def update
+    position = params[:role] == "avatar" ? 2 : 1
+    @portfolio_item.artist_profile.portfolio_items.where(position: position).update_all(position: nil)
+    @portfolio_item.update(position: position)
+    redirect_back fallback_location: artist_path(@portfolio_item.artist_profile),
+                  notice: "Image updated."
+  end
+
+  def destroy
+    artist_profile = @portfolio_item.artist_profile
+    @portfolio_item.destroy
+    redirect_back fallback_location: artist_path(artist_profile),
+                  notice: "Photo removed."
+  end
+
+  private
+
+  def set_portfolio_item
+    @portfolio_item = current_user.artist_profile.portfolio_items.find(params[:id])
   end
 end
