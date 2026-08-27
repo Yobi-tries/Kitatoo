@@ -26,7 +26,7 @@ Rails.application.routes.draw do
     patch :accept, on: :member
   end
 
-  resources :tattoo_generations, only: [:new, :create]
+  resources :tattoo_generations, only: [:new, :create, :show]
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
