@@ -11,15 +11,28 @@
 
 .booking-card--pending {
   background: $ink;
+
+  .btn {
+    background: $accent;
+    color: $on-primary;
+    box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.2);
+  }
 }
 
 .booking-card--waiting {
   background: $ink;
-  opacity: 0.8;
+  opacity: 0.85;
 }
 
 .booking-card--confirmed {
-  background: $ink;
+  background: $primary-custom;
+
+  .btn,
+  .booking-card .btn-success {
+    background: $ink;
+    color: $on-primary;
+    box-shadow: none;
+  }
 }
 
 .booking-card-info {
