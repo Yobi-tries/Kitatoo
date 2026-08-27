@@ -44,6 +44,8 @@ class ArtistsController < ApplicationController
     amounts = @prices.map { |row| row["prix"] }
     @min_price = amounts.min
     @max_price = amounts.max
+    @markers = @artist_profile.addresses.geocoded.map do |address|
+      { lat: address.latitude, lng: address.longitude }
+    end
   end
-
 end

@@ -65,9 +65,13 @@
     </div>
   <% end %>
 
-  <div class="bg-light rounded-3 text-center text-muted small py-5 mb-4">
-    Map coming soon
-  </div>
+    <% if @markers.any? %>
+    <div class="artist-map rounded-3 mb-4"
+         data-controller="map"
+         data-map-markers-value="<%= @markers.to_json %>"
+         data-map-api-key-value="<%= ENV["MAPBOX_API_KEY"] %>"></div>
+  <% end %>
+
 
   <h2 class="h5 mb-3">Portfolio</h2>
   <% if @artist_profile.portfolio_items.any? %>
