@@ -38,9 +38,7 @@
   <div class="d-flex gap-2 mb-4">
     <%= link_to "Message", new_artist_profile_conversation_path(@artist_profile),
           class: "btn btn-outline-primary w-50" %>
-    <button type="button" class="btn btn-primary w-50" data-bs-toggle="modal" data-bs-target="#bookingModal">
-      Book now
-    </button>
+    <%= link_to "Book now", artist_profile_public_availabilities_path(@artist_profile), class: "btn btn-primary w-50" %>
   </div>
 
   <% if @artist_profile.bio.present? %>
@@ -100,20 +98,6 @@
             </li>
           <% end %>
         </ul>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="modal fade" id="bookingModal" tabindex="-1">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Book a session</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <%= render "shared/calendar", artist_profile: @artist_profile, month: @month %>
       </div>
     </div>
   </div>
