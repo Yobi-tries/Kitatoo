@@ -11,6 +11,12 @@
   <% elsif @artist_profile.schedule.blank? %>
     <p class="text-muted">This artist hasn't set their availability yet — booking isn't available.</p>
   <% else %>
+    <% if @prefill_starts_at.present? %>
+      <div class="alert alert-warning mb-3">
+        We've proposed a new time below because your original choice was just booked. Please review and confirm.
+      </div>
+    <% end %>
+
     <%= simple_form_for @booking, url: artist_profile_bookings_path(@artist_profile),
           html: { data: { controller: "booking-form" } } do |f| %>
       <%= f.error_notification %>
@@ -18,14 +24,15 @@
       <div class="mb-4">
         <label class="form-label fw-semibold">Location</label>
         <%= select_tag "booking[address_id]",
-              options_for_select(@addresses.map { |a| ["#{a.label.presence || 'Studio'} — #{a.city}", a.id] }),
+              options_for_select(@addresses.map { |a| ["#{a.label.presence || 'Studio'} — #{a.city}", a.id] }, @prefill_address_id),
               class: "form-select",
               data: { booking_form_target: "address", action: "change->booking-form#update" } %>
       </div>
 
       <div class="mb-4" data-action="calendar:slotSelected->booking-form#onSlotSelected">
         <label class="form-label fw-semibold d-block mb-2">Date & time</label>
-        <%= render "shared/calendar", artist_profile: @artist_profile, month: @month %>
+        <%= render "shared/calendar", artist_profile: @artist_profile, month: @month,
+              prefill_starts_at: @prefill_starts_at, prefill_ends_at: @prefill_ends_at %>
       </div>
 
       <%= f.input :description, as: :text, required: true, label: "Describe your tattoo idea",

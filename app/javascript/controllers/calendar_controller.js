@@ -2,6 +2,16 @@ import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
   static targets = ["popup", "popupTitle", "popupSlots", "startsAt", "endsAt", "selected"]
+  static values = { prefillStartsAt: String, prefillEndsAt: String, prefillLabel: String }
+
+  connect() {
+    if (this.prefillStartsAtValue && this.prefillEndsAtValue) {
+      this.startsAtTarget.value = this.prefillStartsAtValue
+      this.endsAtTarget.value = this.prefillEndsAtValue
+      this.selectedTarget.textContent = `Selected: ${this.prefillLabelValue}`
+      this.dispatch("slotSelected", { detail: { label: this.prefillLabelValue }, bubbles: true })
+    }
+  }
 
   showSlots(event) {
     const date = event.params.date

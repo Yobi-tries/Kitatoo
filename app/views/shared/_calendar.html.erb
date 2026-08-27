@@ -1,8 +1,19 @@
 <% month ||= Date.today %>
+<% prefill_starts_at ||= nil %>
+<% prefill_ends_at ||= nil %>
 <% schedule = artist_profile.schedule %>
+<% prefill_label = nil
+   if prefill_starts_at.present?
+     starts_time = Time.zone.parse(prefill_starts_at)
+     ends_time = Time.zone.parse(prefill_ends_at)
+     prefill_label = "#{l(starts_time.to_date, format: '%A %d %B')}, #{starts_time.strftime('%H:%M')} — #{ends_time.strftime('%H:%M')}"
+   end %>
 
 <%= turbo_frame_tag "calendar" do %>
-  <div class="calendar" data-controller="calendar">
+  <div class="calendar" data-controller="calendar"
+       data-calendar-prefill-starts-at-value="<%= prefill_starts_at %>"
+       data-calendar-prefill-ends-at-value="<%= prefill_ends_at %>"
+       data-calendar-prefill-label-value="<%= prefill_label %>">
     <div class="calendar-nav">
       <%= link_to "‹", artist_profile_public_availabilities_path(artist_profile, month: (month - 1.month).strftime("%Y-%m")),
           class: "calendar-nav-btn", data: { turbo_frame: "calendar" } %>
