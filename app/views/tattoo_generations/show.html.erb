@@ -1,0 +1,13 @@
+<%= turbo_stream_from @tattoo_generation %>
+
+<div class="container py-4" style="max-width: 640px;">
+  <h1 class="h3 mb-4">AI Tattoo Generator</h1>
+
+  <p class="text-muted mb-4"><%= @tattoo_generation.prompt %></p>
+
+  <div id="tattoo_generation_result">
+    <%= render "result", tattoo_generation: @tattoo_generation %>
+  </div>
+
+  <%= link_to "Generate another", new_tattoo_generation_path, class: "btn btn-outline-dark w-100 mt-4" %>
+</div>
