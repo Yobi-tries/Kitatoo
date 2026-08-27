@@ -1,9 +1,10 @@
-# Async adapter only works within the same process, so for manually triggering cable updates from a console,
-# and seeing results in the browser, you must do so from the web console (running inside the dev process),
-# not a terminal started via bin/rails console! Add "console" to any action or any ERB template view
-# to make the web console appear.
+# solid_cable (DB-backed, single connection here since dev has no separate cable
+# database) so broadcasts from the Solid Queue worker process reach the Puma
+# process holding the browser's WebSocket connection.
 development:
-  adapter: async
+  adapter: solid_cable
+  polling_interval: 0.1.seconds
+  message_retention: 1.day
 
 test:
   adapter: test
