@@ -5,13 +5,13 @@
 
   <%= form_with url: tattoo_generations_path, method: :post, data: { action: "submit->tattoo-drawer#closeOnGenerate" } do %>
     <div class="mb-3">
-      <label class="form-label">Describe the tattoo you want</label>
+      <label class="tattoo-drawer__label">Describe the tattoo you want</label>
       <%= text_area_tag :prompt, nil,
-            class: "form-control", rows: 4,
+            class: "form-control tattoo-drawer__textarea", rows: 4,
             placeholder: "e.g. Minimal blackwork snake flash, white background" %>
     </div>
 
-    <%= submit_tag "Generate", class: "btn btn-primary w-100",
+    <%= submit_tag "Generate", class: "btn btn-primary w-100 tattoo-drawer__submit",
           data: { turbo_submits_with: "Generating..." } %>
   <% end %>
 </div>
