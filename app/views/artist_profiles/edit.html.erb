@@ -177,17 +177,17 @@
 
       <div class="schedule-days-off">
         <h5 class="schedule-section-title">Days off</h5>
-        <div data-schedule-target="daysOffList">
+        <div class="schedule-days-off-list" data-schedule-target="daysOffList">
           <% (schedule["days_off"] || []).each_with_index do |date, index| %>
-            <div class="schedule-day-off-row" data-schedule-target="dayOffRow">
+            <div class="schedule-day-off-chip" data-schedule-target="dayOffRow">
               <input type="date" name="artist_profile[schedule][days_off][<%= index %>]"
-                     value="<%= date %>" class="form-control form-control-sm">
-              <button type="button" class="btn btn-outline-danger btn-sm" data-action="schedule#removeDayOff">Remove</button>
+                     value="<%= date %>" class="schedule-day-off-input">
+              <button type="button" class="schedule-day-off-remove" data-action="schedule#removeDayOff">✕</button>
             </div>
           <% end %>
         </div>
-        <button type="button" class="btn btn-outline-secondary btn-sm schedule-add-btn" data-action="schedule#addDayOff">
-          + Add a day off
+        <button type="button" class="schedule-add-btn" data-action="schedule#addDayOff">
+          <i class="fa-solid fa-plus"></i> Add a day off
         </button>
       </div>
     </div>

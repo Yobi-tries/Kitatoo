@@ -1,12 +1,31 @@
 <%= render "shared/topappbar" %>
 
-<div class="container py-4" style="padding-top: 64px; padding-bottom: 80px;">
-  <h1 class="mb-4">Contact <%= @artist_profile.display_name %></h1>
+<div class="container conversation" style="padding-top: 64px; padding-bottom: 90px;">
 
-  <%= simple_form_for @message, url: artist_profile_conversations_path(@artist_profile) do |f| %>
-    <%= f.input :body, label: "Message" %>
-    <%= f.button :submit, "Send", class: "btn-primary" %>
-  <% end %>
+  <div class="conversation-header">
+    <%= link_to artist_path(@artist_profile), class: "conversation-header-back" do %>
+      <i class="fa-solid fa-arrow-left"></i>
+    <% end %>
+    <div class="conversation-header-avatar">
+      <%= @artist_profile.display_name.first(2).upcase %>
+    </div>
+    <span class="conversation-header-name"><%= @artist_profile.display_name %></span>
+  </div>
+
+  <div class="new-message-form">
+    <h2 class="new-message-title">Start a conversation</h2>
+    <p class="new-message-hint">Send a message to <%= @artist_profile.display_name %> about your tattoo idea.</p>
+
+    <%= simple_form_for @message, url: artist_profile_conversations_path(@artist_profile) do |f| %>
+      <%= f.input :body, as: :text, label: false,
+            placeholder: "Describe your idea, ask a question...",
+            input_html: { class: "new-message-input", rows: 4 } %>
+      <button type="submit" class="new-message-submit">
+        <i class="fa-solid fa-paper-plane"></i> Send message
+      </button>
+    <% end %>
+  </div>
+
 </div>
 
 <%= render "shared/botappbar" %>
