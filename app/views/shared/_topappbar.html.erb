@@ -1,3 +1,5 @@
+<% tattoo_generation = current_user.last_tattoo_generation if user_signed_in? %>
+
 <header class="topappbar d-flex justify-content-between align-items-center">
   <% if user_signed_in? %>
     <button class="topappbar-btn" data-bs-toggle="offcanvas" data-bs-target="#sideMenu">
@@ -19,7 +21,7 @@
     <span class="topappbar-btn"></span>
   <% else %>
     <button type="button" class="topappbar-btn" data-bs-toggle="offcanvas" data-bs-target="#tattooGeneratorDrawer" aria-label="Generate a tattoo with AI">
-      <i class="fa-solid fa-robot"></i>
+      <%= render "tattoo_generations/robot_badge", tattoo_generation: tattoo_generation %>
     </button>
   <% end %>
 </header>
@@ -31,13 +33,6 @@
   </div>
   <div class="offcanvas-body flex-grow-1">
     <ul class="nav flex-column">
-      <% if user_signed_in? && current_user.artist_profile.present? %>
-        <li class="nav-item">
-          <button type="button" class="nav-link" data-bs-toggle="modal" data-bs-target="#portfolioUploadModal" data-bs-dismiss="offcanvas">
-            Manage my portfolio
-          </button>
-        </li>
-      <% end %>
       <% if user_signed_in? %>
         <li class="nav-item">
           <%= link_to destroy_user_session_path, data: { turbo_method: :delete }, class: "nav-link text-danger" do %>
@@ -51,4 +46,4 @@
 
 <%= render "shared/portfolio_upload_modal" if user_signed_in? && current_user.artist_profile.present? %>
 
-<%= render "tattoo_generations/drawer" if user_signed_in? %>
+<%= render "tattoo_generations/drawer", tattoo_generation: tattoo_generation if user_signed_in? %>
