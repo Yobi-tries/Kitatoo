@@ -78,24 +78,7 @@ puts "Creating availabilities..."
   )
 end
 
-puts "Creating conversation and booking..."
-conversation = Conversation.create!(
-  client: client_user,
-  artist_profile: artist_profile
-)
-
-Message.create!(
-  conversation: conversation,
-  user: client_user,
-  body: "Hi! I'd love to book a session for a small piece on my forearm."
-)
-
-availability = Availability.first
-Booking.create!(
-  availability: availability,
-  client: client_user,
-  status: :selected
-)
+puts "No seed bookings — test the flow from the client side."
 
 puts "Done!"
 

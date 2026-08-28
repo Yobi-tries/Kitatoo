@@ -42,7 +42,6 @@ class ArtistsController < ApplicationController
 
   def show
     @artist_profile = ArtistProfile.find(params[:id])
-    @month = params[:month] ? Date.parse("#{params[:month]}-01") : Date.today
     @tags = @artist_profile.tags.order(:name)
     @prices = @artist_profile.pricing_grid || []
     amounts = @prices.map { |row| row["prix"] }

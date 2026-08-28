@@ -1,4 +1,7 @@
-<div class="list-group-item <%= "text-end" if message.user == current_user %>">
-  <strong><%= message.user == current_user ? "Me" : @conversation.other_participant_name(current_user) %> :</strong>
-  <%= message.body %>
+<% outgoing = message.user == current_user %>
+<div class="message-group <%= outgoing ? 'message-group--outgoing' : 'message-group--incoming' %>">
+  <div class="message-bubble <%= outgoing ? 'message-bubble--outgoing' : 'message-bubble--incoming' %>">
+    <%= message.body %>
+  </div>
+  <span class="message-timestamp"><%= message.created_at.strftime("%H:%M") %></span>
 </div>
