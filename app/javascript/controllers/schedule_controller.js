@@ -14,15 +14,15 @@ export default class extends Controller {
 
   addDayOff() {
     const index = this.dayOffRowTargets.length
-    const row = document.createElement("div")
-    row.classList.add("schedule-day-off-row")
-    row.setAttribute("data-schedule-target", "dayOffRow")
-    row.innerHTML = `
+    const chip = document.createElement("div")
+    chip.classList.add("schedule-day-off-chip")
+    chip.setAttribute("data-schedule-target", "dayOffRow")
+    chip.innerHTML = `
       <input type="date" name="artist_profile[schedule][days_off][${index}]"
-             class="form-control form-control-sm">
-      <button type="button" class="btn btn-outline-danger btn-sm" data-action="schedule#removeDayOff">Remove</button>
+             class="schedule-day-off-input">
+      <button type="button" class="schedule-day-off-remove" data-action="schedule#removeDayOff">✕</button>
     `
-    this.daysOffListTarget.appendChild(row)
+    this.daysOffListTarget.appendChild(chip)
   }
 
   removeDayOff(event) {

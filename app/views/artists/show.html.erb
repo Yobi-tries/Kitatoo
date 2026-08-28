@@ -38,9 +38,9 @@
       <%= link_to new_artist_profile_conversation_path(@artist_profile), class: "artist-action-message" do %>
         <i class="fa-regular fa-comment"></i> Message
       <% end %>
-      <button type="button" class="artist-action-book" data-bs-toggle="modal" data-bs-target="#bookingModal">
+      <%= link_to artist_profile_public_availabilities_path(@artist_profile), class: "artist-action-book" do %>
         <i class="fa-regular fa-calendar"></i> Book now
-      </button>
+      <% end %>
     </div>
   <% end %>
 

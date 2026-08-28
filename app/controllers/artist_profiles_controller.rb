@@ -27,7 +27,7 @@ class ArtistProfilesController < ApplicationController
 
     if @artist_profile.update(artist_profile_update_params)
       @artist_profile.tags = tag_names_param.map { |name| Tag.find_or_create_by_name!(name) }.uniq
-      redirect_to edit_artist_profile_path, notice: "Your profile has been updated."
+      redirect_to artist_path(@artist_profile), notice: "Your profile has been updated."
     else
       render :edit, status: :unprocessable_entity
     end

@@ -160,7 +160,14 @@
   margin-top: 22px;
 }
 
-.schedule-day-off-row {
+.schedule-days-off-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.schedule-day-off-chip {
   display: inline-flex;
   align-items: center;
   gap: 9px;
@@ -169,31 +176,41 @@
   border-radius: 8px;
   background: $surface;
   box-shadow: inset 0 -2px 0 rgba($ink, 0.10);
-  margin-right: 8px;
-  margin-bottom: 8px;
+}
 
-  .form-control {
-    border: none;
-    background: transparent;
-    padding: 0;
-    height: auto;
-    font-size: 13px;
-    font-weight: 600;
-    box-shadow: none;
+.schedule-day-off-input {
+  border: none;
+  background: transparent;
+  padding: 0;
+  height: auto;
+  font-size: 13px;
+  font-weight: 600;
+  color: $ink;
+  box-shadow: none;
+  width: auto;
+
+  &:focus {
+    outline: none;
   }
+}
 
-  .btn {
-    width: 22px;
-    height: 22px;
-    padding: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 6px;
-    background: $canvas;
-    border: none;
-    font-size: 12px;
-    color: $text-muted-custom;
+.schedule-day-off-remove {
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  background: $canvas;
+  border: none;
+  font-size: 12px;
+  color: $text-muted-custom;
+  cursor: pointer;
+
+  &:hover {
+    background: $surface-dim;
+    color: $ink;
   }
 }
 
