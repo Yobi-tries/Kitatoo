@@ -85,7 +85,7 @@ class BookingsController < ApplicationController
       body: "Booking cancelled: #{@booking.availability.starts_at.strftime('%A %d %B, %H:%M')} — " \
             "cancelled by #{is_artist ? 'the artist' : 'the client'}."
     )
-    @booking.availability.destroy
+    @booking.cancelled!
 
     redirect_to conversation_path(conversation), notice: "Booking cancelled."
   end
