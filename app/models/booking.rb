@@ -8,7 +8,19 @@ class Booking < ApplicationRecord
 
   enum :status, { selected: 0, artist_confirmed: 1, confirmed: 2 }
 
+  after_update_commit :broadcast_status_change
+
   private
+
+  def broadcast_status_change
+    conversation = Conversation.find_by(
+      client_id: client_id,
+      artist_profile: availability.artist_profile
+    )
+    return unless conversation
+
+    Turbo::StreamsChannel.broadcast_refresh_to(conversation)
+  end
 
   def max_active_bookings_per_artist
     return unless client && availability&.artist_profile
