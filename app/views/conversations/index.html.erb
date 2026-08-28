@@ -6,7 +6,7 @@
   <% if @conversations.empty? %>
     <p class="text-muted">You don't have any conversations yet.</p>
   <% else %>
-    <div class="list-group">
+    <div class="conversation-list">
       <%= render partial: "conversation", collection: @conversations %>
     </div>
   <% end %>
