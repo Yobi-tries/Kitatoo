@@ -16,7 +16,11 @@
   <div data-controller="scroll-indicator">
     <div class="home-styles-scroller" data-scroll-indicator-target="scroller" data-action="scroll->scroll-indicator#update">
       <% @style_counts.first(8).each_with_index do |(style, count), index| %>
-        <%= link_to root_path(style: style), class: "style-tile #{'style-tile--primary' if index.odd?}" do %>
+        <%= link_to root_path(style: style), class: "style-tile" do %>
+          <% image = "styles/#{style.parameterize}.webp" %>
+          <% if Rails.root.join("app/assets/images", image).exist? %>
+            <%= image_tag image, class: "style-tile-image", alt: "" %>
+          <% end %>
           <span class="style-tile-count"><%= count %> artists</span>
           <span class="style-tile-name"><%= style %></span>
         <% end %>
