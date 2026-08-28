@@ -35,6 +35,13 @@ class TattooGenerationJob < ApplicationJob
         partial: "tattoo_generations/result",
         locals: { tattoo_generation: tattoo_generation, in_drawer: true }
       )
+
+      Turbo::StreamsChannel.broadcast_replace_to(
+        [ tattoo_generation.user, :tattoo_generations ],
+        target: "tattoo_generation_badge",
+        partial: "tattoo_generations/robot_badge",
+        locals: { tattoo_generation: tattoo_generation }
+      )
     end
   end
 end

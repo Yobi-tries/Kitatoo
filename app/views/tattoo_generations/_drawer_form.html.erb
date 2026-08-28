@@ -3,7 +3,7 @@
     <div class="alert alert-danger"><%= error %></div>
   <% end %>
 
-  <%= form_with url: tattoo_generations_path, method: :post do %>
+  <%= form_with url: tattoo_generations_path, method: :post, data: { action: "submit->tattoo-drawer#closeOnGenerate" } do %>
     <div class="mb-3">
       <label class="form-label">Describe the tattoo you want</label>
       <%= text_area_tag :prompt, nil,

@@ -27,11 +27,18 @@ class TattooGenerationsController < ApplicationController
 
     respond_to do |format|
       format.turbo_stream do
-        render turbo_stream: turbo_stream.replace(
-          "tattoo_generation_result",
-          partial: "tattoo_generations/result",
-          locals: { tattoo_generation: tattoo_generation, in_drawer: true }
-        )
+        render turbo_stream: [
+          turbo_stream.replace(
+            "tattoo_generation_result",
+            partial: "tattoo_generations/result",
+            locals: { tattoo_generation: tattoo_generation, in_drawer: true }
+          ),
+          turbo_stream.replace(
+            "tattoo_generation_badge",
+            partial: "tattoo_generations/robot_badge",
+            locals: { tattoo_generation: tattoo_generation }
+          )
+        ]
       end
       format.html { redirect_to tattoo_generation }
     end

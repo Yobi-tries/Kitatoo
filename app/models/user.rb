@@ -12,4 +12,8 @@ class User < ApplicationRecord
   has_many :conversations, foreign_key: :client_id, inverse_of: :client, dependent: :destroy
   has_many :messages, dependent: :destroy
   has_many :tattoo_generations, dependent: :destroy
+
+  def last_tattoo_generation
+    tattoo_generations.order(created_at: :desc).first
+  end
 end

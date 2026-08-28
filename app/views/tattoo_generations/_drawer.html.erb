@@ -7,7 +7,11 @@
   </div>
 
   <div class="offcanvas-body">
-    <%= render "tattoo_generations/drawer_form" %>
+    <% if tattoo_generation %>
+      <%= render "tattoo_generations/result", tattoo_generation: tattoo_generation, in_drawer: true %>
+    <% else %>
+      <%= render "tattoo_generations/drawer_form" %>
+    <% end %>
   </div>
 
   <template data-tattoo-drawer-target="formTemplate">
