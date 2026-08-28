@@ -1,24 +1,28 @@
 <% tattoo_generation = current_user.last_tattoo_generation if user_signed_in? %>
 
 <header class="topappbar d-flex justify-content-between align-items-center">
-  <button class="topappbar-btn" data-bs-toggle="offcanvas" data-bs-target="#sideMenu">
-    <span class="material-symbols-outlined">menu</span>
-  </button>
+  <% if user_signed_in? %>
+    <button class="topappbar-btn" data-bs-toggle="offcanvas" data-bs-target="#sideMenu">
+      <span class="material-symbols-outlined">menu</span>
+    </button>
+  <% else %>
+    <span class="topappbar-btn"></span>
+  <% end %>
 
   <%= link_to root_path do %>
     <%= image_tag "kitatoo-logo-ink.png", alt: "Kitatoo", class: "topappbar-logo" %>
   <% end %>
 
-  <% if local_assigns[:hide_right] %>
+  <% if !user_signed_in? %>
+    <%= link_to new_user_session_path, class: "topappbar-btn", "aria-label": "Sign in or sign up" do %>
+      <i class="fa-solid fa-right-to-bracket"></i>
+    <% end %>
+  <% elsif local_assigns[:hide_right] %>
     <span class="topappbar-btn"></span>
-  <% elsif user_signed_in? %>
+  <% else %>
     <button type="button" class="topappbar-btn" data-bs-toggle="offcanvas" data-bs-target="#tattooGeneratorDrawer" aria-label="Generate a tattoo with AI">
       <%= render "tattoo_generations/robot_badge", tattoo_generation: tattoo_generation %>
     </button>
-  <% else %>
-    <%= link_to new_user_session_path, class: "topappbar-btn", "aria-label": "Generate a tattoo with AI" do %>
-      <i class="fa-solid fa-robot"></i>
-    <% end %>
   <% end %>
 </header>
 
