@@ -13,21 +13,26 @@
   <div class="d-flex justify-content-between align-items-center mt-4 mb-2">
     <h2 class="h5 mb-0">Discover Styles</h2>
     <button type="button" class="btn btn-link p-0" data-bs-toggle="modal" data-bs-target="#styleSearch">
-      <i class="fa-solid fa-magnifying-glass"></i>
+      <i class="fa-solid fa-plus"></i>
     </button>
   </div>
 
   <div class="d-flex gap-2 overflow-auto pb-2">
     <% @styles.first(8).each do |style| %>
-      <%= link_to style, root_path(style: style),
-            class: "btn btn-dark rounded-3 flex-shrink-0 px-4 py-4 text-nowrap" %>
+      <% image = "styles/#{style.parameterize}.webp" %>
+      <%= link_to root_path(style: style), class: "style-card flex-shrink-0 text-decoration-none" do %>
+        <% if Rails.root.join("app/assets/images", image).exist? %>
+          <%= image_tag image, class: "style-card-image", alt: style %>
+        <% end %>
+        <span class="style-card-name"><%= style %></span>
+      <% end %>
     <% end %>
   </div>
 
   <div class="d-flex justify-content-between align-items-center mt-4 mb-2">
     <h2 class="h5 mb-0"><%= @searching ? "Results" : "Nearby Artists" %></h2>
     <button type="button" class="btn btn-link p-0" data-bs-toggle="modal" data-bs-target="#locationSearch">
-      <i class="fa-solid fa-magnifying-glass"></i>
+      <i class="fa-solid fa-plus"></i>
     </button>
   </div>
 
@@ -70,7 +75,7 @@
 
         <div class="row g-1">
           <% if artist.portfolio_items.any? %>
-            <% artist.portfolio_items.first(3).each do |item| %>
+            <% artist.portfolio_items.sample(3).each do |item| %>
               <div class="col-4">
                 <div class="ratio ratio-1x1">
                   <%= image_tag item.image_url, class: "rounded-1 object-fit-cover", alt: item.caption %>
