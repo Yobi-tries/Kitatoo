@@ -128,6 +128,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 8px;
   border-radius: 10px;
   border: none;
   background: $primary-custom;
@@ -135,11 +136,14 @@
   font-size: 15px;
   font-weight: 700;
   color: $on-primary;
+  text-decoration: none;
   cursor: pointer;
   transition: background-color 150ms ease;
 
   &:hover {
     background: $primary-pressed;
+    color: $on-primary;
+    text-decoration: none;
   }
 }
 

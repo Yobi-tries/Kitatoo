@@ -131,7 +131,9 @@
         <span class="booking-card-pill">set</span>
       </div>
       <div class="booking-card-strip">
-        <%= link_to "Go to profile", artist_path(@conversation.artist_profile), class: "booking-card-profile" %>
+        <%= link_to artist_path(@conversation.artist_profile), class: "booking-card-profile" do %>
+          <i class="fa-solid fa-location-dot"></i> Get directions
+        <% end %>
         <% if is_artist %>
           <%= link_to "✕", cancel_booking_path(confirmed_booking),
                 data: { turbo_method: :patch, turbo_confirm: "Cancel this confirmed booking?" },

@@ -49,9 +49,6 @@
       <% end %>
     </div>
 
-    <p class="small mb-2" data-calendar-target="selected">
-      <span class="text-muted">No slot selected yet.</span>
-    </p>
     <%= hidden_field_tag "booking[starts_at]", nil, data: { calendar_target: "startsAt" } %>
     <%= hidden_field_tag "booking[ends_at]", nil, data: { calendar_target: "endsAt" } %>
 

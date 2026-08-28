@@ -49,9 +49,9 @@ class ArtistsController < ApplicationController
     @artist_profile = ArtistProfile.find(params[:id])
     @tags = @artist_profile.tags.order(:name)
     @prices = @artist_profile.pricing_grid || []
-    amounts = @prices.map { |row| row["prix"] }
-    @min_price = amounts.min
-    @max_price = amounts.max
+    amounts = @prices.map { |row| row["prix"].to_f }.reject(&:zero?)
+    @min_price = amounts.min&.to_i
+    @max_price = amounts.max&.to_i
     @markers = @artist_profile.addresses.geocoded.map do |address|
       { lat: address.latitude, lng: address.longitude }
     end
