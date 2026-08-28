@@ -103,6 +103,8 @@
   padding: 12px 14px;
   font-size: 15px;
   line-height: 22px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 .message-bubble--outgoing {
