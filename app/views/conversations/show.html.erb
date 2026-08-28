@@ -1,3 +1,4 @@
+<%= turbo_stream_from @conversation %>
 <%= render "shared/topappbar" %>
 
 <% booking = Booking.joins(:availability)
@@ -29,7 +30,9 @@
     <% end %>
   </div>
 
-  <div class="conversation-messages" id="messages" data-controller="chat-scroll">
+  <div class="conversation-messages" id="messages"
+       data-controller="chat-scroll chat-messages"
+       data-chat-messages-user-id-value="<%= current_user.id %>">
     <%= render partial: "message", collection: @messages %>
   </div>
 
