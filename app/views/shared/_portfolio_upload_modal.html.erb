@@ -1,0 +1,50 @@
+<div class="modal fade" id="portfolioUploadModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title">Add photos to your portfolio</h5>
+
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close">
+        </button>
+      </div>
+
+      <%= form_with url: artist_profile_portfolio_items_path,
+                    method: :post,
+                    multipart: true do |f| %>
+
+        <div class="modal-body">
+
+          <div class="mb-3">
+            <%= f.label :image, "Photo", class: "form-label" %>
+
+            <%= f.file_field :images,
+                              multiple: true,
+                              include_hidden: false,
+                              accept: "image/*",
+                              class: "form-control",
+                              required: true %>
+          </div>
+
+        </div>
+
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-outline-secondary"
+            data-bs-dismiss="modal">
+            Cancel
+          </button>
+
+          <%= f.submit "Upload photo", class: "btn btn-primary" %>
+        </div>
+
+      <% end %>
+
+    </div>
+  </div>
+</div>

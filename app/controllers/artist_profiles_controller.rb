@@ -23,6 +23,7 @@ class ArtistProfilesController < ApplicationController
 
   def update
     @artist_profile = current_user.artist_profile
+    upload_avatar if params.dig(:artist_profile, :avatar).present?
 
     if @artist_profile.update(artist_profile_update_params)
       @artist_profile.tags = tag_names_param.map { |name| Tag.find_or_create_by_name!(name) }.uniq
@@ -54,6 +55,12 @@ class ArtistProfilesController < ApplicationController
 
   def tag_names_param
     Array(params.dig(:artist_profile, :tag_names)).map(&:strip).reject(&:blank?).uniq { |name| name.downcase }
+  end
+
+  def upload_avatar
+    upload = Cloudinary::Uploader.upload(params[:artist_profile][:avatar].tempfile.path)
+    @artist_profile.avatar_url = upload["secure_url"]
+    @artist_profile.avatar_public_id = upload["public_id"]
   end
 
   def build_schedule

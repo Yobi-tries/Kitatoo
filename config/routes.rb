@@ -8,7 +8,13 @@ Rails.application.routes.draw do
   resource :artist_profile, only: [:new, :create, :edit, :update] do
     resources :addresses, only: [:index, :create, :update, :destroy]
     resources :availabilities, only: [:index, :create, :update, :destroy]
-    resources :portfolio_items, only: [:create]
+    resources :portfolio_items, only: [ :create, :update, :destroy ] do
+      collection do
+        delete :bulk_destroy
+      end
+    end
+
+
   end
 
   resources :artist_profiles, only: [] do
@@ -27,7 +33,7 @@ Rails.application.routes.draw do
     patch :cancel, on: :member
   end
 
-  resources :tattoo_generations, only: [:new, :create]
+  resources :tattoo_generations, only: [:new, :create, :show]
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 

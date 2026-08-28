@@ -1,11 +1,40 @@
 <header class="topappbar d-flex justify-content-between align-items-center">
-  <button class="topappbar-btn btn btn-link p-0">
+  <button class="topappbar-btn btn btn-link p-0" data-bs-toggle="offcanvas" data-bs-target="#sideMenu">
     <span class="material-symbols-outlined">menu</span>
   </button>
+
   <%= link_to root_path do %>
     <%= image_tag "kitatoo-logo-ink.png", alt: "Kitatoo", class: "topappbar-logo" %>
   <% end %>
+
   <button class="topappbar-btn btn btn-link p-0">
     <span class="material-symbols-outlined">search</span>
   </button>
 </header>
+
+<div class="offcanvas offcanvas-start d-flex flex-column" id="sideMenu">
+  <div class="offcanvas-header">
+    <%= image_tag "kitatoo-logo-ink.png", alt: "Kitatoo", height: 32 %>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+  </div>
+  <div class="offcanvas-body flex-grow-1">
+    <ul class="nav flex-column">
+      <% if user_signed_in? && current_user.artist_profile.present? %>
+        <li class="nav-item">
+          <button type="button" class="nav-link" data-bs-toggle="modal" data-bs-target="#portfolioUploadModal" data-bs-dismiss="offcanvas">
+            Manage my portfolio
+          </button>
+        </li>
+      <% end %>
+      <% if user_signed_in? %>
+        <li class="nav-item">
+          <%= link_to destroy_user_session_path, data: { turbo_method: :delete }, class: "nav-link text-danger" do %>
+            Sign out
+          <% end %>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+</div>
+
+<%= render "shared/portfolio_upload_modal" if user_signed_in? && current_user.artist_profile.present? %>

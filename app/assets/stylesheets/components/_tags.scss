@@ -1,0 +1,50 @@
+.tags-autocomplete {
+  position: relative;
+}
+
+.tags-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  z-index: 20;
+  background: white;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: $border-radius-lg;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 0.25rem;
+  max-height: 240px;
+  overflow-y: auto;
+}
+
+.tags-dropdown-heading {
+  padding: 0.375rem 0.5rem 0.25rem;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: rgba(0, 0, 0, 0.5);
+}
+
+.tags-dropdown-option {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  padding: 0.5rem 0.75rem;
+  border-radius: $border-radius;
+  font-size: 0.95rem;
+
+  &:hover {
+    background: $light-gray;
+  }
+
+  &.is-active {
+    background: $light-gray;
+  }
+}
+
+.tags-dropdown-option-create {
+  color: $blue;
+  font-weight: 500;
+}
