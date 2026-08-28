@@ -27,13 +27,6 @@
   </div>
   <div class="offcanvas-body flex-grow-1">
     <ul class="nav flex-column">
-      <% if user_signed_in? && current_user.artist_profile.present? %>
-        <li class="nav-item">
-          <button type="button" class="nav-link" data-bs-toggle="modal" data-bs-target="#portfolioUploadModal" data-bs-dismiss="offcanvas">
-            Manage my portfolio
-          </button>
-        </li>
-      <% end %>
       <% if user_signed_in? %>
         <li class="nav-item">
           <%= link_to destroy_user_session_path, data: { turbo_method: :delete }, class: "nav-link text-danger" do %>
