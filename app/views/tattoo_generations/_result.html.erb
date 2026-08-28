@@ -9,10 +9,20 @@
     <%= link_to "Download image", download_url,
           download: "tattoo-#{tattoo_generation.id}.png",
           class: "btn btn-outline-dark w-100" %>
+    <% if local_assigns[:in_drawer] %>
+      <button type="button" class="btn btn-link w-100 mt-2" data-action="tattoo-drawer#reset">
+        Generate again
+      </button>
+    <% end %>
   <% elsif tattoo_generation.failed? %>
     <div class="alert alert-danger mb-0">
       Image generation failed. Please try again.
     </div>
+    <% if local_assigns[:in_drawer] %>
+      <button type="button" class="btn btn-outline-dark w-100 mt-2" data-action="tattoo-drawer#reset">
+        Try again
+      </button>
+    <% end %>
   <% else %>
     <div class="d-flex align-items-center gap-2 text-muted">
       <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
