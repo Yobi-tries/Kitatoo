@@ -35,6 +35,8 @@ artist_profile = ArtistProfile.create!(
   bio: "Tattoo artist specialized in blackwork and dotwork.",
   styles: "Blackwork, Dotwork, Geometric",
   professional_status: "professional",
+  avatar_url: "https://res.cloudinary.com/efbi2pls/image/upload/v1787850482/kitattoo/seeds/h6ddqahql8mtlzcjayz7.jpg",
+  avatar_public_id: "kitattoo/seeds/h6ddqahql8mtlzcjayz7",
   published: true,
   pricing_grid: [
     { "prestation" => "Small piece (< 10cm)", "prix" => 80 },
@@ -58,6 +60,15 @@ artist_profile = ArtistProfile.create!(
     "days_off" => ["2026-12-24", "2026-12-25", "2026-12-31"]
   },
 )
+puts "Creating InkMaster portfolio..."
+artist_profile.portfolio_items.create!(image_url: "https://res.cloudinary.com/efbi2pls/image/upload/v1787850477/kitattoo/seeds/onnmpkydyfbga1dbq6j9.jpg")
+artist_profile.portfolio_items.create!(image_url: "https://res.cloudinary.com/efbi2pls/image/upload/v1787850479/kitattoo/seeds/dnwxvf57p3vkiub5ojl1.jpg")
+artist_profile.portfolio_items.create!(image_url: "https://res.cloudinary.com/efbi2pls/image/upload/v1787850480/kitattoo/seeds/weruhjctawmi5ahajkqa.jpg")
+
+artist_profile.portfolio_items.create!(image_url: "https://res.cloudinary.com/efbi2pls/image/upload/v1787852014/kitattoo/seeds/uqb7amnjx8cuk0ukblaz.jpg")
+
+artist_profile.portfolio_items.create!(image_url: "https://res.cloudinary.com/efbi2pls/image/upload/v1787854800/kitattoo/seeds/o00r1jl9zfhsobyltqhe.jpg")
+artist_profile.portfolio_items.create!(image_url: "https://res.cloudinary.com/efbi2pls/image/upload/v1787854801/kitattoo/seeds/fxaxgssou3rglulk5thc.jpg")
 puts "Creating addresses..."
 address = Address.create!(
   artist_profile: artist_profile,
@@ -78,24 +89,7 @@ puts "Creating availabilities..."
   )
 end
 
-puts "Creating conversation and booking..."
-conversation = Conversation.create!(
-  client: client_user,
-  artist_profile: artist_profile
-)
-
-Message.create!(
-  conversation: conversation,
-  user: client_user,
-  body: "Hi! I'd love to book a session for a small piece on my forearm."
-)
-
-availability = Availability.first
-Booking.create!(
-  availability: availability,
-  client: client_user,
-  status: :selected
-)
+puts "No seed bookings — test the flow from the client side."
 
 puts "Done!"
 
@@ -145,6 +139,161 @@ pricings = {
   "encrefraiche" => [ [ "Flash piece", 70 ], [ "Traditional medium", 220 ] ]
 }
 
+images = {
+  "inkline" => {
+    avatar: "https://res.cloudinary.com/efbi2pls/image/upload/v1787850063/kitattoo/seeds/a3wbs87is2y3djbqv0do.jpg",
+    avatar_id: "kitattoo/seeds/a3wbs87is2y3djbqv0do",
+    photos: [
+      "https://res.cloudinary.com/efbi2pls/image/upload/v1787850059/kitattoo/seeds/vcnda5tgyks9a6yhyn6n.jpg",
+      "https://res.cloudinary.com/efbi2pls/image/upload/v1787850060/kitattoo/seeds/vev5yl5xn6ndmdul8q1c.jpg",
+      "https://res.cloudinary.com/efbi2pls/image/upload/v1787852012/kitattoo/seeds/v9erib4hi4zisvkzpjn3.jpg",
+      "https://res.cloudinary.com/efbi2pls/image/upload/v1787850062/kitattoo/seeds/uvkzegzxavrwh0ynq60m.jpg",
+      "https://res.cloudinary.com/efbi2pls/image/upload/v1787854797/kitattoo/seeds/f2k8esmdgrmvkdpf6isb.jpg",
+      "https://res.cloudinary.com/efbi2pls/image/upload/v1787854798/kitattoo/seeds/h60o0io2lmqxbxkvmcje.jpg"
+    ]
+  },
+  "noiretgris" => {
+    avatar: "https://res.cloudinary.com/efbi2pls/image/upload/v1787850087/kitattoo/seeds/rndvmmyst2ggkkypts39.jpg",
+    avatar_id: "kitattoo/seeds/rndvmmyst2ggkkypts39",
+    photos: [
+      "https://res.cloudinary.com/efbi2pls/image/upload/v1787852026/kitattoo/seeds/a6cmyl3tz03c1lu5bgip.jpg",
+      "https://res.cloudinary.com/efbi2pls/image/upload/v1787852028/kitattoo/seeds/bt2q0xtoiqlcm5d6agqg.jpg",
+      "https://res.cloudinary.com/efbi2pls/image/upload/v1787852029/kitattoo/seeds/gc55jel5xqa3gdvfhm0a.jpg",
+      "https://res.cloudinary.com/efbi2pls/image/upload/v1787850082/kitattoo/seeds/mjnatmdscxqpyy7pmziu.jpg",
+      "https://res.cloudinary.com/efbi2pls/image/upload/v1787850084/kitattoo/seeds/h10u3myfiauy1513gzxk.jpg",
+      "https://res.cloudinary.com/efbi2pls/image/upload/v1787850086/kitattoo/seeds/i9ivoijrrwqbpdhmqlk4.jpg",
+      "https://res.cloudinary.com/efbi2pls/image/upload/v1787854811/kitattoo/seeds/grpv1pdn4mkcfffe93pq.jpg",
+      "https://res.cloudinary.com/efbi2pls/image/upload/v1787854813/kitattoo/seeds/sn5e1lbyb68qcjkd9rnd.jpg"
+    ]
+  },
+  "sionink" => {
+    avatar: "https://res.cloudinary.com/efbi2pls/image/upload/v1787850093/kitattoo/seeds/ylpyl9l8qz963utkvttd.jpg",
+    avatar_id: "kitattoo/seeds/ylpyl9l8qz963utkvttd",
+    photos: [
+      "https://res.cloudinary.com/efbi2pls/image/upload/v1787850089/kitattoo/seeds/xsilkgls6flbmilma5bi.jpg",
+      "https://res.cloudinary.com/efbi2pls/image/upload/v1787850090/kitattoo/seeds/cmfzrcedrfhlrcvtn0cy.jpg",
+      "https://res.cloudinary.com/efbi2pls/image/upload/v1787852031/kitattoo/seeds/lku17ayrvbmgtlcgnpdb.jpg",
+      "https://res.cloudinary.com/efbi2pls/image/upload/v1787850092/kitattoo/seeds/l7llcd0h5o2piv6to5gg.jpg",
+      "https://res.cloudinary.com/efbi2pls/image/upload/v1787854814/kitattoo/seeds/tnlj5mg6suhemh9mlk3k.jpg",
+      "https://res.cloudinary.com/efbi2pls/image/upload/v1787854815/kitattoo/seeds/dxjzjsrxeehifcwa3hy9.jpg"
+    ]
+  },
+  "kaiirezumi" => {
+    avatar: "https://res.cloudinary.com/efbi2pls/image/upload/v1787850070/kitattoo/seeds/hkmfolr3q5ohcln4hvou.jpg",
+    avatar_id: "kitattoo/seeds/hkmfolr3q5ohcln4hvou",
+    photos: [
+      "https://res.cloudinary.com/efbi2pls/image/upload/v1787852015/kitattoo/seeds/rs3qezjgnzhjip5lolft.jpg",
+      "https://res.cloudinary.com/efbi2pls/image/upload/v1787852017/kitattoo/seeds/xuueegmnlev2dkrry5cp.jpg",
+      "https://res.cloudinary.com/efbi2pls/image/upload/v1787852018/kitattoo/seeds/jldtl1f7e1mhf5td17v0.jpg",
+      "https://res.cloudinary.com/efbi2pls/image/upload/v1787850066/kitattoo/seeds/ohysfavauaefhsetpxo7.jpg",
+      "https://res.cloudinary.com/efbi2pls/image/upload/v1787850067/kitattoo/seeds/nx9swggppjwwbnx4yqje.jpg",
+      "https://res.cloudinary.com/efbi2pls/image/upload/v1787850068/kitattoo/seeds/gu1mnqdukpfldi4elvvb.jpg",
+      "https://res.cloudinary.com/efbi2pls/image/upload/v1787854803/kitattoo/seeds/n6sogsncwgo6qae76j7h.jpg",
+      "https://res.cloudinary.com/efbi2pls/image/upload/v1787854804/kitattoo/seeds/u0h3eq5ekbilqsuudvue.jpg"
+    ]
+  },
+  "mnemosyne" => {
+    avatar: "https://res.cloudinary.com/efbi2pls/image/upload/v1787850081/kitattoo/seeds/sov6pnmfzboifzjtftyf.jpg",
+    avatar_id: "kitattoo/seeds/sov6pnmfzboifzjtftyf",
+    photos: [
+      "https://res.cloudinary.com/efbi2pls/image/upload/v1787850077/kitattoo/seeds/fpg3opkvyyacbxe0tgh1.jpg",
+      "https://res.cloudinary.com/efbi2pls/image/upload/v1787850078/kitattoo/seeds/tswadvdulicbafbyjo4k.jpg",
+      "https://res.cloudinary.com/efbi2pls/image/upload/v1787852025/kitattoo/seeds/lubjatowos6kizqshg3z.jpg",
+      "https://res.cloudinary.com/efbi2pls/image/upload/v1787850080/kitattoo/seeds/zkiqvld3in8kevw9c32a.jpg",
+      "https://res.cloudinary.com/efbi2pls/image/upload/v1787854808/kitattoo/seeds/xcft158bnuf8ncx67ei1.jpg",
+      "https://res.cloudinary.com/efbi2pls/image/upload/v1787854810/kitattoo/seeds/dxqi4lm3ggqrjtjpsxun.jpg"
+    ]
+  },
+  "brouillon" => {
+    avatar: "https://res.cloudinary.com/efbi2pls/image/upload/v1787850046/kitattoo/seeds/sckzhq9lczr3qj4v91pi.jpg",
+    avatar_id: "kitattoo/seeds/sckzhq9lczr3qj4v91pi",
+    photos: [
+      "https://res.cloudinary.com/efbi2pls/image/upload/v1787850041/kitattoo/seeds/cgo81a4ul02i764bbcmo.jpg",
+      "https://res.cloudinary.com/efbi2pls/image/upload/v1787850043/kitattoo/seeds/yboudrwz4aswrgydidh4.jpg",
+      "https://res.cloudinary.com/efbi2pls/image/upload/v1787852008/kitattoo/seeds/rvsu7vchv8dnry0ic5oo.jpg",
+      "https://res.cloudinary.com/efbi2pls/image/upload/v1787850044/kitattoo/seeds/sxyhcbolssjyuolbnld5.jpg",
+      "https://res.cloudinary.com/efbi2pls/image/upload/v1787854788/kitattoo/seeds/bopylm4udcpajehssclz.jpg",
+      "https://res.cloudinary.com/efbi2pls/image/upload/v1787854789/kitattoo/seeds/acaje1whv3jc6ujdum3o.jpg"
+    ]
+  },
+  "aiguillefine" => {
+    avatar: "https://res.cloudinary.com/efbi2pls/image/upload/v1787850028/kitattoo/seeds/zjjh5mmaau6iwslpxizj.jpg",
+    avatar_id: "kitattoo/seeds/zjjh5mmaau6iwslpxizj",
+    photos: [
+      "https://res.cloudinary.com/efbi2pls/image/upload/v1787850023/kitattoo/seeds/jttog9buzqcbjy8pyo8e.jpg",
+      "https://res.cloudinary.com/efbi2pls/image/upload/v1787850024/kitattoo/seeds/indvtni8rutmpxsz29qg.jpg",
+      "https://res.cloudinary.com/efbi2pls/image/upload/v1787852000/kitattoo/seeds/tb1vzw98ggelgbaaowbw.jpg",
+      "https://res.cloudinary.com/efbi2pls/image/upload/v1787850026/kitattoo/seeds/gtemlfqjnp5owpog25rm.jpg",
+      "https://res.cloudinary.com/efbi2pls/image/upload/v1787854779/kitattoo/seeds/wx1fqwksc8j4xgwv84ei.jpg",
+      "https://res.cloudinary.com/efbi2pls/image/upload/v1787854781/kitattoo/seeds/wlbrjw9f7gjykgoc7zfz.jpg"
+    ]
+  },
+  "boldlines" => {
+    avatar: "https://res.cloudinary.com/efbi2pls/image/upload/v1787850040/kitattoo/seeds/nl3d9h2e7mmzb8lefuq2.jpg",
+    avatar_id: "kitattoo/seeds/nl3d9h2e7mmzb8lefuq2",
+    photos: [
+      "https://res.cloudinary.com/efbi2pls/image/upload/v1787850035/kitattoo/seeds/ncaaqjod98pqmt521nyn.jpg",
+      "https://res.cloudinary.com/efbi2pls/image/upload/v1787850037/kitattoo/seeds/pde8owf30ngjx8bdp2wb.jpg",
+      "https://res.cloudinary.com/efbi2pls/image/upload/v1787852007/kitattoo/seeds/uq4t5uz1b3pl5npltl12.jpg",
+      "https://res.cloudinary.com/efbi2pls/image/upload/v1787850039/kitattoo/seeds/djoaif1fgiugzla7sf1x.jpg",
+      "https://res.cloudinary.com/efbi2pls/image/upload/v1787854785/kitattoo/seeds/y9ngzyo2rrlbzpsqldkg.jpg",
+      "https://res.cloudinary.com/efbi2pls/image/upload/v1787854787/kitattoo/seeds/r2ntrcpiatqoanldvafr.jpg"
+    ]
+  },
+  "atelier9" => {
+    avatar: "https://res.cloudinary.com/efbi2pls/image/upload/v1787850034/kitattoo/seeds/hrsfoyilqzdq5fcs94sz.jpg",
+    avatar_id: "kitattoo/seeds/hrsfoyilqzdq5fcs94sz",
+    photos: [
+      "https://res.cloudinary.com/efbi2pls/image/upload/v1787852002/kitattoo/seeds/xebkeofffidixvqtqz0g.jpg",
+      "https://res.cloudinary.com/efbi2pls/image/upload/v1787852003/kitattoo/seeds/alypfgg9dgtg6syvjpgh.jpg",
+      "https://res.cloudinary.com/efbi2pls/image/upload/v1787852005/kitattoo/seeds/mbghm6v2bpjo3r9r315g.jpg",
+      "https://res.cloudinary.com/efbi2pls/image/upload/v1787850029/kitattoo/seeds/mc3r4upidgq3zu2evtsx.jpg",
+      "https://res.cloudinary.com/efbi2pls/image/upload/v1787850031/kitattoo/seeds/hyakwbp2vawiv4bnaxpt.jpg",
+      "https://res.cloudinary.com/efbi2pls/image/upload/v1787850032/kitattoo/seeds/btoiqyi0ehu21rhzphmq.jpg",
+      "https://res.cloudinary.com/efbi2pls/image/upload/v1787854782/kitattoo/seeds/ksgcl7nqpqdgi7ru5sqz.jpg",
+      "https://res.cloudinary.com/efbi2pls/image/upload/v1787854784/kitattoo/seeds/vep8m0wacwpkrerrdxpc.jpg"
+    ]
+  },
+  "encrenoire" => {
+    avatar: "https://res.cloudinary.com/efbi2pls/image/upload/v1787850058/kitattoo/seeds/urothulapatzvogsfak7.jpg",
+    avatar_id: "kitattoo/seeds/urothulapatzvogsfak7",
+    photos: [
+      "https://res.cloudinary.com/efbi2pls/image/upload/v1787850053/kitattoo/seeds/vsotmu0jkxrhhpggy5f0.jpg",
+      "https://res.cloudinary.com/efbi2pls/image/upload/v1787850055/kitattoo/seeds/ner5dizvu3kwkjo74i3u.jpg",
+      "https://res.cloudinary.com/efbi2pls/image/upload/v1787852011/kitattoo/seeds/ynt4in3ytpvvjrxzsp01.jpg",
+      "https://res.cloudinary.com/efbi2pls/image/upload/v1787850056/kitattoo/seeds/sfmjpj05taxfjh3b3lhp.jpg",
+      "https://res.cloudinary.com/efbi2pls/image/upload/v1787854794/kitattoo/seeds/fgke5aia2jknwnah5ak5.jpg",
+      "https://res.cloudinary.com/efbi2pls/image/upload/v1787854795/kitattoo/seeds/cetasirpwngp39votzyg.jpg"
+    ]
+  },
+  "maisonsumi" => {
+    avatar: "https://res.cloudinary.com/efbi2pls/image/upload/v1787850075/kitattoo/seeds/r2vjopnnbhoa4i1itan9.jpg",
+    avatar_id: "kitattoo/seeds/r2vjopnnbhoa4i1itan9",
+    photos: [
+      "https://res.cloudinary.com/efbi2pls/image/upload/v1787852020/kitattoo/seeds/jebazebfpdlavx9f8eeo.jpg",
+      "https://res.cloudinary.com/efbi2pls/image/upload/v1787852022/kitattoo/seeds/nkk1lvwseq6cztrn3vv6.jpg",
+      "https://res.cloudinary.com/efbi2pls/image/upload/v1787852023/kitattoo/seeds/dnbokmxqf3rknirir0cr.jpg",
+      "https://res.cloudinary.com/efbi2pls/image/upload/v1787850071/kitattoo/seeds/au2vaylhnvxlcydvurzr.jpg",
+      "https://res.cloudinary.com/efbi2pls/image/upload/v1787850073/kitattoo/seeds/jrowllv91cwikluflhwj.jpg",
+      "https://res.cloudinary.com/efbi2pls/image/upload/v1787850074/kitattoo/seeds/yy1ccgt4vjuhqqjfiosd.jpg",
+      "https://res.cloudinary.com/efbi2pls/image/upload/v1787854805/kitattoo/seeds/po0e41sxtyuhl3tif8dz.jpg",
+      "https://res.cloudinary.com/efbi2pls/image/upload/v1787854807/kitattoo/seeds/cezw7d6kqjjpkklndkus.jpg"
+    ]
+  },
+  "encrefraiche" => {
+    avatar: "https://res.cloudinary.com/efbi2pls/image/upload/v1787850052/kitattoo/seeds/ylaesmvmvpvgpumcxano.jpg",
+    avatar_id: "kitattoo/seeds/ylaesmvmvpvgpumcxano",
+    photos: [
+      "https://res.cloudinary.com/efbi2pls/image/upload/v1787850047/kitattoo/seeds/p87mupf2yrjxqwhmcdsr.jpg",
+      "https://res.cloudinary.com/efbi2pls/image/upload/v1787850049/kitattoo/seeds/ap9tvbuslgt8cvten0hv.jpg",
+      "https://res.cloudinary.com/efbi2pls/image/upload/v1787852009/kitattoo/seeds/hlp8xml5cjp8ncntbxxm.jpg",
+      "https://res.cloudinary.com/efbi2pls/image/upload/v1787850050/kitattoo/seeds/vblmxjubausbvdfrfizf.jpg",
+      "https://res.cloudinary.com/efbi2pls/image/upload/v1787854791/kitattoo/seeds/ctmotseru5uzejdncyto.jpg",
+      "https://res.cloudinary.com/efbi2pls/image/upload/v1787854792/kitattoo/seeds/snrjxrzfngd1cs50qth8.jpg"
+    ]
+  }
+}
+
 artists.each do |data|
   user = User.create!(
     email: "#{data[:username]}@kitattoo.test",
@@ -159,9 +308,15 @@ artists.each do |data|
     styles: data[:styles],
     bio: bios[data[:username]],
     professional_status: data[:status],
+    avatar_url: images[data[:username]][:avatar],
+    avatar_public_id: images[data[:username]][:avatar_id],
     pricing_grid: pricings[data[:username]].map { |name, price| { "prestation" => name, "prix" => price } },
     published: data[:published]
   )
+
+  images[data[:username]][:photos].each do |url|
+    profile.portfolio_items.create!(image_url: url)
+  end
 
   profile.addresses.create!(
     label: nil,

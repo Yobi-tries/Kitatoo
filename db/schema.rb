@@ -71,6 +71,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_27_142650) do
     t.bigint "availability_id", null: false
     t.bigint "client_id", null: false
     t.datetime "created_at", null: false
+    t.text "description"
     t.integer "duration"
     t.integer "status", default: 0, null: false
     t.datetime "updated_at", null: false
