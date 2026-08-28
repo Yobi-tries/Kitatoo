@@ -1,0 +1,16 @@
+<div class="offcanvas offcanvas-end" id="tattooGeneratorDrawer" tabindex="-1" data-controller="tattoo-drawer">
+  <%= turbo_stream_from [ current_user, :tattoo_generations ] %>
+
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title">AI Tattoo Generator</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+
+  <div class="offcanvas-body">
+    <%= render "tattoo_generations/drawer_form" %>
+  </div>
+
+  <template data-tattoo-drawer-target="formTemplate">
+    <%= render "tattoo_generations/drawer_form" %>
+  </template>
+</div>

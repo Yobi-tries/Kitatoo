@@ -9,6 +9,10 @@
 
   <% if local_assigns[:hide_right] %>
     <span class="topappbar-btn"></span>
+  <% elsif user_signed_in? %>
+    <button type="button" class="topappbar-btn" data-bs-toggle="offcanvas" data-bs-target="#tattooGeneratorDrawer" aria-label="Generate a tattoo with AI">
+      <i class="fa-solid fa-robot"></i>
+    </button>
   <% else %>
     <%= link_to new_tattoo_generation_path, class: "topappbar-btn", "aria-label": "Generate a tattoo with AI" do %>
       <i class="fa-solid fa-robot"></i>
@@ -42,3 +46,5 @@
 </div>
 
 <%= render "shared/portfolio_upload_modal" if user_signed_in? && current_user.artist_profile.present? %>
+
+<%= render "tattoo_generations/drawer" if user_signed_in? %>

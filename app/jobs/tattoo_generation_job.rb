@@ -28,6 +28,13 @@ class TattooGenerationJob < ApplicationJob
         partial: "tattoo_generations/result",
         locals: { tattoo_generation: tattoo_generation }
       )
+
+      Turbo::StreamsChannel.broadcast_replace_to(
+        [ tattoo_generation.user, :tattoo_generations ],
+        target: "tattoo_generation_result",
+        partial: "tattoo_generations/result",
+        locals: { tattoo_generation: tattoo_generation, in_drawer: true }
+      )
     end
   end
 end

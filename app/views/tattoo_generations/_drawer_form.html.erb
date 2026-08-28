@@ -1,7 +1,9 @@
-<div class="container py-4" style="max-width: 640px;">
-  <h1 class="h3 mb-4">AI Tattoo Generator</h1>
+<div id="tattoo_generation_result">
+  <% if local_assigns[:error] %>
+    <div class="alert alert-danger"><%= error %></div>
+  <% end %>
 
-  <%= form_with url: tattoo_generations_path, method: :post, data: { turbo: false } do %>
+  <%= form_with url: tattoo_generations_path, method: :post do %>
     <div class="mb-3">
       <label class="form-label">Describe the tattoo you want</label>
       <%= text_area_tag :prompt, nil,
