@@ -1,0 +1,8 @@
+<span id="tattoo_generation_badge" class="position-relative d-inline-flex">
+  <i class="fa-solid fa-robot"></i>
+  <% if tattoo_generation&.pending? %>
+    <span class="position-absolute top-0 start-100 translate-middle p-1 bg-secondary border border-light rounded-circle">
+      <span class="visually-hidden">Generating</span>
+    </span>
+  <% end %>
+</span>

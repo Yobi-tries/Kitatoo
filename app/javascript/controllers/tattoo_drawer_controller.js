@@ -9,4 +9,8 @@ export default class extends Controller {
 
     current.replaceWith(this.formTemplateTarget.content.cloneNode(true))
   }
+
+  closeOnGenerate() {
+    window.bootstrap.Offcanvas.getOrCreateInstance(this.element).hide()
+  }
 }
