@@ -1,9 +1,15 @@
-<%= link_to conversation_path(conversation), class: "list-group-item list-group-item-action" do %>
-  <div class="d-flex justify-content-between">
-    <strong><%= conversation.other_participant_name(current_user) %></strong>
-    <small class="text-muted"><%= format_conversation_time(conversation.updated_at) %></small>
+<% other_name = conversation.other_participant_name(current_user) %>
+<% avatar = conversation.artist_profile.avatar_url if current_user.id == conversation.client_id %>
+<%= link_to conversation_path(conversation), class: "conversation-item" do %>
+  <%= image_tag avatar.presence || "https://ui-avatars.com/api/?size=96&background=16130F&color=FBF9F5&name=#{other_name.tr(" ", "+")}",
+        class: "conversation-item-avatar", alt: other_name %>
+  <div class="conversation-item-body">
+    <div class="conversation-item-top">
+      <span class="conversation-item-name"><%= conversation.other_participant_name(current_user) %></span>
+      <span class="conversation-item-time"><%= format_conversation_time(conversation.updated_at) %></span>
+    </div>
+    <% if (last_message = conversation.messages.last) %>
+      <p class="conversation-item-preview"><%= truncate(last_message.body, length: 60) %></p>
+    <% end %>
   </div>
-  <% if (last_message = conversation.messages.last) %>
-    <p class="mb-0 text-truncate text-muted"><%= last_message.body %></p>
-  <% end %>
 <% end %>
