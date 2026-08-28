@@ -10,9 +10,9 @@
   <% if local_assigns[:hide_right] %>
     <span class="topappbar-btn"></span>
   <% else %>
-    <button class="topappbar-btn">
-      <span class="material-symbols-outlined">search</span>
-    </button>
+    <%= link_to new_tattoo_generation_path, class: "topappbar-btn", "aria-label": "Generate a tattoo with AI" do %>
+      <i class="fa-solid fa-robot"></i>
+    <% end %>
   <% end %>
 </header>
 
