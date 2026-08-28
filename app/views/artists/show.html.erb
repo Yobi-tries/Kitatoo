@@ -102,6 +102,11 @@
               </button>
               <%= submit_tag "Delete", class: "btn btn-danger btn-sm d-none",
                     data: { portfolio_target: "confirm" } %>
+              <button type="button" class="btn btn-link p-0"
+                      data-portfolio-target="pin"
+                      data-action="portfolio#pin" aria-label="Choose cover">
+                <i class="fa-solid fa-thumbtack"></i>
+              </button>
             <% end %>
           </div>
         </div>
@@ -109,12 +114,21 @@
         <div class="row g-2 mb-4">
           <% @artist_profile.portfolio_items.each do |item| %>
             <div class="col-4">
-              <label class="d-block position-relative">
-                <%= check_box_tag "ids[]", item.id, false,
-                      class: "form-check-input position-absolute m-2 d-none",
-                      data: { portfolio_target: "checkbox" } %>
-                <%= image_tag item.image_url, class: "img-fluid rounded-2", alt: item.caption %>
-              </label>
+              <div class="position-relative">
+                <label class="d-block">
+                  <%= check_box_tag "ids[]", item.id, false,
+                        class: "form-check-input position-absolute m-2 d-none",
+                        data: { portfolio_target: "checkbox" } %>
+                  <%= image_tag item.image_url, alt: item.caption,
+                        class: "img-fluid rounded-2 #{"portfolio-cover" if item.position == 1}" %>
+                </label>
+                <%= link_to artist_profile_portfolio_item_path(item, role: "cover"),
+                      data: { turbo_method: :patch, portfolio_target: "cover" },
+                      class: "btn btn-sm btn-light position-absolute top-0 end-0 m-2 d-none",
+                      title: "Use as cover" do %>
+                  <i class="fa-solid fa-thumbtack"></i>
+                <% end %>
+              </div>
             </div>
           <% end %>
         </div>
