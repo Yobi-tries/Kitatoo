@@ -1,0 +1,204 @@
+.conversation {
+  max-width: 640px;
+  padding-top: 0;
+  padding-bottom: 80px;
+
+  &.has-booking-card {
+    padding-bottom: 160px;
+  }
+}
+
+.conversation-header {
+  background: $surface;
+  box-shadow: 0 2px 0 rgba($ink, 0.06);
+  padding: 6px 12px 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  position: fixed;
+  top: 64px;
+  left: 0;
+  width: 100%;
+  z-index: 1040;
+}
+
+.conversation-header-back {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: $ink;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
+.conversation-header-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  background: $placeholder-bg;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+  color: $disabled;
+  flex-shrink: 0;
+}
+
+.conversation-header-name {
+  font-family: $headers-font;
+  font-size: 16px;
+  font-weight: 700;
+  color: $ink;
+  text-decoration: none;
+
+  &:hover {
+    color: $primary-custom;
+  }
+}
+
+.conversation-messages {
+  padding: 130px 20px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.conversation-day-divider {
+  display: flex;
+  justify-content: center;
+
+  span {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: $text-secondary;
+    background: $surface-dim;
+    padding: 6px 12px;
+    border-radius: 999px;
+  }
+}
+
+.message-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.message-group--outgoing {
+  align-items: flex-end;
+}
+
+.message-group--incoming {
+  align-items: flex-start;
+}
+
+.message-bubble {
+  max-width: 280px;
+  padding: 12px 14px;
+  font-size: 15px;
+  line-height: 22px;
+}
+
+.message-bubble--outgoing {
+  background: $primary-custom;
+  color: $on-primary;
+  border-radius: 16px 16px 4px 16px;
+  box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.18);
+}
+
+.message-bubble--incoming {
+  background: $surface;
+  color: $ink;
+  border-radius: 16px 16px 16px 4px;
+  box-shadow: 0 2px 0 rgba($ink, 0.10), 0 2px 6px rgba($ink, 0.08);
+}
+
+.message-timestamp {
+  font-size: 11px;
+  font-weight: 600;
+  color: $text-muted-custom;
+}
+
+.conversation-bottom {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1040;
+
+  .booking-card {
+    margin: 0 14px 0;
+    border-radius: 16px 16px 0 0;
+  }
+}
+
+.conversation-composer {
+  background: $surface;
+  box-shadow: 0 -1px 0 rgba($ink, 0.08);
+  padding: 12px 14px 24px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.conversation-composer-attach {
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  border: none;
+  background: $surface-dim;
+  box-shadow: inset 0 -2px 0 rgba($ink, 0.10);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: $ink;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.conversation-composer-input {
+  flex: 1;
+  height: 44px;
+  padding: 0 14px;
+  border-radius: 12px;
+  border: none;
+  background: $canvas;
+  box-shadow: inset 0 -2px 0 rgba($ink, 0.08);
+  font-size: 15px;
+  color: $ink;
+
+  &::placeholder {
+    color: $text-muted-custom;
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: inset 0 0 0 2px $primary-custom;
+  }
+}
+
+.conversation-composer-send {
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  border: none;
+  background: $primary-custom;
+  box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: $on-primary;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background-color 150ms ease;
+
+  &:hover {
+    background: $primary-pressed;
+  }
+}

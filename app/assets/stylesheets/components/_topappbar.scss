@@ -4,18 +4,27 @@
   width: 100%;
   z-index: 1050;
   height: 64px;
-  padding: 0 1rem;
-  background: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid $gray-200;
+  padding: 0 20px;
+  background: $surface;
+  box-shadow: inset 0 -2px 0 rgba($ink, 0.06);
 }
 
 .topappbar-btn {
-  color: $dark;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  padding: 0;
+  color: $ink;
   text-decoration: none;
+  cursor: pointer;
+  transition: color 150ms ease;
 
   &:hover {
-    opacity: 0.8;
+    color: $primary-custom;
   }
 }
 

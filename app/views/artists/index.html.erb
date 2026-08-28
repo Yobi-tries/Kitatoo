@@ -1,133 +1,79 @@
-<%= render "shared/topappbar" %>
+<%= render "shared/topappbar", hide_right: true %>
 
-<div class="container artists-index py-3" style="max-width: 640px;">
-
-  <h1 class="h4 mb-3">Find a tattoo artist</h1>
+<div class="container home">
 
   <%= form_with url: root_path, method: :get do %>
     <%= text_field_tag :query, params[:query],
           placeholder: "Search artists, styles, studios...",
-          class: "form-control rounded-pill px-3" %>
+          class: "home-search" %>
   <% end %>
 
-  <div class="d-flex justify-content-between align-items-center mt-4 mb-2">
-    <h2 class="h5 mb-0">Discover Styles</h2>
-    <button type="button" class="btn btn-link p-0" data-bs-toggle="modal" data-bs-target="#styleSearch">
-      <i class="fa-solid fa-plus"></i>
-    </button>
+  <div class="home-section-header">
+    <h2 class="home-section-title">Discover Styles</h2>
+    <span class="home-section-action">See all</span>
   </div>
 
-  <div class="d-flex gap-2 overflow-auto pb-2">
-    <% @styles.first(8).each do |style| %>
-      <% image = "styles/#{style.parameterize}.webp" %>
-      <%= link_to root_path(style: style), class: "style-card flex-shrink-0 text-decoration-none" do %>
-        <% if Rails.root.join("app/assets/images", image).exist? %>
-          <%= image_tag image, class: "style-card-image", alt: style %>
+  <div data-controller="scroll-indicator">
+    <div class="home-styles-scroller" data-scroll-indicator-target="scroller" data-action="scroll->scroll-indicator#update">
+      <% @style_counts.first(8).each_with_index do |(style, count), index| %>
+        <%= link_to root_path(style: style), class: "style-tile #{'style-tile--primary' if index.odd?}" do %>
+          <span class="style-tile-count"><%= count %> artists</span>
+          <span class="style-tile-name"><%= style %></span>
         <% end %>
-        <span class="style-card-name"><%= style %></span>
       <% end %>
+    </div>
+    <div class="home-scroll-indicator">
+      <span class="home-scroll-dot home-scroll-dot--active" data-scroll-indicator-target="dot"></span>
+      <span class="home-scroll-dot" data-scroll-indicator-target="dot"></span>
+      <span class="home-scroll-dot" data-scroll-indicator-target="dot"></span>
+    </div>
+  </div>
+
+  <div class="home-section-header">
+    <h2 class="home-section-title"><%= @searching ? "Results" : "Nearby Artists" %></h2>
+    <span class="home-section-meta">
+      <%= @artists.size %> · <%= @default_city || "Paris" %>
+      <% if @searching %>
+        &middot; <%= link_to "Clear", root_path %>
+      <% end %>
+    </span>
+  </div>
+
+  <div data-controller="show-more">
+  <div class="home-artists-list">
+    <% @artists.first(10).each_with_index do |artist, index| %>
+      <div class="artist-card" data-show-more-target="item" <%= 'style=display:none' if index >= 5 %>>
+        <%= image_tag artist.avatar_url.presence || "https://ui-avatars.com/api/?size=124&background=16130F&color=FBF9F5&name=#{artist.display_name.tr(" ", "+")}",
+              class: "artist-card-thumb", alt: artist.display_name %>
+        <div class="artist-card-body">
+          <h3 class="artist-card-name">
+            <%= link_to artist.display_name, artist_path(artist), class: "stretched-link" %>
+          </h3>
+          <span class="artist-card-meta">
+            <%= artist.styles %>
+            <% if artist.addresses.any? %>
+              &middot; <%= artist.addresses.map { |a| a.city }.uniq.join(", ") %>
+            <% end %>
+          </span>
+          <% if @distances[artist.id] %>
+            <span class="artist-card-status">
+              <span class="artist-card-dot"></span>
+              Booking open &middot; <%= @distances[artist.id].round(1) %> km
+            </span>
+          <% end %>
+        </div>
+        <i class="fa-solid fa-chevron-right artist-card-chevron"></i>
+      </div>
     <% end %>
   </div>
 
-  <div class="d-flex justify-content-between align-items-center mt-4 mb-2">
-    <h2 class="h5 mb-0"><%= @searching ? "Results" : "Nearby Artists" %></h2>
-    <button type="button" class="btn btn-link p-0" data-bs-toggle="modal" data-bs-target="#locationSearch">
-      <i class="fa-solid fa-plus"></i>
+  <% if @artists.size > 5 %>
+    <button class="home-see-more" data-action="show-more#reveal" data-show-more-target="button">
+      See more artists
     </button>
-  </div>
-
-  <p class="text-muted small">
-    <%= @artists.size %> artists
-    <% if @searching %>
-      &middot; <%= link_to "Clear", root_path %>
-    <% end %>
-  </p>
-
-  <% @artists.each do |artist| %>
-    <div class="card mb-3">
-      <div class="card-body">
-        <div class="d-flex align-items-center gap-3 mb-2">
-          <%= image_tag artist.avatar_url.presence || "https://ui-avatars.com/api/?size=112&background=000000&color=ffffff&name=#{artist.display_name.tr(" ", "+")}",
-                class: "rounded-circle", width: 56, height: 56, alt: artist.display_name %>
-          <div>
-            <h3 class="h6 mb-1">
-              <%= link_to artist.display_name, artist_path(artist), class: "text-decoration-none stretched-link" %>
-            </h3>
-            <p class="text-muted small mb-0">
-              <%= artist.styles %>
-              <% if artist.addresses.any? %>
-                &middot; <%= artist.addresses.map { |address| address.city }.uniq.join(", ") %>
-              <% end %>
-              <% if @distances[artist.id] %>
-                &middot; <%= @distances[artist.id].round(1) %> km
-              <% end %>
-
-            </p>
-          </div>
-        </div>
-
-        <% if artist.bio.present? %>
-          <p class="small text-muted mb-2">
-            <%= truncate(artist.bio, length: 110) %>
-            <%= link_to "See more", artist_path(artist) %>
-          </p>
-        <% end %>
-
-        <div class="row g-1">
-          <% if artist.portfolio_items.any? %>
-            <% artist.portfolio_items.sample(3).each do |item| %>
-              <div class="col-4">
-                <div class="ratio ratio-1x1">
-                  <%= image_tag item.image_url, class: "rounded-1 object-fit-cover", alt: item.caption %>
-                </div>
-              </div>
-            <% end %>
-          <% else %>
-            <% 3.times do %>
-              <div class="col-4">
-                <div class="ratio ratio-1x1 bg-light rounded-1"></div>
-              </div>
-            <% end %>
-          <% end %>
-        </div>
-      </div>
-    </div>
   <% end %>
-
-</div>
-
-<div class="modal fade" id="styleSearch" tabindex="-1">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Search by style</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body d-flex flex-wrap gap-2">
-        <% @styles.each do |style| %>
-          <%= link_to style, root_path(style: style), class: "btn btn-outline-dark btn-sm" %>
-        <% end %>
-      </div>
-    </div>
   </div>
-</div>
 
-<div class="modal fade" id="locationSearch" tabindex="-1">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Search by location</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body">
-        <div class="d-flex flex-wrap gap-2">
-          <% @cities.each do |city| %>
-            <%= link_to city, root_path(location: city), class: "btn btn-outline-dark btn-sm" %>
-          <% end %>
-        </div>
-      </div>
-    </div>
-  </div>
 </div>
 
 <%= render "shared/botappbar" %>
