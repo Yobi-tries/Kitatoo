@@ -1,0 +1,85 @@
+<%= render "shared/topappbar", hide_right: true %>
+
+<div class="container bookings-index">
+
+  <div class="home-section-header">
+    <h2 class="home-section-title">My bookings</h2>
+  </div>
+
+  <% if @client_upcoming.empty? && @client_past.empty? && @client_cancelled.empty? %>
+    <p class="bookings-empty">
+      No bookings yet. <%= link_to "Browse artists", artists_path %> to get started.
+    </p>
+  <% else %>
+    <% if @client_upcoming.any? %>
+      <div class="home-section-header">
+        <h3 class="home-section-title">Upcoming</h3>
+        <span class="home-section-meta"><%= @client_upcoming.size %></span>
+      </div>
+      <div class="bookings-list">
+        <% @client_upcoming.each do |booking| %>
+          <%= render "bookings/booking_row", booking: booking, role: :client,
+                conversation: @client_conversations_by_artist[booking.availability.artist_profile_id],
+                show_cancel: !booking.confirmed? %>
+        <% end %>
+      </div>
+    <% end %>
+
+    <% if @client_past.any? %>
+      <div class="home-section-header">
+        <h3 class="home-section-title">Past</h3>
+        <span class="home-section-meta"><%= @client_past.size %></span>
+      </div>
+      <div class="bookings-list">
+        <% @client_past.each do |booking| %>
+          <%= render "bookings/booking_row", booking: booking, role: :client,
+                conversation: @client_conversations_by_artist[booking.availability.artist_profile_id],
+                show_cancel: false %>
+        <% end %>
+      </div>
+    <% end %>
+
+    <% if @client_cancelled.any? %>
+      <div class="home-section-header">
+        <h3 class="home-section-title">Cancelled</h3>
+        <span class="home-section-meta"><%= @client_cancelled.size %></span>
+      </div>
+      <div class="bookings-list">
+        <% @client_cancelled.each do |booking| %>
+          <%= render "bookings/booking_row", booking: booking, role: :client,
+                conversation: @client_conversations_by_artist[booking.availability.artist_profile_id],
+                show_cancel: false %>
+        <% end %>
+      </div>
+    <% end %>
+  <% end %>
+
+  <% if @artist_profile %>
+    <div class="home-section-header">
+      <h2 class="home-section-title">Requests received</h2>
+    </div>
+
+    <% if @artist_pending.empty? && @artist_upcoming.empty? && @artist_history.empty? && @artist_cancelled.empty? %>
+      <p class="bookings-empty">No booking requests yet.</p>
+    <% else %>
+      <% [["Pending requests", @artist_pending], ["Upcoming", @artist_upcoming],
+          ["History", @artist_history], ["Cancelled", @artist_cancelled]].each do |title, bookings| %>
+        <% next if bookings.empty? %>
+        <div class="home-section-header">
+          <h3 class="home-section-title"><%= title %></h3>
+          <span class="home-section-meta"><%= bookings.size %></span>
+        </div>
+        <div class="bookings-list">
+          <% bookings.each do |booking| %>
+            <%= render "bookings/booking_row", booking: booking, role: :artist,
+                  conversation: @artist_conversations_by_client[booking.client_id],
+                  show_cancel: false %>
+          <% end %>
+        </div>
+      <% end %>
+    <% end %>
+  <% end %>
+
+</div>
+
+<%= render "shared/botappbar" %>

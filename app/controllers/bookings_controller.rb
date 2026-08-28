@@ -1,4 +1,39 @@
 class BookingsController < ApplicationController
+  def index
+    @artist_profile = current_user.artist_profile
+
+    client_scope = current_user.bookings.joins(:availability)
+                               .includes(availability: :artist_profile)
+
+    @client_upcoming = client_scope.where.not(status: :cancelled)
+                                   .where("availabilities.starts_at >= ?", Time.current)
+                                   .order("availabilities.starts_at ASC")
+    @client_past = client_scope.where.not(status: :cancelled)
+                               .where("availabilities.starts_at < ?", Time.current)
+                               .order("availabilities.starts_at DESC")
+    @client_cancelled = client_scope.where(status: :cancelled)
+                                    .order("availabilities.starts_at DESC")
+    @client_conversations_by_artist = current_user.conversations.index_by(&:artist_profile_id)
+
+    return unless @artist_profile
+
+    artist_scope = Booking.joins(:availability)
+                          .where(availabilities: { artist_profile_id: @artist_profile.id })
+                          .includes(:client, availability: :artist_profile)
+
+    @artist_pending = artist_scope.where(status: %i[selected artist_confirmed])
+                                  .order("availabilities.starts_at ASC")
+    @artist_upcoming = artist_scope.where(status: :confirmed)
+                                   .where("availabilities.starts_at >= ?", Time.current)
+                                   .order("availabilities.starts_at ASC")
+    @artist_history = artist_scope.where(status: :confirmed)
+                                  .where("availabilities.starts_at < ?", Time.current)
+                                  .order("availabilities.starts_at DESC")
+    @artist_cancelled = artist_scope.where(status: :cancelled)
+                                    .order("availabilities.starts_at DESC")
+    @artist_conversations_by_client = @artist_profile.conversations.index_by(&:client_id)
+  end
+
   def create
     @artist_profile = ArtistProfile.find(params[:artist_profile_id])
 
