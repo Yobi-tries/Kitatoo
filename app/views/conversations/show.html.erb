@@ -18,9 +18,10 @@
     <%= link_to conversations_path, class: "conversation-header-back" do %>
       <i class="fa-solid fa-arrow-left"></i>
     <% end %>
-    <div class="conversation-header-avatar">
-      <%= @conversation.other_participant_name(current_user).first(2).upcase %>
-    </div>
+    <% other_name = @conversation.other_participant_name(current_user) %>
+    <% avatar = @conversation.artist_profile.avatar_url if current_user.id == @conversation.client_id %>
+    <%= image_tag avatar.presence || "https://ui-avatars.com/api/?size=80&background=16130F&color=FBF9F5&name=#{other_name.tr(" ", "+")}",
+          class: "conversation-header-avatar", alt: other_name %>
     <% if current_user.artist_profile == @conversation.artist_profile %>
       <span class="conversation-header-name"><%= @conversation.other_participant_name(current_user) %></span>
     <% else %>
