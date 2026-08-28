@@ -1,14 +1,13 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["popup", "popupTitle", "popupSlots", "startsAt", "endsAt", "selected"]
+  static targets = ["popup", "popupTitle", "popupSlots", "startsAt", "endsAt"]
   static values = { prefillStartsAt: String, prefillEndsAt: String, prefillLabel: String }
 
   connect() {
     if (this.prefillStartsAtValue && this.prefillEndsAtValue) {
       this.startsAtTarget.value = this.prefillStartsAtValue
       this.endsAtTarget.value = this.prefillEndsAtValue
-      this.selectedTarget.textContent = `Selected: ${this.prefillLabelValue}`
       this.dispatch("slotSelected", { detail: { label: this.prefillLabelValue }, bubbles: true })
     }
   }
@@ -35,7 +34,6 @@ export default class extends Controller {
     const [startsAt, endsAt] = event.target.value.split("|")
     this.startsAtTarget.value = startsAt
     this.endsAtTarget.value = endsAt
-    this.selectedTarget.textContent = `Selected: ${event.target.dataset.label}`
     this.dispatch("slotSelected", { detail: { label: event.target.dataset.label }, bubbles: true })
     this.hideSlots()
   }

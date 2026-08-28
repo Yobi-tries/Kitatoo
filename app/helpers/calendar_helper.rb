@@ -42,7 +42,7 @@ module CalendarHelper
       end
 
       slots << {
-        label: "#{slot_start.strftime('%H:%M')} — #{slot_end.strftime('%H:%M')}",
+        label: slot_start.strftime('%H:%M'),
         starts_at: date.to_time.change(hour: slot_start.hour, min: slot_start.min).iso8601,
         ends_at: date.to_time.change(hour: slot_end.hour, min: slot_end.min).iso8601
       }
