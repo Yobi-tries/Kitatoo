@@ -65,6 +65,7 @@ module CalendarHelper
 
     bookings = Booking.joins(:availability)
                       .where(availabilities: { artist_profile_id: artist_profile.id })
+                      .where.not(status: :cancelled)
 
     bookings.filter_map do |booking|
       booking_date = booking.availability.starts_at.to_date

@@ -2,11 +2,14 @@ class Booking < ApplicationRecord
   belongs_to :availability
   belongs_to :client, class_name: "User"
 
-  validates :availability_id, uniqueness: { message: "has already been booked" }
+  validates :availability_id, uniqueness: {
+    conditions: -> { where.not(status: :cancelled) },
+    message: "has already been booked"
+  }
   validates :description, presence: true
   validate :max_active_bookings_per_artist, on: :create
 
-  enum :status, { selected: 0, artist_confirmed: 1, confirmed: 2 }
+  enum :status, { selected: 0, artist_confirmed: 1, confirmed: 2, cancelled: 3 }
 
   after_update_commit :broadcast_status_change
 
@@ -26,6 +29,7 @@ class Booking < ApplicationRecord
     return unless client && availability&.artist_profile
 
     exists = Booking.joins(:availability)
+      .where.not(status: :cancelled)
       .where(client: client, availabilities: { artist_profile_id: availability.artist_profile_id })
       .exists?
 

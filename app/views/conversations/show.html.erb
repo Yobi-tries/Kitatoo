@@ -4,7 +4,7 @@
 <% booking = Booking.joins(:availability)
      .where(availabilities: { artist_profile_id: @conversation.artist_profile_id },
             client_id: @conversation.client_id)
-     .where.not(status: :confirmed).first %>
+     .where.not(status: [ :confirmed, :cancelled ]).first %>
 <% slot_duration = @conversation.artist_profile.schedule&.dig("slot_duration") || 30 %>
 <% is_artist = current_user.artist_profile == @conversation.artist_profile %>
 <% confirmed_booking = Booking.joins(:availability)
@@ -61,7 +61,9 @@
             <button type="button" class="booking-stepper-btn" data-action="duration#increment">+</button>
           </div>
           <%= f.submit "Confirm", class: "booking-card-confirm" %>
-          <button type="button" class="booking-card-cancel" disabled title="Cancel (coming soon)">✕</button>
+          <%= link_to "✕", cancel_booking_path(booking),
+                data: { turbo_method: :patch, turbo_confirm: "Cancel this booking?" },
+                class: "booking-card-cancel", title: "Cancel" %>
         </div>
       <% end %>
     </div>
@@ -77,7 +79,9 @@
       </div>
       <div class="booking-card-strip">
         <span class="booking-card-label" style="flex:1;">Waiting for artist</span>
-        <button type="button" class="booking-card-cancel" disabled title="Cancel (coming soon)">✕</button>
+        <%= link_to "✕", cancel_booking_path(booking),
+              data: { turbo_method: :patch, turbo_confirm: "Cancel this booking?" },
+              class: "booking-card-cancel", title: "Cancel" %>
       </div>
     </div>
 
@@ -93,7 +97,9 @@
       <div class="booking-card-strip">
         <%= button_to "Accept #{format_duration.call(booking.duration)}", accept_booking_path(booking),
             method: :patch, class: "booking-card-accept" %>
-        <button type="button" class="booking-card-cancel" disabled title="Cancel (coming soon)">✕</button>
+        <%= link_to "✕", cancel_booking_path(booking),
+              data: { turbo_method: :patch, turbo_confirm: "Cancel this booking?" },
+              class: "booking-card-cancel", title: "Cancel" %>
       </div>
     </div>
 
@@ -108,7 +114,9 @@
       </div>
       <div class="booking-card-strip">
         <span class="booking-card-label" style="flex:1;">Waiting for client</span>
-        <button type="button" class="booking-card-cancel" disabled title="Cancel (coming soon)">✕</button>
+        <%= link_to "✕", cancel_booking_path(booking),
+              data: { turbo_method: :patch, turbo_confirm: "Cancel this booking?" },
+              class: "booking-card-cancel", title: "Cancel" %>
       </div>
     </div>
   <% end %>
@@ -125,7 +133,9 @@
       <div class="booking-card-strip">
         <%= link_to "Go to profile", artist_path(@conversation.artist_profile), class: "booking-card-profile" %>
         <% if is_artist %>
-          <button type="button" class="booking-card-cancel" disabled title="Cancel (coming soon)">✕</button>
+          <%= link_to "✕", cancel_booking_path(confirmed_booking),
+                data: { turbo_method: :patch, turbo_confirm: "Cancel this confirmed booking?" },
+                class: "booking-card-cancel", title: "Cancel" %>
         <% end %>
       </div>
     </div>

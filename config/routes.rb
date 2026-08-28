@@ -27,7 +27,7 @@ Rails.application.routes.draw do
     resources :messages, only: [:create]
   end
 
-  resources :bookings, only: [] do
+  resources :bookings, only: [:index] do
     patch :confirm, on: :member
     patch :accept, on: :member
     patch :cancel, on: :member

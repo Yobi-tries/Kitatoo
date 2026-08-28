@@ -3,10 +3,10 @@
     <span class="material-symbols-outlined">explore</span>
     <span class="botappbar-label">Explore</span>
   <% end %>
-  <a class="botappbar-link" href="#">
+  <%= link_to bookings_path, class: "botappbar-link #{'active' if controller_name == 'bookings' && action_name == 'index'}" do %>
     <span class="material-symbols-outlined">event_note</span>
     <span class="botappbar-label">Bookings</span>
-  </a>
+  <% end %>
   <%= link_to conversations_path, class: "botappbar-link #{'active' if controller_name == 'conversations'}" do %>
     <span class="material-symbols-outlined">chat_bubble</span>
     <span class="botappbar-label">Inbox</span>
