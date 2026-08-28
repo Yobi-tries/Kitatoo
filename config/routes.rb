@@ -30,6 +30,7 @@ Rails.application.routes.draw do
   resources :bookings, only: [] do
     patch :confirm, on: :member
     patch :accept, on: :member
+    patch :cancel, on: :member
   end
 
   resources :tattoo_generations, only: [:new, :create, :show]

@@ -2,153 +2,152 @@
 
 <%= render "shared/topappbar" %>
 
-<div class="container artist-show px-0" style="max-width: 640px;">
+<div class="container artist-show px-0">
 
-  <% studio = @artist_profile.addresses.first %>
-  <% if studio.present? && studio.label.present? %>
-    <div class="bg-dark text-white text-center text-uppercase small py-2">
-      <%= studio.label %>
-    </div>
-  <% end %>
-
-    <% cover = @artist_profile.cover_image || @artist_profile.portfolio_items.first %>
+  <% cover = @artist_profile.cover_image || @artist_profile.portfolio_items.first %>
   <% if cover %>
-    <%= image_tag cover.image_url, class: "artist-cover w-100", alt: @artist_profile.display_name %>
+    <%= image_tag cover.image_url, class: "artist-cover", alt: @artist_profile.display_name %>
   <% else %>
-    <div class="artist-cover bg-dark"></div>
+    <div class="artist-cover-placeholder">PHOTO</div>
   <% end %>
 
-  <div class="bg-secondary text-white p-3 mb-4">
+  <div class="artist-identity">
     <% if @artist_profile.professional_status.present? %>
-      <span class="badge text-bg-light text-uppercase mb-2"><%= @artist_profile.professional_status %></span>
+      <span class="artist-identity-status"><%= @artist_profile.professional_status %></span>
     <% end %>
 
-    <div class="d-flex align-items-center gap-3 mb-2">
-      <%= image_tag @artist_profile.avatar_url.presence || "https://ui-avatars.com/api/?size=112&background=000000&color=ffffff&name=#{@artist_profile.display_name.tr(" ", "+")}",
-            class: "rounded-circle", width: 56, height: 56, alt: @artist_profile.display_name %>
-      <h1 class="h3 mb-0"><%= @artist_profile.display_name %></h1>
-    </div>
+    <h1 class="artist-identity-name"><%= @artist_profile.display_name %></h1>
 
-    <div class="d-flex flex-wrap gap-2">
+    <% if @artist_profile.bio.present? %>
+      <p class="artist-identity-bio"><%= truncate(@artist_profile.bio, length: 150) %></p>
+    <% end %>
+
+    <div class="artist-identity-chips">
       <% @tags.each do |tag| %>
-        <%= link_to tag.name, root_path(style: tag.name),
-              class: "btn btn-sm btn-light font-monospace" %>
+        <%= link_to tag.name, root_path(style: tag.name), class: "artist-chip" %>
       <% end %>
     </div>
   </div>
 
   <% if owner %>
-    <div class="mb-4">
-      <%= link_to "Edit my profile", edit_artist_profile_path, class: "btn btn-outline-primary w-100" %>
+    <div class="artist-actions" style="grid-template-columns: 1fr;">
+      <%= link_to "Edit my profile", edit_artist_profile_path, class: "artist-action-edit" %>
     </div>
   <% else %>
-    <div class="d-flex gap-2 mb-4">
-      <%= link_to "Message", new_artist_profile_conversation_path(@artist_profile),
-            class: "btn btn-outline-primary w-50" %>
-      <button type="button" class="btn btn-primary w-50" data-bs-toggle="modal" data-bs-target="#bookingModal">
-        Book now
+    <div class="artist-actions">
+      <%= link_to new_artist_profile_conversation_path(@artist_profile), class: "artist-action-message" do %>
+        <i class="fa-regular fa-comment"></i> Message
+      <% end %>
+      <button type="button" class="artist-action-book" data-bs-toggle="modal" data-bs-target="#bookingModal">
+        <i class="fa-regular fa-calendar"></i> Book now
       </button>
     </div>
   <% end %>
 
-  <% if @artist_profile.bio.present? %>
-    <h2 class="h5 mb-2">About</h2>
-    <p class="mb-4"><%= @artist_profile.bio %></p>
-  <% end %>
-
   <% if @min_price.present? %>
-    <button type="button" class="btn btn-link p-0 text-start mb-4 text-decoration-none"
-            data-bs-toggle="modal" data-bs-target="#pricingModal">
-      <span class="d-block fw-bold text-dark">
-        <%= @min_price %> – <%= @max_price %> CHF
-      </span>
-      <span class="small text-muted">See the full price list</span>
-    </button>
-  <% end %>
-
-  <% @artist_profile.addresses.each do |address| %>
-    <div class="mb-3">
-      <div class="fw-bold"><%= address.label.presence || "Studio" %></div>
-      <div class="text-muted small"><%= address.street %>, <%= address.zipcode %> <%= address.city %></div>
+    <div class="artist-section">
+      <div class="artist-info-card artist-info-card--row" role="button" data-bs-toggle="modal" data-bs-target="#pricingModal">
+        <span class="artist-info-card-icon"><i class="fa-solid fa-money-bill"></i></span>
+        <div>
+          <span class="artist-info-card-value"><%= @min_price %> – <%= @max_price %> €</span>
+          <% slot = @artist_profile.schedule&.dig("slot_duration") %>
+          <span class="artist-info-card-label">
+            <% if slot %>Minimum session: <%= slot %> min. <% end %>
+            Custom rates available upon request.
+          </span>
+        </div>
+      </div>
     </div>
   <% end %>
 
-    <% if @markers.any? %>
-    <div class="artist-map rounded-3 mb-4"
-         data-controller="map"
-         data-map-markers-value="<%= @markers.to_json %>"
-         data-map-api-key-value="<%= ENV["MAPBOX_API_KEY"] %>"></div>
-  <% end %>
-
-
-      <% if owner %>
-    <%= form_with url: bulk_destroy_artist_profile_portfolio_items_path, method: :delete,
-                  data: { controller: "portfolio", turbo_confirm: "Remove the selected photos?" } do %>
-
-      <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2 class="h5 mb-0">Portfolio</h2>
-        <div class="d-flex align-items-center gap-3">
-          <button type="button" class="btn btn-link p-0" data-bs-toggle="modal"
-                  data-bs-target="#portfolioUploadModal" aria-label="Add photos">
-            <i class="fa-solid fa-plus"></i>
-          </button>
-          <% if @artist_profile.portfolio_items.any? %>
-            <button type="button" class="btn btn-link p-0 text-danger"
-                    data-portfolio-target="trash"
-                    data-action="portfolio#enable" aria-label="Delete photos">
-              <i class="fa-solid fa-trash"></i>
-            </button>
-            <%= submit_tag "Delete", class: "btn btn-danger btn-sm d-none",
-                  data: { portfolio_target: "confirm" } %>
-            <button type="button" class="btn btn-link p-0"
-                    data-portfolio-target="pin"
-                    data-action="portfolio#pin" aria-label="Choose cover">
-              <i class="fa-solid fa-thumbtack"></i>
-            </button>
-
+  <div class="artist-section">
+    <% @artist_profile.addresses.each do |address| %>
+      <div class="artist-info-card">
+        <div class="artist-info-card--row">
+          <span class="artist-info-card-icon"><i class="fa-solid fa-location-dot"></i></span>
+          <div class="flex-grow-1">
+            <span class="artist-info-card-value"><%= address.label.presence || "Studio" %></span>
+            <span class="artist-address-detail"><%= address.street %>, <%= address.zipcode %> <%= address.city %></span>
+          </div>
+          <% if address.latitude.present? %>
+            <a href="https://www.google.com/maps/search/?api=1&query=<%= address.latitude %>,<%= address.longitude %>" target="_blank" class="artist-map-link">Map</a>
           <% end %>
         </div>
+        <% if @markers.any? %>
+          <div class="artist-map"
+               data-controller="map"
+               data-map-markers-value="<%= @markers.to_json %>"
+               data-map-api-key-value="<%= ENV["MAPBOX_API_KEY"] %>"></div>
+        <% end %>
       </div>
+    <% end %>
+  </div>
 
-      <div class="row g-2 mb-4">
-        <% @artist_profile.portfolio_items.each do |item| %>
-          <div class="col-4">
-                       <div class="position-relative">
-              <label class="d-block">
-                <%= check_box_tag "ids[]", item.id, false,
-                      class: "form-check-input position-absolute m-2 d-none",
-                      data: { portfolio_target: "checkbox" } %>
-                <%= image_tag item.image_url, alt: item.caption,
-                      class: "img-fluid rounded-2 #{"portfolio-cover" if item.position == 1}" %>
-              </label>
-              <%= link_to artist_profile_portfolio_item_path(item, role: "cover"),
-                    data: { turbo_method: :patch, portfolio_target: "cover" },
-                    class: "btn btn-sm btn-light position-absolute top-0 end-0 m-2 d-none",
-                    title: "Use as cover" do %>
+  <div class="artist-section">
+    <% if owner %>
+      <%= form_with url: bulk_destroy_artist_profile_portfolio_items_path, method: :delete,
+                    data: { controller: "portfolio", turbo_confirm: "Remove the selected photos?" } do %>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h2 class="artist-section-title mb-0">Portfolio</h2>
+          <div class="d-flex align-items-center gap-3">
+            <button type="button" class="btn btn-link p-0" data-bs-toggle="modal"
+                    data-bs-target="#portfolioUploadModal" aria-label="Add photos">
+              <i class="fa-solid fa-plus"></i>
+            </button>
+            <% if @artist_profile.portfolio_items.any? %>
+              <button type="button" class="btn btn-link p-0 text-danger"
+                      data-portfolio-target="trash"
+                      data-action="portfolio#enable" aria-label="Delete photos">
+                <i class="fa-solid fa-trash"></i>
+              </button>
+              <%= submit_tag "Delete", class: "btn btn-danger btn-sm d-none",
+                    data: { portfolio_target: "confirm" } %>
+              <button type="button" class="btn btn-link p-0"
+                      data-portfolio-target="pin"
+                      data-action="portfolio#pin" aria-label="Choose cover">
                 <i class="fa-solid fa-thumbtack"></i>
-              <% end %>
+              </button>
+            <% end %>
+          </div>
+        </div>
+
+        <div class="row g-2 mb-4">
+          <% @artist_profile.portfolio_items.each do |item| %>
+            <div class="col-4">
+              <div class="position-relative">
+                <label class="d-block">
+                  <%= check_box_tag "ids[]", item.id, false,
+                        class: "form-check-input position-absolute m-2 d-none",
+                        data: { portfolio_target: "checkbox" } %>
+                  <%= image_tag item.image_url, alt: item.caption,
+                        class: "img-fluid rounded-2 #{"portfolio-cover" if item.position == 1}" %>
+                </label>
+                <%= link_to artist_profile_portfolio_item_path(item, role: "cover"),
+                      data: { turbo_method: :patch, portfolio_target: "cover" },
+                      class: "btn btn-sm btn-light position-absolute top-0 end-0 m-2 d-none",
+                      title: "Use as cover" do %>
+                  <i class="fa-solid fa-thumbtack"></i>
+                <% end %>
+              </div>
             </div>
-
-          </div>
-        <% end %>
-      </div>
-
-    <% end %>
-  <% else %>
-    <h2 class="h5 mb-3">Portfolio</h2>
-    <% if @artist_profile.portfolio_items.any? %>
-      <div class="row g-2 mb-4">
-        <% @artist_profile.portfolio_items.each do |item| %>
-          <div class="col-4">
-            <%= image_tag item.image_url, class: "img-fluid rounded-2", alt: item.caption %>
-          </div>
-        <% end %>
-      </div>
+          <% end %>
+        </div>
+      <% end %>
     <% else %>
-      <p class="text-muted small">No photos yet.</p>
+      <h2 class="artist-section-title">Portfolio</h2>
+      <% if @artist_profile.portfolio_items.any? %>
+        <div class="row g-2 mb-4">
+          <% @artist_profile.portfolio_items.each do |item| %>
+            <div class="col-4">
+              <%= image_tag item.image_url, class: "img-fluid rounded-2", alt: item.caption %>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <p class="text-muted small">No photos yet.</p>
+      <% end %>
     <% end %>
-  <% end %>
-
+  </div>
 
 </div>
 
@@ -164,24 +163,10 @@
           <% @prices.each do |row| %>
             <li class="d-flex justify-content-between border-bottom py-2">
               <span><%= row["prestation"] %></span>
-              <span class="fw-bold"><%= row["prix"] %> CHF</span>
+              <span class="fw-bold"><%= row["prix"] %> €</span>
             </li>
           <% end %>
         </ul>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="modal fade" id="bookingModal" tabindex="-1">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Book a session</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <%= render "shared/calendar", artist_profile: @artist_profile, month: @month %>
       </div>
     </div>
   </div>

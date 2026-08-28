@@ -17,4 +17,29 @@
 .portfolio-cover {
   outline: 3px solid #0d6efd;
   outline-offset: -3px;
+.style-card {
+  position: relative;
+  display: block;
+  width: 132px;
+  height: 176px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #1a1a1a;
+}
+
+.style-card-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.style-card-name {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 2rem 0.75rem 0.6rem;
+  color: white;
+  font-weight: 700;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.85));
 }

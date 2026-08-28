@@ -1,5 +1,5 @@
-<nav class="botappbar d-flex justify-content-around align-items-center">
-  <%= link_to artists_path, class: "botappbar-link" do %>
+<nav class="botappbar">
+  <%= link_to artists_path, class: "botappbar-link #{'active' if controller_name == 'artists' && action_name == 'index'}" do %>
     <span class="material-symbols-outlined">explore</span>
     <span class="botappbar-label">Explore</span>
   <% end %>
@@ -7,12 +7,12 @@
     <span class="material-symbols-outlined">event_note</span>
     <span class="botappbar-label">Bookings</span>
   </a>
-  <%= link_to conversations_path, class: "botappbar-link" do %>
+  <%= link_to conversations_path, class: "botappbar-link #{'active' if controller_name == 'conversations'}" do %>
     <span class="material-symbols-outlined">chat_bubble</span>
     <span class="botappbar-label">Inbox</span>
   <% end %>
-  <% if current_user&.artist_profile %>
-    <%= link_to artist_path(current_user.artist_profile), class: "botappbar-link" do %>
+  <% if current_user&.artist_profile&.persisted? %>
+    <%= link_to artist_path(current_user.artist_profile), class: "botappbar-link #{'active' if controller_name == 'artists' && action_name == 'show'}" do %>
       <span class="material-symbols-outlined">person</span>
       <span class="botappbar-label">Profile</span>
     <% end %>

@@ -1,10 +1,24 @@
-// Define variables for your color scheme
+$canvas: #F1EDE6;
+$surface: #FBF9F5;
+$surface-dim: #E7E1D6;
+$placeholder-bg: #EAE3D8;
+$placeholder-bg-alt: #DAD2C5;
+$ink: #16130F;
+$text-secondary: #6E675E;
+$text-muted-custom: #8C8479;
+$disabled: #A79E92;
+$primary-custom: #1000FF;
+$primary-pressed: #0D00CC;
+$on-primary: #FBF9F5;
+$accent: #FF6B35;
+$accent-text-safe: #C7491A;
+$hairline: #EDE7DC;
+$hairline-canvas: #E0D9CC;
 
-// For example:
 $red: #FD1015;
-$blue: #0D6EFD;
+$blue: $primary-custom;
 $yellow: #FFC65A;
 $orange: #E67E22;
 $green: #1EDD88;
-$gray: #0E0000;
-$light-gray: #F4F4F4;
+$gray: $ink;
+$light-gray: $canvas;

@@ -1,75 +1,142 @@
 <%= render "shared/topappbar" %>
 
-<div class="container py-4" style="padding-top: 64px; padding-bottom: 80px;">
-  <h1 class="mb-4">Chat with <%= @conversation.other_participant_name(current_user) %></h1>
+<% booking = Booking.joins(:availability)
+     .where(availabilities: { artist_profile_id: @conversation.artist_profile_id },
+            client_id: @conversation.client_id)
+     .where.not(status: :confirmed).first %>
+<% slot_duration = @conversation.artist_profile.schedule&.dig("slot_duration") || 30 %>
+<% is_artist = current_user.artist_profile == @conversation.artist_profile %>
+<% confirmed_booking = Booking.joins(:availability)
+     .where(availabilities: { artist_profile_id: @conversation.artist_profile_id },
+            client_id: @conversation.client_id, status: :confirmed).first %>
+<% has_booking = booking.present? || confirmed_booking.present? %>
 
-  <% booking = Booking.joins(:availability)
-       .where(availabilities: { artist_profile_id: @conversation.artist_profile_id },
-              client_id: @conversation.client_id)
-       .where.not(status: :confirmed).first %>
-  <% slot_duration = @conversation.artist_profile.schedule&.dig("slot_duration") || 30 %>
-  <% is_artist = current_user.artist_profile == @conversation.artist_profile %>
+<div class="container conversation <%= 'has-booking-card' if has_booking %>" style="padding-top: 64px;">
 
-  <% if booking&.selected? && is_artist %>
-    <div class="booking-card">
-      <div class="booking-card-info">
-        <strong>Booking request</strong>
-        <span class="booking-card-date"><%= booking.availability.starts_at.strftime("%d/%m/%Y %H:%M") %></span>
-      </div>
-      <%= simple_form_for booking, url: confirm_booking_path(booking), method: :patch, html: { class: "booking-card-form" } do |f| %>
-        <div class="booking-duration" data-controller="duration" data-duration-step-value="15">
-          <label class="booking-duration-label">Duration</label>
-          <div class="booking-duration-counter">
-            <button type="button" class="btn btn-outline-secondary btn-sm" data-action="duration#decrement">−</button>
-            <%= f.input :duration, as: :hidden, input_html: {
-              value: slot_duration, data: { duration_target: "input" }
-            } %>
-            <span class="booking-duration-display" data-duration-target="display"><%= slot_duration %> min</span>
-            <button type="button" class="btn btn-outline-secondary btn-sm" data-action="duration#increment">+</button>
-          </div>
-        </div>
-        <%= f.submit "Confirm", class: "btn btn-success btn-sm" %>
-      <% end %>
+  <div class="conversation-header">
+    <%= link_to conversations_path, class: "conversation-header-back" do %>
+      <i class="fa-solid fa-arrow-left"></i>
+    <% end %>
+    <div class="conversation-header-avatar">
+      <%= @conversation.other_participant_name(current_user).first(2).upcase %>
     </div>
+    <% if current_user.artist_profile == @conversation.artist_profile %>
+      <span class="conversation-header-name"><%= @conversation.other_participant_name(current_user) %></span>
+    <% else %>
+      <%= link_to @conversation.other_participant_name(current_user),
+            artist_path(@conversation.artist_profile),
+            class: "conversation-header-name" %>
+    <% end %>
+  </div>
 
-  <% elsif booking&.artist_confirmed? && !is_artist %>
-    <div class="booking-card booking-card--pending">
-      <div class="booking-card-info">
-        <strong>Booking proposal</strong>
-        <span class="booking-card-date"><%= booking.availability.starts_at.strftime("%d/%m/%Y %H:%M") %> — <%= booking.duration %> min</span>
-      </div>
-      <%= button_to "Accept", accept_booking_path(booking),
-          method: :patch, class: "btn btn-success btn-sm" %>
-    </div>
-
-  <% elsif booking&.artist_confirmed? && is_artist %>
-    <div class="booking-card booking-card--waiting">
-      <div class="booking-card-info">
-        <strong>Waiting for client</strong>
-        <span class="booking-card-date"><%= booking.availability.starts_at.strftime("%d/%m/%Y %H:%M") %> — <%= booking.duration %> min</span>
-      </div>
-      <span class="badge bg-warning">Pending</span>
-    </div>
-  <% end %>
-
-  <% confirmed_booking = Booking.joins(:availability)
-       .where(availabilities: { artist_profile_id: @conversation.artist_profile_id },
-              client_id: @conversation.client_id, status: :confirmed).first %>
-  <% if confirmed_booking %>
-    <div class="booking-card booking-card--confirmed">
-      <div class="booking-card-info">
-        <strong>Booking confirmed</strong>
-        <span class="booking-card-date"><%= confirmed_booking.availability.starts_at.strftime("%d/%m/%Y %H:%M") %> — <%= confirmed_booking.duration %> min</span>
-      </div>
-      <span class="badge bg-success">Confirmed</span>
-    </div>
-  <% end %>
-
-  <div id="messages" class="list-group mb-4">
+  <div class="conversation-messages" id="messages" data-controller="chat-scroll">
     <%= render partial: "message", collection: @messages %>
   </div>
 
-  <%= render "form", conversation: @conversation, message: @message %>
 </div>
 
-<%= render "shared/botappbar" %>
+<% format_duration = ->(min) { min ? "#{min / 60}h#{format('%02d', min % 60)}" : "" } %>
+
+<div class="conversation-bottom">
+  <% if booking&.selected? && is_artist %>
+    <div class="booking-card booking-card--pending">
+      <div class="booking-card-info">
+        <div class="booking-card-info-left">
+          <span class="booking-card-label">slot requested</span>
+          <span class="booking-card-date"><%= booking.availability.starts_at.strftime("%a %d %b · %H:%M") %></span>
+        </div>
+        <span class="booking-card-pill">pending</span>
+      </div>
+      <%= simple_form_for booking, url: confirm_booking_path(booking), method: :patch do |f| %>
+        <div class="booking-card-strip">
+          <div class="booking-stepper" data-controller="duration" data-duration-step-value="30">
+            <button type="button" class="booking-stepper-btn" data-action="duration#decrement">−</button>
+            <%= f.input :duration, as: :hidden, input_html: {
+              value: slot_duration, data: { duration_target: "input" }
+            } %>
+            <span class="booking-stepper-display" data-duration-target="display"><%= format_duration.call(slot_duration) %></span>
+            <button type="button" class="booking-stepper-btn" data-action="duration#increment">+</button>
+          </div>
+          <%= f.submit "Confirm", class: "booking-card-confirm" %>
+          <button type="button" class="booking-card-cancel" disabled title="Cancel (coming soon)">✕</button>
+        </div>
+      <% end %>
+    </div>
+
+  <% elsif booking&.selected? && !is_artist %>
+    <div class="booking-card booking-card--pending">
+      <div class="booking-card-info">
+        <div class="booking-card-info-left">
+          <span class="booking-card-label">slot requested</span>
+          <span class="booking-card-date"><%= booking.availability.starts_at.strftime("%a %d %b · %H:%M") %></span>
+        </div>
+        <span class="booking-card-pill">pending</span>
+      </div>
+      <div class="booking-card-strip">
+        <span class="booking-card-label" style="flex:1;">Waiting for artist</span>
+        <button type="button" class="booking-card-cancel" disabled title="Cancel (coming soon)">✕</button>
+      </div>
+    </div>
+
+  <% elsif booking&.artist_confirmed? && !is_artist %>
+    <div class="booking-card booking-card--artist-confirmed">
+      <div class="booking-card-info">
+        <div class="booking-card-info-left">
+          <span class="booking-card-label">slot · duration <%= format_duration.call(booking.duration) %></span>
+          <span class="booking-card-date"><%= booking.availability.starts_at.strftime("%a %d %b · %H:%M") %></span>
+        </div>
+        <span class="booking-card-pill">confirmed</span>
+      </div>
+      <div class="booking-card-strip">
+        <%= button_to "Accept #{format_duration.call(booking.duration)}", accept_booking_path(booking),
+            method: :patch, class: "booking-card-accept" %>
+        <button type="button" class="booking-card-cancel" disabled title="Cancel (coming soon)">✕</button>
+      </div>
+    </div>
+
+  <% elsif booking&.artist_confirmed? && is_artist %>
+    <div class="booking-card booking-card--artist-confirmed">
+      <div class="booking-card-info">
+        <div class="booking-card-info-left">
+          <span class="booking-card-label">slot · duration <%= format_duration.call(booking.duration) %></span>
+          <span class="booking-card-date"><%= booking.availability.starts_at.strftime("%a %d %b · %H:%M") %></span>
+        </div>
+        <span class="booking-card-pill">confirmed</span>
+      </div>
+      <div class="booking-card-strip">
+        <span class="booking-card-label" style="flex:1;">Waiting for client</span>
+        <button type="button" class="booking-card-cancel" disabled title="Cancel (coming soon)">✕</button>
+      </div>
+    </div>
+  <% end %>
+
+  <% if confirmed_booking %>
+    <div class="booking-card booking-card--confirmed">
+      <div class="booking-card-info">
+        <div class="booking-card-info-left">
+          <span class="booking-card-label">booked · <%= format_duration.call(confirmed_booking.duration) %></span>
+          <span class="booking-card-date"><%= confirmed_booking.availability.starts_at.strftime("%a %d %b · %H:%M") %></span>
+        </div>
+        <span class="booking-card-pill">set</span>
+      </div>
+      <div class="booking-card-strip">
+        <%= link_to "Go to profile", artist_path(@conversation.artist_profile), class: "booking-card-profile" %>
+        <% if is_artist %>
+          <button type="button" class="booking-card-cancel" disabled title="Cancel (coming soon)">✕</button>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+
+<div class="conversation-composer">
+  <button type="button" class="conversation-composer-attach">
+    <i class="fa-solid fa-plus"></i>
+  </button>
+  <%= form_with model: Message.new, url: conversation_messages_path(@conversation), class: "d-flex flex-grow-1 gap-2" do |f| %>
+    <%= f.text_field :body, class: "conversation-composer-input", placeholder: "Message #{@conversation.other_participant_name(current_user)}...", autocomplete: "off" %>
+    <button type="submit" class="conversation-composer-send">
+      <i class="fa-solid fa-paper-plane"></i>
+    </button>
+  <% end %>
+</div>
+</div>

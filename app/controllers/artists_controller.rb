@@ -30,19 +30,23 @@ class ArtistsController < ApplicationController
     elsif @searching
       @artists = @artists.order(:display_name)
     else
-      @artists = @artists.to_a.sample(6)
+      @default_city = current_user&.city.presence || "Paris"
+      nearby = Address.near(@default_city, 20_000).to_a
+      nearby.each { |address| @distances[address.artist_profile_id] ||= address.distance }
+      ordered_ids = nearby.map(&:artist_profile_id).uniq
+      @artists = @artists.where(id: ordered_ids).to_a.sort_by { |a| ordered_ids.index(a.id) }
     end
 
-    @styles = Tag.joins(:artist_profiles).where(artist_profiles: { published: true })
-                 .pluck(:name)
-                 .tally.sort_by { |name, count| [ -count, name ] }.map { |name, count| name }
+    @style_counts = Tag.joins(:artist_profiles).where(artist_profiles: { published: true })
+                       .pluck(:name)
+                       .tally.sort_by { |name, count| [ -count, name ] }
+    @styles = @style_counts.map(&:first)
     @cities = Address.joins(:artist_profile).where(artist_profiles: { published: true })
                      .distinct.order(:city).pluck(:city)
   end
 
   def show
     @artist_profile = ArtistProfile.find(params[:id])
-    @month = params[:month] ? Date.parse("#{params[:month]}-01") : Date.today
     @tags = @artist_profile.tags.order(:name)
     @prices = @artist_profile.pricing_grid || []
     amounts = @prices.map { |row| row["prix"] }

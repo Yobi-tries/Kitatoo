@@ -1,8 +1,9 @@
-<div class="container py-4" style="max-width: 640px;">
-  <h1 class="h3 mb-1">Complete your artist profile</h1>
-  <p class="text-muted mb-4">
-    Fill in your bio, styles and pricing so clients can find and evaluate you.
-  </p>
+<%= render "shared/topappbar" %>
+
+<div class="container profile-form">
+  <div class="profile-form-card">
+    <h1 class="profile-form-title">Complete your artist profile</h1>
+    <p class="profile-form-hint">Fill in your bio, styles and pricing so clients can find and evaluate you.</p>
 
   <%= simple_form_for @artist_profile, url: artist_profile_path, method: :patch, html: { multipart: true } do |f| %>
     <%= f.error_notification %>
@@ -96,11 +97,24 @@
         </div>
       </div>
 
-      <%= f.input :social_links,
-                  as: :text,
-                  label: "Social links",
-                  placeholder: "Instagram, website...",
-                  input_html: { rows: 2 } %>
+      <div class="form-group mb-3">
+        <label class="form-label d-block">Social links</label>
+        <% links = @artist_profile.social_links || {} %>
+        <div class="social-links-fields">
+          <div class="social-link-row">
+            <span class="social-link-icon"><i class="fa-brands fa-instagram"></i></span>
+            <input type="text" name="artist_profile[social_links][instagram]"
+                   value="<%= links.is_a?(Hash) ? links["instagram"] : "" %>"
+                   class="form-control" placeholder="Instagram profile URL">
+          </div>
+          <div class="social-link-row">
+            <span class="social-link-icon"><i class="fa-brands fa-pinterest"></i></span>
+            <input type="text" name="artist_profile[social_links][pinterest]"
+                   value="<%= links.is_a?(Hash) ? links["pinterest"] : "" %>"
+                   class="form-control" placeholder="Pinterest profile URL">
+          </div>
+        </div>
+      </div>
     </div>
 
     <hr class="my-4">
@@ -178,8 +192,11 @@
       </div>
     </div>
 
-    <div class="form-actions">
-      <%= f.button :submit, "Save profile", class: "btn btn-primary w-100" %>
+    <div class="profile-form-actions">
+      <%= f.button :submit, "Save profile", class: "profile-form-submit" %>
     </div>
   <% end %>
+  </div>
 </div>
+
+<%= render "shared/botappbar" %>
