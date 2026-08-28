@@ -150,29 +150,31 @@
         </select>
       </div>
 
-      <div class="schedule-weekly">
-        <h5 class="schedule-section-title">Weekly hours</h5>
-        <% %w[monday tuesday wednesday thursday friday saturday sunday].each do |day| %>
-          <% day_data = days_data[day] %>
-          <% enabled = day_data.present? %>
-          <div class="schedule-day-row" data-schedule-target="dayRow">
-            <div class="schedule-day-toggle">
-              <input type="hidden" name="artist_profile[schedule][days][<%= day %>][enabled]" value="0">
-              <input type="checkbox" class="form-check-input" name="artist_profile[schedule][days][<%= day %>][enabled]"
-                     value="1" <%= "checked" if enabled %> data-action="schedule#toggleDay">
-              <label class="schedule-day-label"><%= day.capitalize %></label>
+      <div class="schedule-slot-duration">
+        <label class="schedule-label">Weekly hours</label>
+        <div class="schedule-weekly">
+          <% %w[monday tuesday wednesday thursday friday saturday sunday].each do |day| %>
+            <% day_data = days_data[day] %>
+            <% enabled = day_data.present? %>
+            <div class="schedule-day-row" data-schedule-target="dayRow">
+              <div class="schedule-day-toggle">
+                <input type="hidden" name="artist_profile[schedule][days][<%= day %>][enabled]" value="0">
+                <input type="checkbox" class="form-check-input" name="artist_profile[schedule][days][<%= day %>][enabled]"
+                       value="1" <%= "checked" if enabled %> data-action="schedule#toggleDay">
+                <label class="schedule-day-label"><%= day.capitalize %></label>
+              </div>
+              <div class="schedule-day-times">
+                <input type="time" name="artist_profile[schedule][days][<%= day %>][start]"
+                       value="<%= day_data&.dig("start") %>" class="form-control form-control-sm"
+                       <%= "disabled" unless enabled %> data-schedule-target="timeInput">
+                <span class="schedule-day-separator">—</span>
+                <input type="time" name="artist_profile[schedule][days][<%= day %>][end]"
+                       value="<%= day_data&.dig("end") %>" class="form-control form-control-sm"
+                       <%= "disabled" unless enabled %> data-schedule-target="timeInput">
+              </div>
             </div>
-            <div class="schedule-day-times">
-              <input type="time" name="artist_profile[schedule][days][<%= day %>][start]"
-                     value="<%= day_data&.dig("start") %>" class="form-control form-control-sm"
-                     <%= "disabled" unless enabled %> data-schedule-target="timeInput">
-              <span class="schedule-day-separator">—</span>
-              <input type="time" name="artist_profile[schedule][days][<%= day %>][end]"
-                     value="<%= day_data&.dig("end") %>" class="form-control form-control-sm"
-                     <%= "disabled" unless enabled %> data-schedule-target="timeInput">
-            </div>
-          </div>
-        <% end %>
+          <% end %>
+        </div>
       </div>
 
       <div class="schedule-days-off">
