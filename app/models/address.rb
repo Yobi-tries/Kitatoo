@@ -1,8 +1,10 @@
 class Address < ApplicationRecord
   belongs_to :artist_profile
 
+  serialize :schedule, coder: JSON
+
   geocoded_by :full_address
-  after_validation :geocode, if: :will_save_change_to_street?
+  after_validation :geocode, if: -> { will_save_change_to_street? || will_save_change_to_zipcode? || will_save_change_to_city? }
 
   validates :street, presence: true
   validates :zipcode, presence: true

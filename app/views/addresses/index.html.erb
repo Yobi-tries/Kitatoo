@@ -1,33 +1,53 @@
-<div class="container py-4" style="max-width: 640px;">
-  <h1 class="h3 mb-1">My addresses</h1>
-  <p class="text-muted mb-4">
-    Add the studios or locations where clients can book you.
-  </p>
+<%= render "shared/topappbar" %>
 
-  <% @addresses.each do |address| %>
-    <div class="mb-4 pb-3 border-bottom">
-      <%= simple_form_for address, url: artist_profile_address_path(address), method: :patch do |f| %>
-        <%= f.error_notification %>
+<div class="container booking-page">
+  <div class="booking-header">
+    <%= link_to edit_artist_profile_path, class: "booking-header-back" do %>
+      <i class="fa-solid fa-arrow-left"></i>
+    <% end %>
+    <span class="booking-header-title">Manage availability</span>
+    <span class="booking-header-spacer"></span>
+  </div>
 
-        <div class="form-inputs">
-          <%= f.input :label, placeholder: "e.g. Downtown Studio" %>
-          <%= f.input :street, required: true %>
-          <%= f.input :zipcode, required: true %>
-          <%= f.input :city, required: true %>
-        </div>
+  <% if @addresses.empty? %>
+    <p class="booking-empty">You haven't added a location yet. Add one below to start managing your availability.</p>
+  <% else %>
+    <% if @addresses.size > 1 %>
+      <p class="section-label">Select location</p>
+      <%= render "shared/location_selector", addresses: @addresses, selected_address: @selected_address,
+            path_for: ->(a) { artist_profile_addresses_path(address_id: a.id) } %>
+    <% end %>
 
-        <div class="form-actions d-flex gap-2">
-          <%= f.button :submit, "Save", class: "btn btn-primary" %>
-          <%= button_to "Delete", artist_profile_address_path(address),
-                        method: :delete,
-                        class: "btn btn-outline-danger",
-                        form: { data: { turbo_confirm: "Remove this address?" } } %>
-        </div>
-      <% end %>
-    </div>
+    <% address = @selected_address %>
+
+    <%= simple_form_for address, url: artist_profile_address_path(address), method: :patch do |f| %>
+      <%= f.error_notification %>
+
+      <div class="form-inputs">
+        <%= f.input :label, placeholder: "e.g. Downtown Studio" %>
+        <%= f.input :street, required: true %>
+        <%= f.input :zipcode, required: true %>
+        <%= f.input :city, required: true %>
+      </div>
+
+      <hr class="my-4">
+
+      <%= render "shared/schedule_fields", field_prefix: "address[schedule]", schedule: address.schedule || {} %>
+
+      <div class="form-actions mt-3">
+        <%= f.button :submit, "Save", class: "btn btn-primary w-100" %>
+      </div>
+    <% end %>
+
+    <%= button_to "Delete this location", artist_profile_address_path(address),
+                  method: :delete,
+                  class: "btn btn-outline-danger w-100 mt-2",
+                  form: { data: { turbo_confirm: "Remove this address?" } } %>
+
+    <hr class="my-4">
   <% end %>
 
-  <h2 class="h5 mb-3">Add a new address</h2>
+  <h2 class="h5 mb-3">Add a new location</h2>
   <%= simple_form_for @new_address, url: artist_profile_addresses_path, method: :post do |f| %>
     <%= f.error_notification %>
 
@@ -39,7 +59,9 @@
     </div>
 
     <div class="form-actions">
-      <%= f.button :submit, "Add address", class: "btn btn-primary w-100" %>
+      <%= f.button :submit, "Add location", class: "btn btn-primary w-100" %>
     </div>
   <% end %>
 </div>
+
+<%= render "shared/botappbar" %>
