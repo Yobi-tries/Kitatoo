@@ -1,0 +1,16 @@
+<%= simple_form_for booking, url: confirm_booking_path(booking), method: :patch do |f| %>
+  <div class="booking-card-strip">
+    <div class="booking-stepper" data-controller="duration" data-duration-step-value="30">
+      <button type="button" class="booking-stepper-btn" data-action="duration#decrement">−</button>
+      <%= f.input :duration, as: :hidden, input_html: {
+        value: slot_duration, data: { duration_target: "input" }
+      } %>
+      <span class="booking-stepper-display" data-duration-target="display"><%= "#{slot_duration / 60}h#{format('%02d', slot_duration % 60)}" %></span>
+      <button type="button" class="booking-stepper-btn" data-action="duration#increment">+</button>
+    </div>
+    <%= f.submit "Confirm", class: "booking-card-confirm" %>
+    <%= link_to "✕", cancel_booking_path(booking),
+          data: { turbo_method: :patch, turbo_confirm: "Cancel this booking?" },
+          class: "booking-card-cancel", title: "Cancel" %>
+  </div>
+<% end %>
