@@ -10,6 +10,39 @@
   margin-bottom: 8px;
 }
 
+.booking-location-single {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: $text-secondary;
+  margin-bottom: 14px;
+
+  i {
+    color: $disabled;
+  }
+}
+
+.booking-request {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.booking-status-filter {
+  width: 100%;
+  margin-bottom: 16px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: none;
+  background: $surface;
+  box-shadow: 0 2px 0 rgba($ink, 0.10), 0 10px 20px -16px rgba($ink, 0.5);
+  font-family: $body-font;
+  font-size: 14px;
+  font-weight: 600;
+  color: $ink;
+}
+
 .booking-row {
   background: $surface;
   border-radius: 14px;

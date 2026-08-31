@@ -17,9 +17,14 @@ class BookingsController < ApplicationController
 
     return unless @artist_profile
 
+    @addresses = @artist_profile.addresses.order(:id)
+    @selected_address = @addresses.find_by(id: params[:address_id]) if params[:address_id].present?
+    @status = params[:status].presence_in(%w[requests upcoming history cancelled]) || "requests"
+
     artist_scope = Booking.joins(:availability)
                           .where(availabilities: { artist_profile_id: @artist_profile.id })
-                          .includes(:client, availability: :artist_profile)
+                          .includes(:client, availability: %i[artist_profile address])
+    artist_scope = artist_scope.where(availabilities: { address_id: @selected_address.id }) if @selected_address
 
     @artist_pending = artist_scope.where(status: %i[selected artist_confirmed])
                                   .order("availabilities.starts_at ASC")
