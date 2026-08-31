@@ -99,6 +99,11 @@
   color: $red;
 }
 
+.booking-row-status--completed {
+  background: $surface-dim;
+  color: $disabled;
+}
+
 .booking-row-chevron {
   color: $disabled;
   font-size: 12px;

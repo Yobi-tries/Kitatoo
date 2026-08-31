@@ -19,13 +19,30 @@ artist_user = User.create!(
   birthdate: Date.new(1990, 5, 15)
 )
 
-client_user = User.create!(
+User.create!(
   email: "client@test.com",
   password: "password",
   username: "tattoolover",
   first_name: "Jordan",
   last_name: "Client",
   birthdate: Date.new(1995, 3, 20)
+)
+
+fred_user = User.create!(
+  email: "fred@test.local",
+  password: "password",
+  username: "fred",
+  birthdate: Date.new(1990, 5, 12),
+  city: "Lausanne"
+)
+
+second_client_user = User.create!(
+  email: "sam@test.local",
+  password: "password",
+  username: "samtattoo",
+  first_name: "Sam",
+  last_name: "Rivera",
+  birthdate: Date.new(1992, 8, 3)
 )
 
 puts "Creating artist profile with schedule..."
@@ -89,7 +106,30 @@ puts "Creating availabilities..."
   )
 end
 
-puts "No seed bookings — test the flow from the client side."
+puts "Creating confirmed bookings..."
+
+[
+  { client: fred_user, starts_at: 5.days.from_now.change(hour: 11),
+    duration: 90, description: "Small blackwork piece on the forearm." },
+  { client: second_client_user, starts_at: 12.days.from_now.change(hour: 14),
+    duration: 45, description: "Fine line geometric design on the wrist." }
+].each do |data|
+  Conversation.create!(client: data[:client], artist_profile: artist_profile)
+
+  booking_availability = artist_profile.availabilities.create!(
+    address: address,
+    starts_at: data[:starts_at],
+    ends_at: data[:starts_at] + data[:duration].minutes,
+    state: :booked
+  )
+
+  booking_availability.build_booking(
+    client: data[:client],
+    description: data[:description],
+    duration: data[:duration],
+    status: :confirmed
+  ).save!
+end
 
 puts "Done!"
 
@@ -325,14 +365,6 @@ artists.each do |data|
     city: data[:city]
   )
 end
-
-User.create!(
-  email: "fred@test.local",
-  password: "password",
-  username: "fred",
-  birthdate: Date.new(1990, 5, 12),
-  city: "Lausanne"
-)
 
 puts "Total: #{User.count} users, #{ArtistProfile.count} artist profiles, #{Address.count} addresses."
 

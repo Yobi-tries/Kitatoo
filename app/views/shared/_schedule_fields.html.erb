@@ -1,0 +1,74 @@
+<% schedule ||= {} %>
+<% days_data = schedule["days"] || {} %>
+
+<div class="schedule" data-controller="schedule" data-schedule-field-prefix-value="<%= field_prefix %>">
+  <div class="schedule-header">
+    <h4>Availability schedule</h4>
+    <p class="schedule-hint">Set your recurring weekly availability. This repeats every week during the period.</p>
+  </div>
+
+  <div class="schedule-period">
+    <div class="schedule-period-field">
+      <label class="schedule-label">Period start</label>
+      <input type="date" name="<%= field_prefix %>[period_start]"
+             value="<%= schedule["period_start"] %>" class="form-control">
+    </div>
+    <div class="schedule-period-field">
+      <label class="schedule-label">Period end</label>
+      <input type="date" name="<%= field_prefix %>[period_end]"
+             value="<%= schedule["period_end"] %>" class="form-control">
+    </div>
+  </div>
+
+  <div class="schedule-slot-duration">
+    <label class="schedule-label">Slot duration</label>
+    <select name="<%= field_prefix %>[slot_duration]" class="form-select">
+      <% [15, 30, 45, 60, 75, 90, 105, 120].each do |min| %>
+        <option value="<%= min %>" <%= "selected" if schedule["slot_duration"].to_i == min %>><%= min %> min</option>
+      <% end %>
+    </select>
+  </div>
+
+  <div class="schedule-slot-duration">
+    <label class="schedule-label">Weekly hours</label>
+    <div class="schedule-weekly">
+      <% %w[monday tuesday wednesday thursday friday saturday sunday].each do |day| %>
+        <% day_data = days_data[day] %>
+        <% enabled = day_data.present? %>
+        <div class="schedule-day-row" data-schedule-target="dayRow">
+          <div class="schedule-day-toggle">
+            <input type="hidden" name="<%= field_prefix %>[days][<%= day %>][enabled]" value="0">
+            <input type="checkbox" class="form-check-input" name="<%= field_prefix %>[days][<%= day %>][enabled]"
+                   value="1" <%= "checked" if enabled %> data-action="schedule#toggleDay">
+            <label class="schedule-day-label"><%= day.capitalize %></label>
+          </div>
+          <div class="schedule-day-times">
+            <input type="time" name="<%= field_prefix %>[days][<%= day %>][start]"
+                   value="<%= day_data&.dig("start") %>" class="form-control form-control-sm"
+                   <%= "disabled" unless enabled %> data-schedule-target="timeInput">
+            <span class="schedule-day-separator">—</span>
+            <input type="time" name="<%= field_prefix %>[days][<%= day %>][end]"
+                   value="<%= day_data&.dig("end") %>" class="form-control form-control-sm"
+                   <%= "disabled" unless enabled %> data-schedule-target="timeInput">
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="schedule-days-off">
+    <h5 class="schedule-section-title">Days off</h5>
+    <div class="schedule-days-off-list" data-schedule-target="daysOffList">
+      <% (schedule["days_off"] || []).each_with_index do |date, index| %>
+        <div class="schedule-day-off-chip" data-schedule-target="dayOffRow">
+          <input type="date" name="<%= field_prefix %>[days_off][<%= index %>]"
+                 value="<%= date %>" class="schedule-day-off-input">
+          <button type="button" class="schedule-day-off-remove" data-action="schedule#removeDayOff">✕</button>
+        </div>
+      <% end %>
+    </div>
+    <button type="button" class="schedule-add-btn" data-action="schedule#addDayOff">
+      <i class="fa-solid fa-plus"></i> Add a day off
+    </button>
+  </div>
+</div>

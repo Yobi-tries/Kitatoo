@@ -1,12 +1,14 @@
 <%= render "shared/topappbar" %>
 
-<div class="container home">
+<div class="container home" data-controller="sticky-search">
 
-  <%= form_with url: root_path, method: :get do %>
-    <%= text_field_tag :query, params[:query],
-          placeholder: "Search artists, styles, studios...",
-          class: "home-search" %>
-  <% end %>
+  <div data-sticky-search-target="placeholder">
+    <%= form_with url: root_path, method: :get, data: { sticky_search_target: "bar" } do %>
+      <%= text_field_tag :query, params[:query],
+            placeholder: "Search artists, styles, studios...",
+            class: "home-search" %>
+    <% end %>
+  </div>
 
   <div class="home-section-header">
     <h2 class="home-section-title">Discover Styles</h2>

@@ -2,6 +2,7 @@ import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
   static targets = ["dayRow", "timeInput", "daysOffList", "dayOffRow"]
+  static values = { fieldPrefix: { type: String, default: "artist_profile[schedule]" } }
 
   toggleDay(event) {
     const row = event.currentTarget.closest("[data-schedule-target='dayRow']")
@@ -18,7 +19,7 @@ export default class extends Controller {
     chip.classList.add("schedule-day-off-chip")
     chip.setAttribute("data-schedule-target", "dayOffRow")
     chip.innerHTML = `
-      <input type="date" name="artist_profile[schedule][days_off][${index}]"
+      <input type="date" name="${this.fieldPrefixValue}[days_off][${index}]"
              class="schedule-day-off-input">
       <button type="button" class="schedule-day-off-remove" data-action="schedule#removeDayOff">✕</button>
     `

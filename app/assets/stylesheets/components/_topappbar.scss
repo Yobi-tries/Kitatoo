@@ -5,9 +5,9 @@
   z-index: 1050;
   height: 64px;
   padding: 0 20px;
-  background: $surface;
-  box-shadow: inset 0 -2px 0 rgba($ink, 0.06);
+  background: transparent;
 }
+
 
 .topappbar-btn {
   width: 44px;
@@ -32,6 +32,35 @@
   }
 }
 
-.topappbar-logo {
-  height: 40px;
+.topappbar-arrow {
+  .material-symbols-outlined {
+    font-size: 20px;
+    transition: transform 200ms ease;
+  }
+
+}
+
+.topappbar:has(~ #sideMenu.show) .topappbar-arrow .material-symbols-outlined,
+.topappbar:has(~ #sideMenu.showing) .topappbar-arrow .material-symbols-outlined {
+  transform: rotate(180deg);
+}
+
+.topappbar-left {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.topappbar-title {
+  font-family: 'Syne', Arial, sans-serif;
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #16130F;
+  text-decoration: none;
+
+  &:hover {
+    color: $ink;
+  }
 }
