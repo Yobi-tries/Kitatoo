@@ -26,8 +26,10 @@ class BookingsController < ApplicationController
     @artist_upcoming = artist_scope.where(status: :confirmed)
                                    .where("availabilities.starts_at >= ?", Time.current)
                                    .order("availabilities.starts_at ASC")
-    @artist_history = artist_scope.where(status: :confirmed)
-                                  .where("availabilities.starts_at < ?", Time.current)
+    @artist_to_complete = artist_scope.where(status: :confirmed)
+                                      .where("availabilities.starts_at < ?", Time.current)
+                                      .order("availabilities.starts_at DESC")
+    @artist_history = artist_scope.where(status: :completed)
                                   .order("availabilities.starts_at DESC")
     @artist_cancelled = artist_scope.where(status: :cancelled)
                                     .order("availabilities.starts_at DESC")
@@ -124,6 +126,24 @@ class BookingsController < ApplicationController
     @booking.cancelled!
 
     redirect_to conversation_path(conversation), notice: "Booking cancelled."
+  end
+
+  def complete
+    @booking = Booking.find(params[:id])
+    artist_profile = @booking.availability.artist_profile
+
+    unless current_user.artist_profile == artist_profile
+      return redirect_to root_path, alert: "Not authorized."
+    end
+
+    conversation = Conversation.find_by(client_id: @booking.client_id, artist_profile: artist_profile)
+    conversation.messages.create!(
+      user: current_user,
+      body: "Booking marked as completed: #{@booking.availability.starts_at.strftime('%A %d %B, %H:%M')}."
+    )
+    @booking.completed!
+
+    redirect_to conversation_path(conversation), notice: "Booking marked as completed!"
   end
 
   private

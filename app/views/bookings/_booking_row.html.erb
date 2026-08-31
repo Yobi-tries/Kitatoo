@@ -1,6 +1,14 @@
 <%
   starts_at = booking.availability.starts_at
-  status_label = booking.confirmed? ? "confirmed" : (booking.cancelled? ? "cancelled" : "pending")
+  status_label = if booking.confirmed?
+                   "confirmed"
+                 elsif booking.completed?
+                   "completed"
+                 elsif booking.cancelled?
+                   "cancelled"
+                 else
+                   "pending"
+                 end
   target_path = conversation ? conversation_path(conversation) : nil
 %>
 <div class="booking-row">
