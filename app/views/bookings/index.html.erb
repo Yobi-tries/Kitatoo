@@ -89,17 +89,18 @@
           </div>
         <% end %>
       <% when "upcoming" %>
-        <% upcoming_bookings = @artist_to_complete + @artist_upcoming %>
-        <% if upcoming_bookings.empty? %>
-          <p class="bookings-empty">No confirmed sessions.</p>
-        <% else %>
-          <div class="bookings-list">
-            <% upcoming_bookings.each do |booking| %>
-              <%= render "bookings/booking_row", booking: booking, role: :artist,
-                    conversation: @artist_conversations_by_client[booking.client_id],
-                    show_cancel: false %>
+        <% if @needs_action_dates.any? %>
+          <div class="agenda-needs-action">
+            <% @needs_action_dates.each do |d| %>
+              <%= link_to d.strftime("%b %-d"),
+                    bookings_path(status: "upcoming", address_id: @selected_address&.id, date: d),
+                    class: "agenda-needs-action-chip" %>
             <% end %>
           </div>
+        <% end %>
+
+        <%= turbo_frame_tag "agenda" do %>
+          <%= render "bookings/agenda", date: @agenda_date, bookings: @agenda_bookings %>
         <% end %>
       <% when "history" %>
         <% if @artist_history.empty? %>

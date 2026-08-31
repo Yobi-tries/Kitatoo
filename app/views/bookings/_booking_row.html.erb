@@ -11,7 +11,7 @@
                  end
   target_path = conversation ? conversation_path(conversation) : nil
 %>
-<div class="booking-row">
+<div id="<%= dom_id(booking) %>" class="booking-row">
   <% if role == :client %>
     <% artist_profile = booking.availability.artist_profile %>
     <%= image_tag artist_profile.avatar_url.presence ||

@@ -42,7 +42,7 @@
 
 <div class="conversation-bottom">
   <% if booking&.selected? && is_artist %>
-    <div class="booking-card booking-card--pending">
+    <div id="<%= dom_id(booking) %>" class="booking-card booking-card--pending">
       <div class="booking-card-info">
         <div class="booking-card-info-left">
           <span class="booking-card-label">slot requested</span>
@@ -54,7 +54,7 @@
     </div>
 
   <% elsif booking&.selected? && !is_artist %>
-    <div class="booking-card booking-card--pending">
+    <div id="<%= dom_id(booking) %>" class="booking-card booking-card--pending">
       <div class="booking-card-info">
         <div class="booking-card-info-left">
           <span class="booking-card-label">slot requested</span>
@@ -71,7 +71,7 @@
     </div>
 
   <% elsif booking&.artist_confirmed? && !is_artist %>
-    <div class="booking-card booking-card--artist-confirmed">
+    <div id="<%= dom_id(booking) %>" class="booking-card booking-card--artist-confirmed">
       <div class="booking-card-info">
         <div class="booking-card-info-left">
           <span class="booking-card-label">slot · duration <%= format_duration.call(booking.duration) %></span>
@@ -89,7 +89,7 @@
     </div>
 
   <% elsif booking&.artist_confirmed? && is_artist %>
-    <div class="booking-card booking-card--artist-confirmed">
+    <div id="<%= dom_id(booking) %>" class="booking-card booking-card--artist-confirmed">
       <div class="booking-card-info">
         <div class="booking-card-info-left">
           <span class="booking-card-label">slot · duration <%= format_duration.call(booking.duration) %></span>
@@ -107,7 +107,7 @@
   <% end %>
 
   <% if confirmed_booking %>
-    <div class="booking-card booking-card--confirmed">
+    <div id="<%= dom_id(confirmed_booking) %>" class="booking-card booking-card--confirmed">
       <div class="booking-card-info">
         <div class="booking-card-info-left">
           <span class="booking-card-label">booked · <%= format_duration.call(confirmed_booking.duration) %></span>

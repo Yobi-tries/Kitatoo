@@ -1,5 +1,5 @@
 <% slot_duration = booking.duration || (booking.availability.address.schedule&.dig("slot_duration") || 30) %>
-<div class="booking-request">
+<div id="<%= dom_id(booking) %>" class="booking-request">
   <div class="booking-row">
     <div class="booking-row-avatar"><%= booking.client.username.first(2).upcase %></div>
     <div class="booking-row-body">

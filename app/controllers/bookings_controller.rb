@@ -1,4 +1,6 @@
 class BookingsController < ApplicationController
+  include ActionView::RecordIdentifier
+
   def index
     @artist_profile = current_user.artist_profile
 
@@ -39,6 +41,20 @@ class BookingsController < ApplicationController
     @artist_cancelled = artist_scope.where(status: :cancelled)
                                     .order("availabilities.starts_at DESC")
     @artist_conversations_by_client = @artist_profile.conversations.index_by(&:client_id)
+
+    return unless @status == "upcoming"
+
+    @agenda_date = begin
+      params[:date].present? ? Date.parse(params[:date]) : Date.current
+    rescue Date::Error
+      Date.current
+    end
+    @agenda_bookings = artist_scope.where(status: :confirmed)
+                                   .where(availabilities: { starts_at: @agenda_date.all_day })
+                                   .order("availabilities.starts_at ASC")
+    @needs_action_dates = artist_scope.where(status: :confirmed)
+                                      .where("availabilities.starts_at < ?", Time.current)
+                                      .pluck("availabilities.starts_at").map(&:to_date).uniq.sort
   end
 
   def create
@@ -130,7 +146,10 @@ class BookingsController < ApplicationController
     )
     @booking.cancelled!
 
-    redirect_to conversation_path(conversation), notice: "Booking cancelled."
+    respond_to do |format|
+      format.html { redirect_to conversation_path(conversation), notice: "Booking cancelled." }
+      format.turbo_stream { render turbo_stream: turbo_stream.remove(dom_id(@booking)) }
+    end
   end
 
   def complete
@@ -148,7 +167,10 @@ class BookingsController < ApplicationController
     )
     @booking.completed!
 
-    redirect_to conversation_path(conversation), notice: "Booking marked as completed!"
+    respond_to do |format|
+      format.html { redirect_to conversation_path(conversation), notice: "Booking marked as completed!" }
+      format.turbo_stream { render turbo_stream: turbo_stream.remove(dom_id(@booking)) }
+    end
   end
 
   private
