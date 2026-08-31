@@ -2,7 +2,13 @@ class Message < ApplicationRecord
   belongs_to :conversation, touch: true
   belongs_to :user
 
-  validates :body, presence: true
+  validate :body_or_photo_present
+
+  private
+
+  def body_or_photo_present
+    errors.add(:base, "Message must have text or a photo") unless body.present? || photo_url.present?
+  end
 
   after_create_commit -> {
     broadcast_append_to conversation,
