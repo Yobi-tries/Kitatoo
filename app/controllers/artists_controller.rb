@@ -43,6 +43,9 @@ class ArtistsController < ApplicationController
     @styles = @style_counts.map(&:first)
     @cities = Address.joins(:artist_profile).where(artist_profiles: { published: true })
                      .distinct.order(:city).pluck(:city)
+
+    @map_markers = Address.geocoded.where(artist_profile_id: @artists.map(&:id))
+                          .map { |address| { lat: address.latitude, lng: address.longitude } }
   end
 
   def show

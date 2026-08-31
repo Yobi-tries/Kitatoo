@@ -3,14 +3,74 @@
   padding: 84px 20px 120px;
 }
 
-.home-search {
+.home-hero {
+  position: relative;
+  height: 220px;
+  margin-bottom: 0;
+  border-radius: 16px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  padding: 20px;
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to right, rgba($ink, 0.9) 0%, rgba($ink, 0.6) 40%, transparent 70%);
+    z-index: 1;
+  }
+}
+
+.home-hero-image {
+  position: absolute;
+  inset: 0;
   width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.home-hero-title {
+  position: relative;
+  z-index: 2;
+  margin: 0;
+  text-align: left;
+  line-height: 1.05;
+}
+
+.home-hero-title-lead {
+  display: block;
+  font-family: $body-font;
+  font-size: 24px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  color: $on-primary;
+  text-shadow: 0 2px 8px rgba($ink, 0.9);
+}
+
+.home-hero-title-strong {
+  display: block;
+  font-family: $headers-font;
+  font-size: 42px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: $primary-custom;
+  text-shadow: 0 0 14px rgba($on-primary, 0.95), 0 1px 3px rgba($on-primary, 0.8);
+}
+
+.home-search {
+  position: relative;
+  z-index: 3;
+  display: block;
+  margin: -26px auto 0;
+  width: calc(100% - 36px);
   height: 48px;
   padding: 0 14px;
   border-radius: 12px;
   border: none;
-  background: $surface;
-  box-shadow: inset 0 -2px 0 rgba($ink, 0.10);
+  background: rgba($surface, 0.86);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 6px 18px rgba($ink, 0.22), inset 0 -2px 0 rgba($ink, 0.10);
   font-size: 15px;
   color: $ink;
 
@@ -66,9 +126,9 @@
 }
 
 .style-tile {
-  flex: 0 0 132px;
+  flex: 0 0 124px;
   box-sizing: border-box;
-  height: 92px;
+  height: 148px;
   border-radius: 14px;
   background: $ink;
   padding: 12px;
@@ -146,6 +206,52 @@
 .home-scroll-dot--active {
   width: 22px;
   background: $ink;
+}
+
+.home-map {
+  height: 220px;
+  border-radius: 16px;
+  margin-bottom: 16px;
+  background: $placeholder-bg;
+}
+
+.view-switch {
+  align-self: center;
+  display: inline-flex;
+  gap: 2px;
+  padding: 3px;
+  border-radius: 999px;
+  background: $surface-dim;
+  flex-shrink: 0;
+}
+
+.view-switch-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  font-size: 13px;
+  font-weight: 600;
+  color: $text-secondary;
+  cursor: pointer;
+  transition: background-color 150ms ease, color 150ms ease;
+
+  i {
+    font-size: 12px;
+  }
+
+  &:hover {
+    color: $ink;
+  }
+}
+
+.view-switch-option--active {
+  background: $primary-custom;
+  color: $on-primary;
+  box-shadow: 0 1px 3px rgba($ink, 0.18);
 }
 
 .home-artists-list {
