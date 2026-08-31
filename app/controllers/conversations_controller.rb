@@ -33,6 +33,11 @@ class ConversationsController < ApplicationController
     conversation = Conversation.find_or_create_by!(client: current_user, artist_profile: artist_profile)
     message = conversation.messages.new(message_params)
     message.user = current_user
+    if params.dig(:message, :photo).present?
+      upload = Cloudinary::Uploader.upload(params[:message][:photo].tempfile.path)
+      message.photo_url = upload["secure_url"]
+      message.photo_public_id = upload["public_id"]
+    end
 
     if message.save
       redirect_to conversation

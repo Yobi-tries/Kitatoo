@@ -11,7 +11,7 @@
             client_id: @conversation.client_id, status: :confirmed).first %>
 <% has_booking = booking.present? || confirmed_booking.present? %>
 
-<div class="container conversation <%= 'has-booking-card' if has_booking %>" style="padding-top: 64px;">
+<div class="container conversation <%= 'has-booking-card' if has_booking %>" style="padding-top: 0;">
 
   <div class="conversation-header">
     <%= link_to conversations_path, class: "conversation-header-back" do %>
@@ -149,15 +149,19 @@
     </div>
   <% end %>
 
-<div class="conversation-composer">
-  <button type="button" class="conversation-composer-attach">
+<%= form_with model: Message.new, url: conversation_messages_path(@conversation), html: { multipart: true }, class: "conversation-composer", data: { controller: "photo-attach" } do |f| %>
+  <label class="conversation-composer-attach" for="message_photo">
     <i class="fa-solid fa-plus"></i>
+  </label>
+  <%= file_field_tag "message[photo]", accept: "image/*", class: "d-none", id: "message_photo",
+        data: { photo_attach_target: "input", action: "change->photo-attach#preview" } %>
+  <div class="conversation-composer-preview d-none" data-photo-attach-target="preview">
+    <img data-photo-attach-target="image" class="conversation-composer-preview-img">
+    <button type="button" class="conversation-composer-preview-remove" data-action="photo-attach#remove">&times;</button>
+  </div>
+  <%= f.text_field :body, class: "conversation-composer-input", placeholder: "Message #{@conversation.other_participant_name(current_user)}...", autocomplete: "off" %>
+  <button type="submit" class="conversation-composer-send">
+    <i class="fa-solid fa-paper-plane"></i>
   </button>
-  <%= form_with model: Message.new, url: conversation_messages_path(@conversation), class: "d-flex flex-grow-1 gap-2" do |f| %>
-    <%= f.text_field :body, class: "conversation-composer-input", placeholder: "Message #{@conversation.other_participant_name(current_user)}...", autocomplete: "off" %>
-    <button type="submit" class="conversation-composer-send">
-      <i class="fa-solid fa-paper-plane"></i>
-    </button>
-  <% end %>
-</div>
+<% end %>
 </div>

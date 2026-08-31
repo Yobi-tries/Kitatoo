@@ -7,6 +7,7 @@ class MessagesController < ApplicationController
 
     @message = @conversation.messages.new(message_params)
     @message.user = current_user
+    upload_photo if params.dig(:message, :photo).present?
     @message.save
     @messages = @conversation.messages.order(:created_at) unless @message.persisted?
 
@@ -30,5 +31,11 @@ class MessagesController < ApplicationController
 
   def message_params
     params.require(:message).permit(:body)
+  end
+
+  def upload_photo
+    upload = Cloudinary::Uploader.upload(params[:message][:photo].tempfile.path)
+    @message.photo_url = upload["secure_url"]
+    @message.photo_public_id = upload["public_id"]
   end
 end
