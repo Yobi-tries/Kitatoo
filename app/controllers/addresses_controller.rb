@@ -36,8 +36,16 @@ class AddressesController < ApplicationController
   end
 
   def destroy
+    if Booking.where(availability_id: @address.availability_ids).exists?
+      return redirect_to artist_profile_addresses_path(address_id: @address.id),
+                          alert: "This location has bookings attached and can't be deleted."
+    end
+
     @address.destroy
     redirect_to artist_profile_addresses_path, notice: "Address removed."
+  rescue ActiveRecord::InvalidForeignKey
+    redirect_to artist_profile_addresses_path(address_id: @address.id),
+                alert: "This location has bookings attached and can't be deleted."
   end
 
   private
