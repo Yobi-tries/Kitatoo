@@ -1,5 +1,4 @@
 <%= turbo_stream_from @conversation %>
-<%= render "shared/topappbar" %>
 
 <% booking = Booking.joins(:availability)
      .where(availabilities: { artist_profile_id: @conversation.artist_profile_id },

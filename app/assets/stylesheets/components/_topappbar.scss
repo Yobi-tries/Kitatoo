@@ -6,61 +6,103 @@
   height: 64px;
   padding: 0 20px;
   background: transparent;
+  transition: background-color 300ms ease, backdrop-filter 300ms ease;
 }
 
+.topappbar--scrolled {
+  background: rgba($surface, 0.70);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+}
 
-.topappbar-btn {
+.topappbar-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.topappbar-title {
+  font-family: 'Syne', Arial, sans-serif;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: $ink;
+  text-decoration: none;
+  line-height: 44px;
+
+  &:hover {
+    color: $ink;
+  }
+}
+
+.topappbar-search-btn {
   width: 44px;
   height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: none;
+  border-radius: 999px;
   border: none;
-  padding: 0;
-  color: $ink;
-  text-decoration: none;
+  background: rgba($surface, 0.70);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  box-shadow: 0 4px 24px rgba($ink, 0.10), inset 0 0.5px 0 rgba(255, 255, 255, 0.40);
+  color: $text-muted-custom;
   cursor: pointer;
-  transition: color 150ms ease;
+  transition: color 200ms ease, background-color 200ms ease;
+
+  .material-symbols-outlined {
+    font-size: 20px;
+  }
 
   &:hover {
     color: $primary-custom;
-  }
-
-  .fa-solid {
-    font-size: 24px;
+    background: rgba($primary-custom, 0.10);
   }
 }
 
-.topappbar-arrow {
-  .material-symbols-outlined {
-    font-size: 20px;
-    transition: transform 200ms ease;
-  }
-
+.search-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1055;
+  background: rgba($ink, 0.25);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
 }
 
-.topappbar:has(~ #sideMenu.show) .topappbar-arrow .material-symbols-outlined,
-.topappbar:has(~ #sideMenu.showing) .topappbar-arrow .material-symbols-outlined {
-  transform: rotate(180deg);
-}
-
-.topappbar-left {
+.search-modal-bar {
+  position: fixed;
+  top: 10px;
+  left: 20px;
+  right: 20px;
+  z-index: 1060;
+  height: 48px;
+  border-radius: 14px;
+  padding: 0 14px;
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 10px;
+  background: $surface;
+  box-shadow: 0 8px 40px rgba($ink, 0.18), 0 0 0 1px rgba($ink, 0.06);
 }
 
-.topappbar-title {
-  font-family: 'Syne', Arial, sans-serif;
-  font-size: 17px;
-  font-weight: 800;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: #16130F;
-  text-decoration: none;
+.search-modal-icon {
+  font-size: 20px;
+  color: $text-muted-custom;
+  flex-shrink: 0;
+}
 
-  &:hover {
-    color: $ink;
+.search-modal-input {
+  flex: 1;
+  height: 48px;
+  border: none;
+  background: none;
+  font-size: 15px;
+  color: $ink;
+  outline: none;
+
+  &::placeholder {
+    color: $text-muted-custom;
   }
 }
