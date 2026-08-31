@@ -106,6 +106,10 @@
         <% if @artist_history.empty? %>
           <p class="bookings-empty">No completed sessions yet.</p>
         <% else %>
+          <%= link_to bookings_path(format: :csv, address_id: @selected_address&.id, status: "history"),
+                class: "bookings-csv-link" do %>
+            <i class="fa-solid fa-download"></i> Download CSV
+          <% end %>
           <div class="bookings-list">
             <% @artist_history.each do |booking| %>
               <%= render "bookings/booking_row", booking: booking, role: :artist,

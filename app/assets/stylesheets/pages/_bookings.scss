@@ -215,6 +215,26 @@
   text-decoration: none;
 }
 
+.bookings-csv-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  border-radius: 999px;
+  padding: 8px 16px;
+  margin-bottom: 12px;
+  background: $ink;
+  color: $on-primary;
+  text-decoration: none;
+  transition: filter 150ms ease;
+
+  &:hover {
+    filter: brightness(1.15);
+    color: $on-primary;
+  }
+}
+
 .bookings-empty {
   padding: 18px 4px;
   font-size: 13px;

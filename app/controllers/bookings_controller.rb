@@ -1,3 +1,5 @@
+require "csv"
+
 class BookingsController < ApplicationController
   include ActionView::RecordIdentifier
 
@@ -42,19 +44,26 @@ class BookingsController < ApplicationController
                                     .order("availabilities.starts_at DESC")
     @artist_conversations_by_client = @artist_profile.conversations.index_by(&:client_id)
 
-    return unless @status == "upcoming"
-
-    @agenda_date = begin
-      params[:date].present? ? Date.parse(params[:date]) : Date.current
-    rescue Date::Error
-      Date.current
+    if @status == "upcoming"
+      @agenda_date = begin
+        params[:date].present? ? Date.parse(params[:date]) : Date.current
+      rescue Date::Error
+        Date.current
+      end
+      @agenda_bookings = artist_scope.where(status: :confirmed)
+                                     .where(availabilities: { starts_at: @agenda_date.all_day })
+                                     .order("availabilities.starts_at ASC")
+      @needs_action_dates = artist_scope.where(status: :confirmed)
+                                        .where("availabilities.starts_at < ?", Time.current)
+                                        .pluck("availabilities.starts_at").map(&:to_date).uniq.sort
     end
-    @agenda_bookings = artist_scope.where(status: :confirmed)
-                                   .where(availabilities: { starts_at: @agenda_date.all_day })
-                                   .order("availabilities.starts_at ASC")
-    @needs_action_dates = artist_scope.where(status: :confirmed)
-                                      .where("availabilities.starts_at < ?", Time.current)
-                                      .pluck("availabilities.starts_at").map(&:to_date).uniq.sort
+
+    respond_to do |format|
+      format.html
+      format.csv do
+        send_data history_csv(@artist_history), filename: "booking-history-#{Date.current.iso8601}.csv"
+      end
+    end
   end
 
   def create
@@ -199,5 +208,21 @@ class BookingsController < ApplicationController
 
   def booking_params
     params.require(:booking).permit(:address_id, :starts_at, :ends_at, :description)
+  end
+
+  def history_csv(bookings)
+    CSV.generate(headers: true) do |csv|
+      csv << ["Client", "Date", "Time", "Duration", "Address", "Description"]
+      bookings.each do |booking|
+        csv << [
+          booking.client.username,
+          booking.availability.starts_at.strftime("%Y-%m-%d"),
+          booking.availability.starts_at.strftime("%H:%M"),
+          booking.duration ? "#{booking.duration / 60}h#{format('%02d', booking.duration % 60)}" : "",
+          booking.availability.address.label.presence || booking.availability.address.city,
+          booking.description
+        ]
+      end
+    end
   end
 end
