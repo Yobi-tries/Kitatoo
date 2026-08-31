@@ -67,9 +67,40 @@ export default class extends Controller {
 
   #addMarkersToMap() {
     this.markersValue.forEach((marker) => {
-      new mapboxgl.Marker()
+      const popup = new mapboxgl.Popup({ offset: 24, closeButton: false })
+        .setHTML(`
+          <a class="map-popup" href="${marker.url}">
+            <img class="map-popup-avatar" src="${marker.avatar}" alt="">
+            <span class="map-popup-body">
+              <span class="map-popup-name">${marker.name}</span>
+              <span class="map-popup-city">${marker.city}${marker.distance ? ` &middot; ${marker.distance} km` : ""}</span>
+            </span>
+          </a>
+        `)
+
+      const pin = new mapboxgl.Marker()
         .setLngLat([ marker.lng, marker.lat ])
+        .setPopup(popup)
         .addTo(this.map)
+
+      let timer
+
+      const open = () => {
+        clearTimeout(timer)
+        if (!popup.isOpen()) popup.addTo(this.map)
+      }
+
+      const close = () => {
+        timer = setTimeout(() => popup.remove(), 120)
+      }
+
+      pin.getElement().addEventListener("mouseenter", open)
+      pin.getElement().addEventListener("mouseleave", close)
+
+      popup.on("open", () => {
+        popup.getElement().addEventListener("mouseenter", open)
+        popup.getElement().addEventListener("mouseleave", close)
+      })
     })
   }
 
