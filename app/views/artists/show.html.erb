@@ -34,7 +34,19 @@
       <%= link_to "Edit my profile", edit_artist_profile_path, class: "artist-action-edit" %>
     </div>
   <% else %>
-    <div class="artist-actions">
+    <div class="artist-actions" style="grid-template-columns: auto 1fr 1.35fr;">
+      <% if user_signed_in? %>
+        <% liked = current_user.likes.exists?(artist_profile: @artist_profile) %>
+        <% if liked %>
+          <%= button_to artist_profile_like_path(@artist_profile), method: :delete, class: "artist-action-like artist-action-like--active" do %>
+            <i class="fa-solid fa-heart"></i>
+          <% end %>
+        <% else %>
+          <%= button_to artist_profile_like_path(@artist_profile), method: :post, class: "artist-action-like" do %>
+            <i class="fa-regular fa-heart"></i>
+          <% end %>
+        <% end %>
+      <% end %>
       <%= link_to new_artist_profile_conversation_path(@artist_profile), class: "artist-action-message" do %>
         <i class="fa-regular fa-comment"></i> Message
       <% end %>

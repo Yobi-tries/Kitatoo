@@ -16,6 +16,11 @@
       <span class="material-symbols-outlined">person</span>
       <span class="botappbar-label">Profile</span>
     <% end %>
+  <% elsif user_signed_in? %>
+    <%= link_to user_path, class: "botappbar-link #{'active' if controller_name == 'users'}" do %>
+      <span class="material-symbols-outlined">person</span>
+      <span class="botappbar-label">Profile</span>
+    <% end %>
   <% else %>
     <a class="botappbar-link" href="#">
       <span class="material-symbols-outlined">person</span>
