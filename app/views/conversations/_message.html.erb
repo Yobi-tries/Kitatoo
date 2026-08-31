@@ -1,6 +1,11 @@
 <div id="<%= dom_id(message) %>" class="message-group" data-sender-id="<%= message.user_id %>">
   <div class="message-bubble">
-    <%= message.body %>
+    <% if message.photo_url.present? %>
+      <%= image_tag message.photo_url, class: "message-photo" %>
+    <% end %>
+    <% if message.body.present? %>
+      <%= message.body %>
+    <% end %>
   </div>
   <span class="message-timestamp"><%= message.created_at.strftime("%H:%M") %></span>
 </div>
