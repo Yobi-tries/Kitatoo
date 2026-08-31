@@ -21,6 +21,7 @@ Rails.application.routes.draw do
     resources :availabilities, only: [:index], as: :public_availabilities
     resources :conversations, only: [:new, :create]
     resources :bookings, only: [:create]
+    resource :like, only: [:create, :destroy]
   end
 
   resources :conversations, only: [:index, :show] do
@@ -31,7 +32,10 @@ Rails.application.routes.draw do
     patch :confirm, on: :member
     patch :accept, on: :member
     patch :cancel, on: :member
+    patch :complete, on: :member
   end
+
+  resource :user, only: [:show, :edit, :update]
 
   resources :tattoo_generations, only: [:new, :create, :show]
 

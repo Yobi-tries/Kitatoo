@@ -42,8 +42,6 @@ class ArtistProfilesController < ApplicationController
       pricing_grid: [ :prestation, :prix ]
     )
 
-    permitted[:schedule] = build_schedule if params[:artist_profile][:schedule].present?
-
     if permitted[:pricing_grid]
       permitted[:pricing_grid] = permitted[:pricing_grid].values.reject { |item| item["prestation"].blank? }
     end
@@ -68,26 +66,6 @@ class ArtistProfilesController < ApplicationController
     upload = Cloudinary::Uploader.upload(params[:artist_profile][:avatar].tempfile.path)
     @artist_profile.avatar_url = upload["secure_url"]
     @artist_profile.avatar_public_id = upload["public_id"]
-  end
-
-  def build_schedule
-    s = params[:artist_profile][:schedule]
-    days = {}
-    %w[monday tuesday wednesday thursday friday saturday sunday].each do |day|
-      if s.dig(:days, day, :enabled) == "1"
-        days[day] = { "start" => s.dig(:days, day, :start), "end" => s.dig(:days, day, :end) }
-      else
-        days[day] = nil
-      end
-    end
-    days_off = (s[:days_off] || {}).values.reject(&:blank?)
-    {
-      "slot_duration" => s[:slot_duration].to_i,
-      "period_start" => s[:period_start],
-      "period_end" => s[:period_end],
-      "days" => days,
-      "days_off" => days_off
-    }
   end
 
   def redirect_if_artist_profile_exists

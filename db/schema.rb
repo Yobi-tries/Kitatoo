@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_28_124142) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_31_083510) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -21,6 +21,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_28_124142) do
     t.string "label"
     t.float "latitude"
     t.float "longitude"
+    t.text "schedule"
     t.string "street", null: false
     t.datetime "updated_at", null: false
     t.string "zipcode", null: false
@@ -87,6 +88,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_28_124142) do
     t.index ["artist_profile_id"], name: "index_conversations_on_artist_profile_id"
     t.index ["client_id", "artist_profile_id"], name: "index_conversations_on_client_and_artist", unique: true
     t.index ["client_id"], name: "index_conversations_on_client_id"
+  end
+
+  create_table "likes", force: :cascade do |t|
+    t.bigint "artist_profile_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["artist_profile_id"], name: "index_likes_on_artist_profile_id"
+    t.index ["user_id", "artist_profile_id"], name: "index_likes_on_user_id_and_artist_profile_id", unique: true
+    t.index ["user_id"], name: "index_likes_on_user_id"
   end
 
   create_table "messages", force: :cascade do |t|
@@ -300,6 +311,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_28_124142) do
   end
 
   create_table "users", force: :cascade do |t|
+    t.string "avatar_public_id"
+    t.string "avatar_url"
     t.date "birthdate", null: false
     t.string "city"
     t.datetime "created_at", null: false
@@ -329,6 +342,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_28_124142) do
   add_foreign_key "bookings", "users", column: "client_id"
   add_foreign_key "conversations", "artist_profiles"
   add_foreign_key "conversations", "users", column: "client_id"
+  add_foreign_key "likes", "artist_profiles"
+  add_foreign_key "likes", "users"
   add_foreign_key "messages", "conversations"
   add_foreign_key "messages", "users"
   add_foreign_key "portfolio_items", "artist_profiles"

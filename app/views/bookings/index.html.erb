@@ -59,11 +59,12 @@
       <h2 class="home-section-title">Requests received</h2>
     </div>
 
-    <% if @artist_pending.empty? && @artist_upcoming.empty? && @artist_history.empty? && @artist_cancelled.empty? %>
+    <% if @artist_pending.empty? && @artist_upcoming.empty? && @artist_to_complete.empty? && @artist_history.empty? && @artist_cancelled.empty? %>
       <p class="bookings-empty">No booking requests yet.</p>
     <% else %>
       <% [["Pending requests", @artist_pending], ["Upcoming", @artist_upcoming],
-          ["History", @artist_history], ["Cancelled", @artist_cancelled]].each do |title, bookings| %>
+          ["To complete", @artist_to_complete], ["History", @artist_history],
+          ["Cancelled", @artist_cancelled]].each do |title, bookings| %>
         <% next if bookings.empty? %>
         <div class="home-section-header">
           <h3 class="home-section-title"><%= title %></h3>

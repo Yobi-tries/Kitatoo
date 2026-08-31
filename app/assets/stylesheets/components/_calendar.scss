@@ -1,5 +1,4 @@
 .calendar {
-  position: relative;
   background: $surface;
   border-radius: 16px;
   padding: 14px 12px;
@@ -117,6 +116,7 @@
   gap: 8px;
   padding-top: 10px;
   margin-top: 8px;
+  margin-bottom: 0;
   border-top: 1px solid $hairline;
 
   &::before {
@@ -125,6 +125,7 @@
     height: 4px;
     border-radius: 999px;
     background: $accent;
+    flex-shrink: 0;
   }
 
   font-size: 11px;
@@ -132,43 +133,37 @@
   color: $text-muted-custom;
 }
 
-.calendar-popup {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+.calendar-times {
   background: $surface;
-  border: none;
   border-radius: 16px;
-  box-shadow: 0 2px 0 rgba($ink, 0.10), 0 10px 20px -16px rgba($ink, 0.5);
   padding: 16px;
-  min-width: 240px;
-  z-index: 10;
-}
-
-.calendar-popup-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 12px;
-
-  strong {
-    font-family: $headers-font;
-    font-size: 16px;
-    font-weight: 700;
-  }
+  margin-top: 16px;
+  box-shadow: 0 2px 0 rgba($ink, 0.10), 0 10px 20px -16px rgba($ink, 0.5);
 }
 
 .calendar-popup-slots {
-  max-height: 250px;
-  overflow-y: auto;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.calendar-slot-group-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: $ink;
+  margin-bottom: 8px;
+}
+
+.calendar-slot-row {
+  display: flex;
+  flex-wrap: wrap;
   gap: 8px;
 }
 
 .calendar-slot {
+  min-width: 84px;
   height: 46px;
+  padding: 0 16px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -178,9 +173,14 @@
   font-size: 14px;
   font-weight: 600;
   color: $ink;
+  cursor: pointer;
   transition: background-color 150ms ease, color 150ms ease;
 
   &:hover {
+    background: $surface-dim;
+  }
+
+  &:has(input:checked) {
     background: $primary-custom;
     color: $on-primary;
     box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.25);

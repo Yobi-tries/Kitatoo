@@ -1,5 +1,4 @@
 <%= turbo_stream_from @conversation %>
-<%= render "shared/topappbar" %>
 
 <% booking = Booking.joins(:availability)
      .where(availabilities: { artist_profile_id: @conversation.artist_profile_id },
@@ -132,13 +131,19 @@
         <span class="booking-card-pill">set</span>
       </div>
       <div class="booking-card-strip">
-        <%= link_to artist_path(@conversation.artist_profile), class: "booking-card-profile" do %>
-          <i class="fa-solid fa-location-dot"></i> Get directions
-        <% end %>
         <% if is_artist %>
+          <%= link_to complete_booking_path(confirmed_booking),
+                data: { turbo_method: :patch, turbo_confirm: "Mark this booking as completed?" },
+                class: "booking-card-profile" do %>
+            <i class="fa-solid fa-check"></i> Mark as completed
+          <% end %>
           <%= link_to "✕", cancel_booking_path(confirmed_booking),
                 data: { turbo_method: :patch, turbo_confirm: "Cancel this confirmed booking?" },
                 class: "booking-card-cancel", title: "Cancel" %>
+        <% else %>
+          <%= link_to artist_path(@conversation.artist_profile), class: "booking-card-profile" do %>
+            <i class="fa-solid fa-location-dot"></i> Get directions
+          <% end %>
         <% end %>
       </div>
     </div>

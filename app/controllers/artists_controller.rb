@@ -55,8 +55,5 @@ class ArtistsController < ApplicationController
     amounts = @prices.map { |row| row["prix"].to_f }.reject(&:zero?)
     @min_price = amounts.min&.to_i
     @max_price = amounts.max&.to_i
-    @markers = @artist_profile.addresses.geocoded.map do |address|
-      { lat: address.latitude, lng: address.longitude }
-    end
   end
 end

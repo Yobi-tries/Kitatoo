@@ -13,6 +13,13 @@ class AvailabilitiesController < ApplicationController
     @prefill_address_id = draft["address_id"]
     @prefill_starts_at = draft["starts_at"]
     @prefill_ends_at = draft["ends_at"]
+
+    selected_id = params[:address_id].presence || @prefill_address_id
+    @selected_address = if selected_id
+      @addresses.find_by(id: selected_id)
+    elsif @addresses.one?
+      @addresses.first
+    end
   end
 
   def create

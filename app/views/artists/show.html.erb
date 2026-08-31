@@ -34,7 +34,19 @@
       <%= link_to "Edit my profile", edit_artist_profile_path, class: "artist-action-edit" %>
     </div>
   <% else %>
-    <div class="artist-actions">
+    <div class="artist-actions" style="grid-template-columns: auto 1fr 1.35fr;">
+      <% if user_signed_in? %>
+        <% liked = current_user.likes.exists?(artist_profile: @artist_profile) %>
+        <% if liked %>
+          <%= button_to artist_profile_like_path(@artist_profile), method: :delete, class: "artist-action-like artist-action-like--active" do %>
+            <i class="fa-solid fa-heart"></i>
+          <% end %>
+        <% else %>
+          <%= button_to artist_profile_like_path(@artist_profile), method: :post, class: "artist-action-like" do %>
+            <i class="fa-regular fa-heart"></i>
+          <% end %>
+        <% end %>
+      <% end %>
       <%= link_to new_artist_profile_conversation_path(@artist_profile), class: "artist-action-message" do %>
         <i class="fa-regular fa-comment"></i> Message
       <% end %>
@@ -62,7 +74,7 @@
 
   <div class="artist-section">
     <% @artist_profile.addresses.each do |address| %>
-      <div class="artist-info-card">
+      <div class="artist-info-card position-relative">
         <div class="artist-info-card--row">
           <span class="artist-info-card-icon"><i class="fa-solid fa-location-dot"></i></span>
           <div class="flex-grow-1">
@@ -70,15 +82,9 @@
             <span class="artist-address-detail"><%= address.street %>, <%= address.zipcode %> <%= address.city %></span>
           </div>
           <% if address.latitude.present? %>
-            <a href="https://www.google.com/maps/search/?api=1&query=<%= address.latitude %>,<%= address.longitude %>" target="_blank" class="artist-map-link">Map</a>
+            <a href="https://www.google.com/maps/search/?api=1&query=<%= address.latitude %>,<%= address.longitude %>" target="_blank" class="artist-map-link stretched-link">Map</a>
           <% end %>
         </div>
-        <% if @markers.any? %>
-          <div class="artist-map"
-               data-controller="map"
-               data-map-markers-value="<%= @markers.to_json %>"
-               data-map-api-key-value="<%= ENV["MAPBOX_API_KEY"] %>"></div>
-        <% end %>
       </div>
     <% end %>
   </div>
@@ -136,13 +142,54 @@
     <% else %>
       <h2 class="artist-section-title">Portfolio</h2>
       <% if @artist_profile.portfolio_items.any? %>
-        <div class="row g-2 mb-4">
-          <% @artist_profile.portfolio_items.each do |item| %>
-            <div class="col-4">
-              <%= image_tag item.image_url, class: "img-fluid rounded-2", alt: item.caption %>
+               <div data-controller="album">
+          <div class="row g-2 mb-4">
+            <% @artist_profile.portfolio_items.each_with_index do |item, index| %>
+              <div class="col-4">
+                <button type="button" class="btn p-0 border-0 w-100"
+                        data-bs-toggle="modal" data-bs-target="#albumModal"
+                        data-action="click->album#open"
+                        data-album-index="<%= index %>">
+                  <%= image_tag item.image_url, class: "img-fluid rounded-2", alt: item.caption %>
+                </button>
+              </div>
+            <% end %>
+          </div>
+
+          <div class="modal fade" id="albumModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-fullscreen">
+              <div class="modal-content bg-dark">
+                <div class="modal-header border-0">
+                  <button type="button" class="btn-close btn-close-white ms-auto"
+                          data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body d-flex align-items-center p-0">
+                  <div id="albumCarousel" class="carousel slide w-100">
+                    <div class="carousel-inner">
+                      <% @artist_profile.portfolio_items.each_with_index do |item, index| %>
+                        <div class="carousel-item <%= "active" if index.zero? %>"
+                             data-album-target="slide">
+                          <%= image_tag item.image_url, class: "d-block w-100", alt: item.caption %>
+                        </div>
+                      <% end %>
+                    </div>
+                    <button class="carousel-control-prev" type="button"
+                            data-bs-target="#albumCarousel" data-bs-slide="prev">
+                      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                      <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button"
+                            data-bs-target="#albumCarousel" data-bs-slide="next">
+                      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                      <span class="visually-hidden">Next</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
-          <% end %>
+          </div>
         </div>
+
       <% else %>
         <p class="text-muted small">No photos yet.</p>
       <% end %>

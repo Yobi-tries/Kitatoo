@@ -9,7 +9,7 @@ class Booking < ApplicationRecord
   validates :description, presence: true
   validate :max_active_bookings_per_artist, on: :create
 
-  enum :status, { selected: 0, artist_confirmed: 1, confirmed: 2, cancelled: 3 }
+  enum :status, { selected: 0, artist_confirmed: 1, confirmed: 2, cancelled: 3, completed: 4 }
 
   after_update_commit :broadcast_status_change
 
@@ -29,7 +29,7 @@ class Booking < ApplicationRecord
     return unless client && availability&.artist_profile
 
     exists = Booking.joins(:availability)
-      .where.not(status: :cancelled)
+      .where.not(status: [ :cancelled, :completed ])
       .where(client: client, availabilities: { artist_profile_id: availability.artist_profile_id })
       .exists?
 

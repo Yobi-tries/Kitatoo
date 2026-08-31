@@ -1,30 +1,21 @@
-<% tattoo_generation = current_user.last_tattoo_generation if user_signed_in? %>
+<header class="topappbar d-flex justify-content-between align-items-center" data-controller="search-modal topappbar">
+  <%= link_to "Kitatoo", root_path, class: "topappbar-title" %>
 
-<header class="topappbar d-flex justify-content-between align-items-center">
-  <% if user_signed_in? %>
-    <button class="topappbar-btn" data-bs-toggle="offcanvas" data-bs-target="#sideMenu">
-      <span class="material-symbols-outlined">menu</span>
+  <div class="topappbar-right">
+    <button type="button" class="topappbar-search-btn" data-action="search-modal#open" aria-label="Search">
+      <span class="material-symbols-outlined">search</span>
     </button>
-  <% else %>
-    <span class="topappbar-btn"></span>
-  <% end %>
-
-  <%= link_to root_path do %>
-    <%= image_tag "kitatoo-logo-ink.png", alt: "Kitatoo", class: "topappbar-logo" %>
-  <% end %>
-
-  <% if !user_signed_in? %>
-    <%= link_to new_user_session_path, class: "topappbar-btn", "aria-label": "Sign in or sign up" do %>
-      <i class="fa-solid fa-right-to-bracket"></i>
-    <% end %>
-  <% elsif local_assigns[:hide_right] %>
-    <span class="topappbar-btn"></span>
-  <% else %>
-    <button type="button" class="topappbar-btn" data-bs-toggle="offcanvas" data-bs-target="#tattooGeneratorDrawer" aria-label="Generate a tattoo with AI">
-      <%= render "tattoo_generations/robot_badge", tattoo_generation: tattoo_generation %>
-    </button>
-  <% end %>
+  </div>
 </header>
+
+<div class="search-modal-overlay d-none" id="searchModalOverlay">
+  <%= form_with url: root_path, method: :get, class: "search-modal-bar", id: "searchModalBar" do %>
+    <span class="material-symbols-outlined search-modal-icon">search</span>
+    <%= text_field_tag :query, params[:query],
+          placeholder: "Search artists, styles, studios...",
+          class: "search-modal-input" %>
+  <% end %>
+</div>
 
 <div class="offcanvas offcanvas-start d-flex flex-column" id="sideMenu">
   <div class="offcanvas-header">
@@ -46,4 +37,7 @@
 
 <%= render "shared/portfolio_upload_modal" if user_signed_in? && current_user.artist_profile.present? %>
 
-<%= render "tattoo_generations/drawer", tattoo_generation: tattoo_generation if user_signed_in? %>
+<% if user_signed_in? %>
+  <% tattoo_generation = current_user.last_tattoo_generation %>
+  <%= render "tattoo_generations/drawer", tattoo_generation: tattoo_generation %>
+<% end %>
