@@ -62,7 +62,7 @@
 
   <div class="artist-section">
     <% @artist_profile.addresses.each do |address| %>
-      <div class="artist-info-card">
+      <div class="artist-info-card position-relative">
         <div class="artist-info-card--row">
           <span class="artist-info-card-icon"><i class="fa-solid fa-location-dot"></i></span>
           <div class="flex-grow-1">
@@ -70,7 +70,7 @@
             <span class="artist-address-detail"><%= address.street %>, <%= address.zipcode %> <%= address.city %></span>
           </div>
           <% if address.latitude.present? %>
-            <a href="https://www.google.com/maps/search/?api=1&query=<%= address.latitude %>,<%= address.longitude %>" target="_blank" class="artist-map-link">Map</a>
+            <a href="https://www.google.com/maps/search/?api=1&query=<%= address.latitude %>,<%= address.longitude %>" target="_blank" class="artist-map-link stretched-link">Map</a>
           <% end %>
         </div>
       </div>
