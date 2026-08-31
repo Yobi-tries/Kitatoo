@@ -1,7 +1,7 @@
 <% month ||= Date.today %>
 <% prefill_starts_at ||= nil %>
 <% prefill_ends_at ||= nil %>
-<% schedule = artist_profile.schedule %>
+<% schedule = address.schedule %>
 <% prefill_label = nil
    if prefill_starts_at.present?
      starts_time = Time.zone.parse(prefill_starts_at)
@@ -10,54 +10,57 @@
    end %>
 
 <%= turbo_frame_tag "calendar" do %>
-  <div class="calendar" data-controller="calendar"
+  <div class="calendar-wrap" data-controller="calendar"
        data-calendar-prefill-starts-at-value="<%= prefill_starts_at %>"
        data-calendar-prefill-ends-at-value="<%= prefill_ends_at %>"
        data-calendar-prefill-label-value="<%= prefill_label %>">
-    <div class="calendar-nav">
-      <%= link_to "‹", artist_profile_public_availabilities_path(artist_profile, month: (month - 1.month).strftime("%Y-%m")),
-          class: "calendar-nav-btn", data: { turbo_frame: "calendar" } %>
-      <span class="calendar-month"><%= month.strftime("%B %Y") %></span>
-      <%= link_to "›", artist_profile_public_availabilities_path(artist_profile, month: (month + 1.month).strftime("%Y-%m")),
-          class: "calendar-nav-btn", data: { turbo_frame: "calendar" } %>
-    </div>
+    <div class="calendar">
+      <div class="calendar-nav">
+        <%= link_to "‹", artist_profile_public_availabilities_path(artist_profile, month: (month - 1.month).strftime("%Y-%m"), address_id: address.id),
+            class: "calendar-nav-btn", data: { turbo_frame: "calendar" } %>
+        <span class="calendar-month"><%= month.strftime("%B %Y") %></span>
+        <%= link_to "›", artist_profile_public_availabilities_path(artist_profile, month: (month + 1.month).strftime("%Y-%m"), address_id: address.id),
+            class: "calendar-nav-btn", data: { turbo_frame: "calendar" } %>
+      </div>
 
-    <div class="calendar-grid">
-      <% %w[Mon Tue Wed Thu Fri Sat Sun].each do |name| %>
-        <div class="calendar-weekday"><%= name %></div>
-      <% end %>
-
-      <% calendar_weeks(month).each do |week| %>
-        <% week.each do |day| %>
-          <% in_month = day.month == month.month %>
-          <% slots = in_month ? slots_for_day(schedule, day, artist_profile: artist_profile) : [] %>
-          <% available = slots.any? %>
-
-          <div class="calendar-day
-                      <%= 'calendar-day--outside' unless in_month %>
-                      <%= 'calendar-day--available' if available %>
-                      <%= 'calendar-day--today' if day == Date.today %>"
-               <% if available %>
-               role="button"
-               data-action="click->calendar#showSlots"
-               data-calendar-date-param="<%= l(day, format: '%A %d %B') %>"
-               data-calendar-slots-param="<%= slots.to_json %>"
-               <% end %>>
-            <%= day.day %>
-          </div>
+      <div class="calendar-grid">
+        <% %w[Mon Tue Wed Thu Fri Sat Sun].each do |name| %>
+          <div class="calendar-weekday"><%= name %></div>
         <% end %>
-      <% end %>
+
+        <% calendar_weeks(month).each do |week| %>
+          <% week.each do |day| %>
+            <% in_month = day.month == month.month %>
+            <% slots = in_month ? slots_for_day(schedule, day, artist_profile: artist_profile) : [] %>
+            <% available = slots.any? %>
+
+            <div class="calendar-day
+                        <%= 'calendar-day--outside' unless in_month %>
+                        <%= 'calendar-day--available' if available %>
+                        <%= 'calendar-day--today' if day == Date.today %>"
+                 <% if available %>
+                 role="button"
+                 data-action="click->calendar#showSlots"
+                 data-calendar-date-param="<%= l(day, format: '%A %d %B') %>"
+                 data-calendar-slots-param="<%= slots.to_json %>"
+                 <% end %>>
+              <%= day.day %>
+            </div>
+          <% end %>
+        <% end %>
+      </div>
+
+      <p class="calendar-legend">Days with open slots are marked</p>
     </div>
 
     <%= hidden_field_tag "booking[starts_at]", nil, data: { calendar_target: "startsAt" } %>
     <%= hidden_field_tag "booking[ends_at]", nil, data: { calendar_target: "endsAt" } %>
 
-    <div class="calendar-popup d-none" data-calendar-target="popup">
-      <div class="calendar-popup-header">
-        <strong data-calendar-target="popupTitle"></strong>
-        <button type="button" class="btn-close btn-close-sm" data-action="calendar#hideSlots"></button>
+    <div class="calendar-times">
+      <p class="section-label" data-calendar-target="popupTitle">Available times</p>
+      <div class="calendar-popup d-none" data-calendar-target="popup">
+        <div class="calendar-popup-slots" data-calendar-target="popupSlots"></div>
       </div>
-      <div class="calendar-popup-slots" data-calendar-target="popupSlots"></div>
     </div>
   </div>
 <% end %>

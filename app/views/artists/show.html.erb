@@ -73,12 +73,6 @@
             <a href="https://www.google.com/maps/search/?api=1&query=<%= address.latitude %>,<%= address.longitude %>" target="_blank" class="artist-map-link">Map</a>
           <% end %>
         </div>
-        <% if @markers.any? %>
-          <div class="artist-map"
-               data-controller="map"
-               data-map-markers-value="<%= @markers.to_json %>"
-               data-map-api-key-value="<%= ENV["MAPBOX_API_KEY"] %>"></div>
-        <% end %>
       </div>
     <% end %>
   </div>
