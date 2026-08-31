@@ -24,6 +24,16 @@
   }
 }
 
+.home-search--docked {
+  position: fixed;
+  top: 8px;
+  left: 20px;
+  right: 20px;
+  z-index: 1051;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
 .home-section-header {
   display: flex;
   align-items: baseline;

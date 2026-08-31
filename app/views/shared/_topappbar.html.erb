@@ -1,17 +1,14 @@
 <% tattoo_generation = current_user.last_tattoo_generation if user_signed_in? %>
 
 <header class="topappbar d-flex justify-content-between align-items-center">
-  <% if user_signed_in? %>
-    <button class="topappbar-btn" data-bs-toggle="offcanvas" data-bs-target="#sideMenu">
-      <span class="material-symbols-outlined">menu</span>
-    </button>
-  <% else %>
-    <span class="topappbar-btn"></span>
-  <% end %>
-
-  <%= link_to root_path do %>
-    <%= image_tag "kitatoo-logo-ink.png", alt: "Kitatoo", class: "topappbar-logo" %>
-  <% end %>
+  <div class="topappbar-left">
+    <% if user_signed_in? %>
+      <button class="topappbar-btn topappbar-arrow" data-bs-toggle="offcanvas" data-bs-target="#sideMenu">
+        <span class="material-symbols-outlined">arrow_forward_ios</span>
+      </button>
+    <% end %>
+    <%= link_to "Kitatoo", root_path, class: "topappbar-title" %>
+  </div>
 
   <% if !user_signed_in? %>
     <%= link_to new_user_session_path, class: "topappbar-btn", "aria-label": "Sign in or sign up" do %>
