@@ -12,6 +12,11 @@
     <%= link_to artist_path(current_user.artist_profile), class: "botappbar-link #{'active' if controller_name == 'artists' && action_name == 'show'}", "aria-label": "Profile" do %>
       <span class="material-symbols-outlined">person</span>
     <% end %>
+  <% elsif user_signed_in? %>
+    <%= link_to user_path, class: "botappbar-link #{'active' if controller_name == 'users'}" do %>
+      <span class="material-symbols-outlined">person</span>
+      <span class="botappbar-label">Profile</span>
+    <% end %>
   <% else %>
     <a class="botappbar-link" href="#" aria-label="Profile">
       <span class="material-symbols-outlined">person</span>

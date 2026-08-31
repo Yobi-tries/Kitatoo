@@ -14,6 +14,7 @@ class ArtistProfile < ApplicationRecord
   has_many :conversations, dependent: :destroy
   has_many :artist_profile_tags, dependent: :destroy
   has_many :tags, through: :artist_profile_tags
+  has_many :likes, dependent: :destroy
 
   def cover_image
     portfolio_items.find_by(position: 1)

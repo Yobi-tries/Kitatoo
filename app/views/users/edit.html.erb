@@ -1,0 +1,34 @@
+<%= render "shared/topappbar" %>
+
+<div class="container profile-form">
+  <div class="profile-form-card">
+    <h1 class="profile-form-title">Edit my profile</h1>
+
+    <%= simple_form_for @user, url: user_path, method: :patch, html: { multipart: true } do |f| %>
+      <%= f.error_notification %>
+
+      <div class="avatar-edit-wrapper mb-4" data-controller="avatar">
+        <label class="avatar-edit-label" for="user_avatar">
+          <%= image_tag @user.avatar_url.presence || "https://ui-avatars.com/api/?size=176&background=000000&color=ffffff&name=#{@user.username.tr(" ", "+")}",
+                class: "avatar-edit-preview", alt: @user.username, data: { avatar_target: "preview" } %>
+          <span class="avatar-edit-icon">
+            <span class="material-symbols-outlined">photo_camera</span>
+          </span>
+        </label>
+        <%= f.file_field :avatar, accept: "image/*", class: "d-none", id: "user_avatar",
+              data: { avatar_target: "input", action: "change->avatar#preview" } %>
+      </div>
+
+      <div class="form-inputs">
+        <%= f.input :username, label: "Username", required: true %>
+        <%= f.input :city, label: "Location", placeholder: "e.g. Paris" %>
+      </div>
+
+      <div class="profile-form-actions">
+        <%= f.button :submit, "Save profile", class: "profile-form-submit" %>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<%= render "shared/botappbar" %>
