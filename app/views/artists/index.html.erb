@@ -74,6 +74,10 @@
       <div class="home-map" data-map-target="canvas" hidden></div>
     <% end %>
 
+    <p class="home-list-notice" data-map-target="notice" hidden>
+      Outside the map view. Nearest artists below.
+    </p>
+
     <div class="home-artists-list" data-map-target="list">
       <% @artists.each do |artist| %>
         <% located = artist.addresses.find { |address| address.latitude.present? } %>

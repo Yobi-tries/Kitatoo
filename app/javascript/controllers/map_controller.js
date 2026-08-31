@@ -2,7 +2,7 @@ import { Controller } from "@hotwired/stimulus"
 import mapboxgl from "mapbox-gl"
 
 export default class extends Controller {
-  static targets = ["canvas", "card", "count", "list", "listButton", "mapButton", "more"]
+  static targets = ["canvas", "card", "count", "list", "listButton", "mapButton", "more", "notice"]
   static values = {
     apiKey: String,
     markers: Array
@@ -23,6 +23,7 @@ export default class extends Controller {
     }
 
     if (this.hasCardTarget) {
+      this.orderedCards = [ ...this.cardTargets ]
       this.visibleCount = 5
       this.filtering = false
       this.#renderCards()
@@ -53,6 +54,10 @@ export default class extends Controller {
     this.canvasTarget.hidden = true
     this.listTarget.hidden = false
     this.#switchTo(this.listButtonTarget, this.mapButtonTarget)
+
+    this.filtering = false
+    this.visibleCount = 5
+    this.#renderCards()
   }
 
   #switchTo(on, off) {
@@ -81,25 +86,35 @@ export default class extends Controller {
 
   #renderCards() {
     const bounds = this.filtering ? this.map.getBounds() : null
-    let matched = 0
+    const inZone = []
+    const outZone = []
 
-    this.cardTargets.forEach((card) => {
+    this.orderedCards.forEach((card) => {
       const inside = !bounds || bounds.contains([ Number(card.dataset.lng), Number(card.dataset.lat) ])
-
-      if (inside) {
-        matched += 1
-        card.hidden = matched > this.visibleCount
-      } else {
-        card.hidden = true
-      }
+      ;(inside ? inZone : outZone).push(card)
     })
 
+    const nearby = inZone.slice(0, this.visibleCount)
+    const missing = this.visibleCount - nearby.length
+    const fallback = missing > 0 ? outZone.slice(0, missing) : []
+
+    this.orderedCards.forEach((card) => { card.hidden = true })
+    nearby.concat(fallback).forEach((card) => { card.hidden = false })
+
+    this.listTarget.append(...nearby)
+    if (this.hasNoticeTarget) this.listTarget.append(this.noticeTarget)
+    this.listTarget.append(...fallback, ...outZone.slice(missing > 0 ? missing : 0), ...inZone.slice(this.visibleCount))
+
+    if (this.hasNoticeTarget) {
+      this.noticeTarget.hidden = fallback.length === 0
+    }
+
     if (this.hasCountTarget) {
-      this.countTarget.textContent = matched
+      this.countTarget.textContent = inZone.length
     }
 
     if (this.hasMoreTarget) {
-      this.moreTarget.hidden = matched <= this.visibleCount
+      this.moreTarget.hidden = this.orderedCards.length <= this.visibleCount
     }
   }
 }
