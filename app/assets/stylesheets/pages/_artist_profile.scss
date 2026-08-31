@@ -243,3 +243,26 @@
 .artist-action-book {
   gap: 8px;
 }
+
+#albumCarousel {
+  .carousel-control-prev,
+  .carousel-control-next {
+    width: auto;
+    padding: 0 12px;
+    opacity: 1;
+  }
+
+  .carousel-control-prev-icon,
+  .carousel-control-next-icon {
+    width: 40px;
+    height: 40px;
+    background-color: rgba($ink, 0.35);
+    background-size: 40%;
+    border-radius: 50%;
+  }
+
+  .carousel-control-prev:hover .carousel-control-prev-icon,
+  .carousel-control-next:hover .carousel-control-next-icon {
+    background-color: rgba($ink, 0.6);
+  }
+}
