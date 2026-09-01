@@ -39,14 +39,15 @@ class TattooGenerationsController < ApplicationController
     idea = params[:idea].to_s.strip
     return [ nil, "Please describe your tattoo idea." ] if idea.blank?
 
-    style_tags = Tag.where(id: Array(params[:style_tag_ids]).first(2)).to_a
-    return [ nil, "Please select at least one style." ] if style_tags.empty?
+    style_tags = Tag.where(id: Array(params[:style_tag_ids]).first(1)).to_a
+    files = reference_image_files
 
     prompt = TattooGeneration.build_guided_prompt(
       idea: idea,
       style_names: style_tags.map(&:name),
-      has_references: reference_image_files.present?,
-      reference_instruction: params[:reference_instruction].to_s.strip.presence
+      reference_count: files.size,
+      reference_use_for: Array(params[:reference_use_for]).first(MAX_REFERENCE_IMAGES),
+      additional_guidance: params[:reference_instruction].to_s.strip.presence
     )
     [ prompt, nil ]
   end

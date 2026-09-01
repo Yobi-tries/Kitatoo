@@ -2,24 +2,28 @@ import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
   static targets = ["pill", "selected", "unselected"]
-  static values = { max: { type: Number, default: 2 }, preselected: Array }
+  static values = { max: { type: Number, default: 1 }, preselected: Array }
 
   connect() {
     this.preselectedValue.forEach((id) => {
       const pill = this.pillTargets.find((p) => p.dataset.tagId === String(id))
       if (pill) this.#select(pill)
     })
-    this.#refreshAvailability()
   }
 
   toggle(event) {
     const pill = event.currentTarget
     if (pill.dataset.selected === "true") {
       this.#deselect(pill)
-    } else if (this.#selectedCount() < this.maxValue) {
+    } else {
+      // Selecting a new style replaces any previously selected one(s) up to max.
+      while (this.#selectedCount() >= this.maxValue) {
+        const previous = this.pillTargets.find((p) => p.dataset.selected === "true")
+        if (!previous) break
+        this.#deselect(previous)
+      }
       this.#select(pill)
     }
-    this.#refreshAvailability()
   }
 
   #select(pill) {
@@ -44,12 +48,5 @@ export default class extends Controller {
 
   #selectedCount() {
     return this.pillTargets.filter((p) => p.dataset.selected === "true").length
-  }
-
-  #refreshAvailability() {
-    const full = this.#selectedCount() >= this.maxValue
-    this.pillTargets.forEach((p) => {
-      if (p.dataset.selected !== "true") p.classList.toggle("disabled", full)
-    })
   }
 }

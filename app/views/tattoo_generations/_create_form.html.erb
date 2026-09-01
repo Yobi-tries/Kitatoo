@@ -13,7 +13,7 @@
           class="form-control tattoo-drawer__textarea"
           rows="4"
           maxlength="300"
-          placeholder="Describe what the tattoo represents: subjects, objects, symbols... e.g. A two-headed snake wrapped around a dagger, with peonies"><%= local_assigns[:idea] %></textarea>
+          placeholder="e.g. A two-headed snake wrapped around a dagger"><%= local_assigns[:idea] %></textarea>
       </div>
 
       <div class="tattoo-generator-form-block">
@@ -27,7 +27,7 @@
 
       <div class="tattoo-generator-form-block">
         <label class="tattoo-drawer__label d-block">
-          Reference instructions
+          Additional guidance
           <span class="text-muted small">(optional)</span>
         </label>
 
@@ -35,7 +35,7 @@
           type="text"
           name="reference_instruction"
           class="form-control"
-          placeholder="e.g. composition, shapes, style, details..."
+          placeholder="e.g. Keep the snake tightly wrapped"
           value="<%= local_assigns[:reference_instruction] %>">
       </div>
     </div>

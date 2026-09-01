@@ -6,42 +6,63 @@ class TattooGeneration < ApplicationRecord
 
   enum :status, { pending: 0, completed: 1, failed: 2 }
 
-  # Guided-mode prompt builder: deterministic string template, no extra LLM call.
-  # style_names keeps whatever order the caller selected them in -- this method never
-  # decides which one is "primary"; that decision is explicitly delegated to the image
-  # model itself via the wording of style_instruction below.
-  def self.build_guided_prompt(idea:, style_names:, has_references:, reference_instruction: nil)
-    lines = []
-    lines << "You are creating an original tattoo design concept, not a photo or a finished tattoo on skin."
-    lines << "Subject: #{idea}"
-    lines << "Style: #{style_instruction(style_names)}"
+  REFERENCE_USE_FOR_INSTRUCTIONS = {
+    "overall" => ->(n) {
+      "Use Image #{n} as broad visual direction for the tattoo, while keeping the written concept above authoritative."
+    },
+    "composition" => ->(n) {
+      "Use Image #{n} primarily for spatial arrangement, pose, orientation, proportions and composition. Do not " \
+      "inherit unrelated subject matter, color palette, photographic realism or visual style from it."
+    },
+    "style" => ->(n) {
+      "Use Image #{n} primarily for line treatment, shading, texture and overall visual aesthetic. Do not copy " \
+      "unrelated subject matter or composition from it."
+    },
+    "element" => ->(n) {
+      "Use Image #{n} as guidance for one specific subject, form or detail from the written concept above. Do " \
+      "not treat the rest of the image as required direction."
+    }
+  }.freeze
 
-    if has_references
-      lines << reference_instruction_line(reference_instruction)
+  # Guided-mode prompt builder: deterministic string template, no extra LLM call.
+  # reference_use_for is positionally aligned with the uploaded reference images
+  # (Image 1 = reference_use_for[0], etc.) -- see ReferenceImagesController JS,
+  # which renders one "Use for" <select> per thumbnail in upload order.
+  def self.build_guided_prompt(idea:, style_names:, reference_count:, reference_use_for:, additional_guidance:)
+    sections = []
+
+    sections << "[CORE CONCEPT]\n#{idea}. This idea defines what the tattoo depicts and takes priority over " \
+                "any other input below."
+
+    sections << if style_names.any?
+      "[TATTOO STYLE]\nRender the final tattoo in #{style_names.first} tattoo style. This style defines the " \
+      "overall aesthetic of the finished design."
+    else
+      "[TATTOO STYLE]\nNo specific tattoo style was requested. Apply a professional, tattoo-appropriate design " \
+      "treatment suited to the concept above -- clean, deliberate, and ready to be interpreted by a tattoo artist."
     end
 
-    lines << "Constraints: a clear, readable silhouette, a strong visual hierarchy, intentional negative " \
-             "space, and linework suited to being tattooed, as one coherent composition."
-    lines << "Output: the tattoo design concept itself, clean linework on a plain background, meant to be " \
-             "adapted by a professional tattoo artist. No tattooed person, no mockup on skin, no photo, no " \
-             "frame, no watermark, and do not present it as a ready-to-use stencil."
+    reference_count.times do |i|
+      n = i + 1
+      use_for = reference_use_for[i].presence || "overall"
+      instruction = (REFERENCE_USE_FOR_INSTRUCTIONS[use_for] || REFERENCE_USE_FOR_INSTRUCTIONS["overall"]).call(n)
+      sections << "[REFERENCE #{n} GUIDANCE]\n#{instruction}"
+    end
 
-    lines.join("\n\n")
-  end
+    if additional_guidance.present?
+      sections << "[ADDITIONAL GUIDANCE]\n#{additional_guidance}"
+    end
 
-  def self.style_instruction(style_names)
-    return "render it in #{style_names.first} tattoo style." if style_names.size == 1
+    sections << "[TATTOO DESIGN CONSTRAINTS]\nA clear, readable silhouette, a strong visual hierarchy, " \
+                "intentional negative space, and linework suited to being tattooed, as one coherent " \
+                "composition. If any reference image conflicts with the core concept or the tattoo style " \
+                "above, resolve it in favor of the core concept and style."
 
-    "combine #{style_names[0]} and #{style_names[1]} tattoo styles into a single cohesive design, not a " \
-    "simple juxtaposition. Decide which of the two styles best serves as the structural foundation " \
-    "(composition, shapes, readability, linework) and use the other as a complementary, expressive influence."
-  end
+    sections << "[OUTPUT REQUIREMENTS]\nProduce the tattoo design concept itself, clean linework on a plain " \
+                "background, meant to be adapted by a professional tattoo artist. No tattooed person, no " \
+                "mockup on skin, no photo, no frame, no watermark, and do not present it as a ready-to-use " \
+                "stencil."
 
-  def self.reference_instruction_line(instruction)
-    base = "References: the attached reference image(s) are a strong visual direction for this design"
-    base += ", specifically for #{instruction}" if instruction.present?
-    "#{base}. Let them meaningfully shape the composition, shapes and visual language of the result -- the " \
-    "subject above still defines what the tattoo represents, but the references should be clearly reflected " \
-    "in how it looks, not just loosely inspire it. Do not simply reproduce them as-is."
+    sections.join("\n\n")
   end
 end

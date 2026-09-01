@@ -5,9 +5,9 @@
 
 .tattoo-generator-hero {
   display: grid;
-  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
   align-items: center;
-  gap: 72px;
+  gap: 56px;
   margin-bottom: 48px;
 }
 
@@ -89,34 +89,53 @@
 }
 
 .tattoo-generator-hero-demo {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 30px minmax(0, 1fr);
+  position: relative;
+  display: flex;
   align-items: center;
-  gap: 0;
+  justify-content: center;
+  min-width: 0;
+  width: 100%;
+  padding: 12px 0;
 }
 
 .tattoo-generator-demo-card {
   position: relative;
+  width: 36%;
+  max-width: 230px;
+  flex-shrink: 0;
   overflow: hidden;
-  min-width: 0;
   aspect-ratio: 0.76;
   border-radius: 22px;
   background: $surface;
   box-shadow:
-    0 2px 0 rgba($ink, 0.10),
-    0 18px 40px -28px rgba($ink, 0.65);
+    0 2px 0 rgba($ink, 0.08),
+    0 16px 32px -20px rgba($ink, 0.4);
+}
+
+.tattoo-generator-demo-card--reference {
+  z-index: 1;
+  transform: translateX(18px) scale(0.94);
+}
+
+.tattoo-generator-demo-card--design {
+  z-index: 3;
+}
+
+.tattoo-generator-demo-card--body {
+  z-index: 2;
+  transform: translateX(-18px) scale(0.94);
 }
 
 .tattoo-generator-demo-image {
+  display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  display: block;
 }
 
 .tattoo-generator-demo-step {
   position: absolute;
-  z-index: 3;
+  z-index: 4;
   top: 14px;
   left: 14px;
   width: 26px;
@@ -133,7 +152,7 @@
 
 .tattoo-generator-demo-label {
   position: absolute;
-  z-index: 3;
+  z-index: 4;
   top: 17px;
   left: 48px;
   padding: 5px 9px;
@@ -146,82 +165,24 @@
   letter-spacing: 0.08em;
 }
 
-.tattoo-generator-demo-arrow {
-
-  position: relative;
-
-  z-index: 10;
-
-  display: flex;
-
-  align-items: center;
-
-  justify-content: center;
-
-  width: 52px;
-
-  height: 52px;
-
-  margin: 0 -12px;
-
-  flex-shrink: 0;
-
-  border: 5px solid $surface;
-
-  border-radius: 50%;
-
-  background: $accent;
-
-  color: $ink;
-
-  box-shadow:
-
-    0 4px 10px rgba($ink, 0.08),
-
-    0 10px 24px rgba($ink, 0.12);
-
-  i {
-
-    font-size: 17px;
-
-  }
-
-}
-
 .tattoo-generator-divider {
-
   display: flex;
-
   align-items: center;
-
   justify-content: center;
-
   gap: 14px;
-
   margin: 34px 0 26px;
-
   color: $ink;
-
   font-family: $headers-font;
-
   font-size: 18px;
-
   font-weight: 700;
 
   &::before,
-
   &::after {
-
     content: "";
-
     width: 72px;
-
     height: 1px;
-
     background: $accent;
-
   }
-
 }
 
 @media (max-width: 899px) {
@@ -265,35 +226,10 @@
 }
 
 @media (max-width: 599px) {
-
-  .tattoo-generator-hero-demo {
-
-    grid-template-columns: minmax(0, 1fr) 34px minmax(0, 1fr);
-
+  .tattoo-generator-hero-copy {
+    padding-top: 38px;
   }
 
-  .tattoo-generator-demo-arrow {
-
-    width: 34px;
-
-    height: 34px;
-
-    margin: 0;
-
-    border-width: 3px;
-
-    i {
-
-      font-size: 12px;
-
-    }
-
-  }
-.tattoo-generator-hero-copy {
-
-  padding-top: 38px;
-
-}
   .tattoo-generator-page {
     padding: 28px 16px calc(110px + env(safe-area-inset-bottom, 0px));
   }
@@ -304,26 +240,18 @@
   }
 
   .tattoo-generator-title {
-
     font-size: 30px;
-
     line-height: 0.96;
-
     margin-top: 2px;
-
     margin-bottom: 16px;
-
   }
 
   .tattoo-generator-subtitle {
-
     font-size: 13px;
-
     line-height: 1.45;
-
     margin-bottom: 24px;
-
   }
+
   .tattoo-generator-benefits {
     gap: 8px;
   }
@@ -350,13 +278,27 @@
   }
 
   .tattoo-generator-hero-demo {
-    grid-template-columns: minmax(0, 1fr) 30px minmax(0, 1fr);
     width: 100%;
+    max-width: 100%;
+    padding: 8px 0;
   }
 
   .tattoo-generator-demo-card {
+    width: 36%;
     border-radius: 14px;
     aspect-ratio: 0.82;
+  }
+
+  .tattoo-generator-demo-card--reference {
+    transform: translateX(12px) scale(0.95);
+  }
+
+  .tattoo-generator-demo-card--design {
+    z-index: 3;
+  }
+
+  .tattoo-generator-demo-card--body {
+    transform: translateX(-12px) scale(0.95);
   }
 
   .tattoo-generator-demo-step {
@@ -374,29 +316,16 @@
     font-size: 6px;
   }
 
-  .tattoo-generator-demo-arrow {
-    width: 32px;
-    height: 32px;
-    font-size: 10px;
+  .tattoo-generator-divider {
+    gap: 10px;
+    margin: 28px 0 20px;
+    font-size: 14px;
+
+    &::before,
+    &::after {
+      width: 32px;
+    }
   }
-
-.tattoo-generator-divider {
-
-  gap: 10px;
-
-  margin: 28px 0 20px;
-
-  font-size: 14px;
-
-  &::before,
-
-  &::after {
-
-    width: 32px;
-
-  }
-
-}
 }
 
 .tattoo-generator-grid {
@@ -414,7 +343,9 @@
   background: $surface;
   border-radius: $border-radius-xl;
   padding: 18px;
-  box-shadow: 0 2px 0 rgba($ink, 0.10), 0 10px 20px -16px rgba($ink, 0.5);
+  box-shadow:
+    0 2px 0 rgba($ink, 0.10),
+    0 10px 20px -16px rgba($ink, 0.5);
 
   @media (min-width: 900px) {
     padding: 24px;
@@ -459,7 +390,6 @@
   margin: 0;
 }
 
-// Reused across both cards' forms/results (Create my tattoo + See on body).
 .tattoo-drawer__label {
   font-size: 11px;
   font-weight: 700;
@@ -562,7 +492,6 @@
   pointer-events: none;
 }
 
-// Style picker (selected illustrated cards + unselected compact pills)
 .style-picker-selected {
   display: flex;
   flex-wrap: wrap;
@@ -601,18 +530,28 @@
   }
 }
 
-// Reference image thumbnails + add tile
 .reference-thumb {
   position: relative;
-  width: 72px;
-  height: 72px;
+  width: 84px;
 
   img {
     width: 100%;
-    height: 100%;
+    height: 72px;
     object-fit: cover;
     border-radius: 10px;
+    display: block;
   }
+}
+
+.reference-use-for {
+  width: 100%;
+  margin-top: 4px;
+  font-size: 9px;
+  padding: 2px 4px;
+  border-radius: 6px;
+  border: 1px solid $hairline-canvas;
+  background: $surface;
+  color: $text-secondary;
 }
 
 .reference-thumb-remove {
@@ -663,7 +602,6 @@
   }
 }
 
-// Body-preview upload dropzone
 .body-upload-dropzone {
   display: flex;
   flex-direction: column;
@@ -698,7 +636,6 @@
   font-size: 12px;
 }
 
-// Placement cards
 .placement-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
