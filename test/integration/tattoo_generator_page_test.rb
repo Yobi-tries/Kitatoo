@@ -23,7 +23,6 @@ class TattooGeneratorPageTest < ActionDispatch::IntegrationTest
         image_public_id: (status == :completed ? "y" : nil)
       )
       body_preview = user.body_previews.create!(
-        placement: "Forearm",
         source_image_url: "https://res.cloudinary.com/demo/image/upload/design.png",
         body_image_url: "https://res.cloudinary.com/demo/image/upload/body.png",
         status: status,

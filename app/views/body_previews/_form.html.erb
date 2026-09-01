@@ -31,15 +31,11 @@
         <label class="body-upload-dropzone" data-body-preview-source-target="bodyUploadField">
           <i class="fa-solid fa-camera"></i>
           <span class="body-upload-dropzone-title">Upload body photo</span>
-          <span class="body-upload-dropzone-hint">PNG, JPG</span>
+          <span class="body-upload-dropzone-hint">Frame the area you want tattooed</span>
           <input type="file" name="body_photo" accept="image/*" class="visually-hidden"
                  data-body-preview-source-target="bodyPhotoInput"
                  data-action="change->body-preview-source#bodyPhotoSelected">
         </label>
-      </div>
-
-      <div class="col-12">
-        <%= render "body_previews/placement_picker", placement: local_assigns[:placement], placement_other: local_assigns[:placement_other] %>
       </div>
     </div>
 

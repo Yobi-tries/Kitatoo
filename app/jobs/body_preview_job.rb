@@ -5,7 +5,7 @@ class BodyPreviewJob < ApplicationJob
     body_preview = BodyPreview.find(body_preview_id)
 
     image = RubyLLM.paint(
-      BodyPreview.build_prompt(placement: body_preview.placement),
+      BodyPreview.build_prompt,
       model: "gpt-image-1",
       with: [ body_preview.body_image_url, body_preview.source_image_url ],
       params: { input_fidelity: "high" }

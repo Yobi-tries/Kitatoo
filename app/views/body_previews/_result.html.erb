@@ -10,7 +10,7 @@
     <%= link_to "Download image", download_url,
           download: "body-preview-#{body_preview.id}.png",
           class: "btn btn-outline-dark w-100 tattoo-drawer__action" %>
-    <%= link_to "Try another placement", new_tattoo_generation_path,
+    <%= link_to "Try another photo", new_tattoo_generation_path,
           class: "btn w-100 tattoo-drawer__action tattoo-drawer__action--secondary" %>
   <% elsif body_preview.failed? %>
     <div class="alert tattoo-drawer__error mb-0">

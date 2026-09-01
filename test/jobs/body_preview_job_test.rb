@@ -12,7 +12,6 @@ class BodyPreviewJobTest < ActiveJob::TestCase
 
   test "calls RubyLLM.paint with [body photo, tattoo design] and input_fidelity high" do
     body_preview = @user.body_previews.create!(
-      placement: "Forearm",
       source_image_url: "https://res.cloudinary.com/demo/image/upload/design.png",
       body_image_url: "https://res.cloudinary.com/demo/image/upload/body.png"
     )

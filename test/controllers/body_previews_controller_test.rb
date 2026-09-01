@@ -26,8 +26,7 @@ class BodyPreviewsControllerTest < ActionDispatch::IntegrationTest
       assert_enqueued_with(job: BodyPreviewJob) do
         post body_previews_path, params: {
           design_image: design_file,
-          body_photo: body_file,
-          placement: "Forearm"
+          body_photo: body_file
         }, as: :multipart_form
       end
     end
@@ -38,7 +37,6 @@ class BodyPreviewsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "design123", body_preview.source_image_public_id
     assert_equal "https://res.cloudinary.com/demo/image/upload/body.png", body_preview.body_image_url
     assert_equal "body123", body_preview.body_image_public_id
-    assert_equal "Forearm", body_preview.placement
   end
 
   test "reuses an already-generated tattoo design and only uploads the body photo" do
@@ -55,8 +53,7 @@ class BodyPreviewsControllerTest < ActionDispatch::IntegrationTest
     }) do
       post body_previews_path, params: {
         tattoo_generation_id: generation.id,
-        body_photo: body_file,
-        placement: "Chest"
+        body_photo: body_file
       }, as: :multipart_form
     end
 
@@ -76,8 +73,7 @@ class BodyPreviewsControllerTest < ActionDispatch::IntegrationTest
 
     assert_no_difference -> { BodyPreview.count } do
       post body_previews_path, params: {
-        tattoo_generation_id: generation.id,
-        placement: "Chest"
+        tattoo_generation_id: generation.id
       }, as: :multipart_form
     end
   end

@@ -6,12 +6,8 @@ class BodyPreviewsController < ApplicationController
     body_url, body_public_id = resolve_body_image
     return render_error("Please upload a photo of your body.") if body_url.blank?
 
-    placement = resolve_placement
-    return render_error("Please choose a placement.") if placement.blank?
-
     body_preview = current_user.body_previews.create!(
       tattoo_generation_id: source_generation&.id,
-      placement: placement,
       source_image_url: design_url,
       source_image_public_id: design_public_id,
       body_image_url: body_url,
@@ -58,14 +54,8 @@ class BodyPreviewsController < ApplicationController
     [ upload["secure_url"], upload["public_id"] ]
   end
 
-  def resolve_placement
-    raw = params[:placement].to_s
-    raw == "Other" ? params[:placement_other].to_s.strip.presence : raw.presence
-  end
-
   def render_error(message)
-    locals = { error: message, placement: params[:placement], placement_other: params[:placement_other],
-               tattoo_generation_id: params[:tattoo_generation_id] }
+    locals = { error: message, tattoo_generation_id: params[:tattoo_generation_id] }
 
     respond_to do |format|
       format.turbo_stream do
