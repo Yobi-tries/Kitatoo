@@ -111,7 +111,42 @@
       See more artists
     </button>
   </div>
+  <section class="home-generator-card" aria-labelledby="home-generator-title">
+    <div class="home-generator-card__heading">
+      <span class="material-symbols-outlined" aria-hidden="true">auto_awesome</span>
+      <h2 id="home-generator-title">Need inspiration?</h2>
+    </div>
 
+    <p class="home-generator-card__description">
+      Explore new ideas with our sketch generator and share your favourites
+      with your tattoo artist.
+    </p>
+
+    <% if user_signed_in? %>
+      <button type="button"
+              class="home-generator-card__button"
+              data-bs-toggle="offcanvas"
+              data-bs-target="#tattooGeneratorDrawer"
+              aria-controls="tattooGeneratorDrawer">
+        <span class="material-symbols-outlined" aria-hidden="true">draw</span>
+        Generate a sketch
+      </button>
+    <% else %>
+      <%= link_to new_tattoo_generation_path,
+                  class: "home-generator-card__button" do %>
+        <span class="material-symbols-outlined" aria-hidden="true">draw</span>
+        Generate a sketch
+      <% end %>
+    <% end %>
+
+    <p class="home-generator-card__disclaimer">
+      <span class="material-symbols-outlined" aria-hidden="true">info</span>
+      <span>
+        Generated sketches are creative starting points, not tattoo-ready designs.
+        Your tattoo artist can adapt or rework them using their expertise.
+      </span>
+    </p>
+  </section>
 </div>
 
 <%= render "shared/botappbar" %>
