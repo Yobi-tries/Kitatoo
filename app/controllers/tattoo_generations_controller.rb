@@ -5,10 +5,10 @@ class TattooGenerationsController < ApplicationController
   end
 
   def create
-    prompt, error = build_prompt
-    return render_prompt_error(error) if error
-
     reference_urls, reference_public_ids = upload_reference_images
+
+    prompt, error = build_prompt(reference_count: reference_urls.size)
+    return render_prompt_error(error) if error
 
     tattoo_generation = current_user.tattoo_generations.create!(
       prompt: prompt,
@@ -35,17 +35,16 @@ class TattooGenerationsController < ApplicationController
 
   private
 
-  def build_prompt
+  def build_prompt(reference_count:)
     idea = params[:idea].to_s.strip
     return [ nil, "Please describe your tattoo idea." ] if idea.blank?
 
     style_tags = Tag.where(id: Array(params[:style_tag_ids]).first(1)).to_a
-    files = reference_image_files
 
     prompt = TattooGeneration.build_guided_prompt(
       idea: idea,
       style_names: style_tags.map(&:name),
-      reference_count: files.size,
+      reference_count: reference_count,
       reference_use_for: Array(params[:reference_use_for]).first(MAX_REFERENCE_IMAGES),
       additional_guidance: params[:reference_instruction].to_s.strip.presence
     )

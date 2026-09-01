@@ -3,7 +3,7 @@
     <div class="alert alert-danger"><%= error %></div>
   <% end %>
 
-  <%= form_with url: tattoo_generations_path, method: :post do %>
+  <%= form_with url: tattoo_generations_path, method: :post, multipart: true do %>
     <div class="tattoo-generator-form-grid">
       <div class="tattoo-generator-form-block">
         <label class="tattoo-drawer__label">Your idea</label>
