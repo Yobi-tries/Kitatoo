@@ -1,15 +1,4 @@
 <div class="container py-4" style="max-width: 640px;">
   <h1 class="h3 mb-4">AI Tattoo Generator</h1>
-
-  <%= form_with url: tattoo_generations_path, method: :post, data: { turbo: false } do %>
-    <div class="mb-3">
-      <label class="form-label">Describe the tattoo you want</label>
-      <%= text_area_tag :prompt, nil,
-            class: "form-control", rows: 4,
-            placeholder: "e.g. Minimal blackwork snake flash, white background" %>
-    </div>
-
-    <%= submit_tag "Generate", class: "btn btn-primary w-100",
-          data: { turbo_submits_with: "Generating..." } %>
-  <% end %>
+  <%= render "tattoo_generations/form", standalone: true %>
 </div>

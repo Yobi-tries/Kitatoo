@@ -4,7 +4,7 @@ class TattooGenerationJob < ApplicationJob
   def perform(tattoo_generation_id)
     tattoo_generation = TattooGeneration.find(tattoo_generation_id)
 
-    image = RubyLLM.paint(tattoo_generation.prompt, model: "gpt-image-1")
+    image = RubyLLM.paint(tattoo_generation.prompt, model: "gpt-image-1", with: tattoo_generation.reference_image_urls.presence)
 
     upload = Cloudinary::Uploader.upload(
       StringIO.new(image.to_blob),
@@ -17,7 +17,7 @@ class TattooGenerationJob < ApplicationJob
       image_url: upload["secure_url"],
       image_public_id: upload["public_id"]
     )
-  rescue RubyLLM::Error, Cloudinary::CloudinaryException => e
+  rescue RubyLLM::Error, RubyLLM::UnsupportedAttachmentError, CloudinaryException => e
     tattoo_generation.update!(status: :failed)
     Rails.logger.error("TattooGenerationJob failed for ##{tattoo_generation_id}: #{e.message}")
   ensure

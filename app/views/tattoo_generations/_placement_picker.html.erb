@@ -1,0 +1,16 @@
+<div class="mb-3" data-controller="placement-picker">
+  <label class="tattoo-drawer__label d-block">Placement</label>
+  <div class="d-flex flex-wrap gap-2 mb-2">
+    <% TattooGeneration::PLACEMENTS.each do |option| %>
+      <% checked = placement.present? && placement == option %>
+      <input type="radio" class="btn-check" name="placement" id="tattoo_placement_<%= option.parameterize %>"
+             value="<%= option %>" autocomplete="off" <%= "checked" if checked %>
+             data-action="placement-picker#toggleOther" data-placement-picker-target="option"
+             data-is-other="<%= option == "Other" %>">
+      <label class="btn btn-sm btn-outline-dark rounded-pill" for="tattoo_placement_<%= option.parameterize %>"><%= option %></label>
+    <% end %>
+  </div>
+  <input type="text" name="placement_other" class="form-control <%= "d-none" unless placement == "Other" %>"
+         placeholder="Specify placement" value="<%= placement_other %>"
+         data-placement-picker-target="otherInput" <%= "required" if placement == "Other" %>>
+</div>

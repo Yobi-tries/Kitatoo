@@ -130,3 +130,8 @@
   color: $accent-text-safe;
   padding: 16px;
 }
+
+[data-style-picker-target="pill"].disabled {
+  opacity: 0.4;
+  pointer-events: none;
+}

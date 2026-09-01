@@ -1,0 +1,18 @@
+<div class="mb-3">
+  <label class="tattoo-drawer__label d-block">Styles <span class="text-muted small">(pick 1 or 2)</span></label>
+  <div class="d-flex flex-wrap gap-2" data-controller="style-picker" data-style-picker-max-value="2">
+    <% Tag.order(:name).each do |tag| %>
+      <% selected = selected_style_ids.map(&:to_s).include?(tag.id.to_s) %>
+      <span class="badge rounded-pill <%= selected ? "text-bg-dark" : "text-bg-light border" %> d-inline-flex align-items-center gap-2 py-2 px-3"
+            role="button"
+            data-style-picker-target="pill"
+            data-tag-id="<%= tag.id %>"
+            data-action="click->style-picker#toggle">
+        <%= tag.name %>
+        <% if selected %>
+          <input type="hidden" name="style_tag_ids[]" value="<%= tag.id %>" data-style-picker-target="input">
+        <% end %>
+      </span>
+    <% end %>
+  </div>
+</div>
