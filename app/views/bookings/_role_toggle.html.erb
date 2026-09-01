@@ -1,6 +1,7 @@
 <div class="role-toggle">
-  <%= link_to "Artist", bookings_path(view: "artist"),
-        class: "role-toggle-btn #{'role-toggle-btn--active' if view == "artist"}" %>
-  <%= link_to "Client", bookings_path(view: "client"),
-        class: "role-toggle-btn #{'role-toggle-btn--active' if view == "client"}" %>
+  <span class="role-toggle-label">Pro</span>
+  <%= link_to bookings_path(view: view == "artist" ? "client" : "artist"),
+        class: "role-toggle-switch #{'role-toggle-switch--on' if view == "artist"}" do %>
+    <span class="role-toggle-knob"></span>
+  <% end %>
 </div>
