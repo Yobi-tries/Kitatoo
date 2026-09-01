@@ -6,29 +6,13 @@ class TattooGeneration < ApplicationRecord
 
   enum :status, { pending: 0, completed: 1, failed: 2 }
 
-  REFERENCE_USE_FOR_INSTRUCTIONS = {
-    "overall" => lambda { |n|
-      "Use Image #{n} as broad visual direction for the tattoo, while keeping the written concept above authoritative."
-    },
-    "composition" => lambda { |n|
-      "Use Image #{n} primarily for spatial arrangement, pose, orientation, proportions and composition. Do not " \
-        "inherit unrelated subject matter, color palette, photographic realism or visual style from it."
-    },
-    "style" => lambda { |n|
-      "Use Image #{n} primarily for line treatment, shading, texture and overall visual aesthetic. Do not copy " \
-        "unrelated subject matter or composition from it."
-    },
-    "element" => lambda { |n|
-      "Use Image #{n} as guidance for one specific subject, form or detail from the written concept above. Do " \
-        "not treat the rest of the image as required direction."
-    }
-  }.freeze
+  REFERENCE_GUIDANCE = "Use the supplied reference image(s) as visual guidance for the subject, composition, " \
+                       "shapes and relevant visual details. Adapt them into the requested tattoo design and " \
+                       "selected tattoo style. Do not reproduce photographic backgrounds, lighting, skin or " \
+                       "irrelevant elements."
 
   # Guided-mode prompt builder: deterministic string template, no extra LLM call.
-  # reference_use_for is positionally aligned with the uploaded reference images
-  # (Image 1 = reference_use_for[0], etc.) -- see ReferenceImagesController JS,
-  # which renders one "Use for" <select> per thumbnail in upload order.
-  def self.build_guided_prompt(idea:, style_names:, reference_count:, reference_use_for:)
+  def self.build_guided_prompt(idea:, style_names:, reference_count:)
     sections = []
 
     sections << if idea.present?
@@ -47,12 +31,7 @@ class TattooGeneration < ApplicationRecord
                     "treatment suited to the concept above -- clean, deliberate, and ready to be interpreted by a tattoo artist."
                 end
 
-    reference_count.times do |i|
-      n = i + 1
-      use_for = reference_use_for[i].presence || "overall"
-      instruction = (REFERENCE_USE_FOR_INSTRUCTIONS[use_for] || REFERENCE_USE_FOR_INSTRUCTIONS["overall"]).call(n)
-      sections << "[REFERENCE #{n} GUIDANCE]\n#{instruction}"
-    end
+    sections << "[REFERENCE GUIDANCE]\n#{REFERENCE_GUIDANCE}" if reference_count.positive?
 
     sections << "[TATTOO DESIGN CONSTRAINTS]\nA clear, readable silhouette, a strong visual hierarchy, " \
                 "intentional negative space, and linework suited to being tattooed, as one coherent " \

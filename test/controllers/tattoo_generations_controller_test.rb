@@ -31,8 +31,7 @@ class TattooGenerationsControllerTest < ActionDispatch::IntegrationTest
       assert_enqueued_with(job: TattooGenerationJob) do
         post tattoo_generations_path, params: {
           idea: "A two-headed snake wrapped around an ornamental dagger, framed by three peonies.",
-          reference_images: [ file ],
-          reference_use_for: [ "composition" ]
+          reference_images: [ file ]
         }, as: :multipart_form
       end
     end
@@ -47,8 +46,8 @@ class TattooGenerationsControllerTest < ActionDispatch::IntegrationTest
     assert_equal [ "uploaded_ref" ], generation.reference_image_public_ids
     assert_not_empty generation.reference_image_urls
 
-    assert_includes generation.prompt, "[REFERENCE 1 GUIDANCE]"
-    assert_includes generation.prompt, "spatial arrangement, pose, orientation"
+    assert_includes generation.prompt, "[REFERENCE GUIDANCE]"
+    assert_includes generation.prompt, "visual guidance for the subject, composition"
 
     enqueued = enqueued_jobs.find { |j| j["job_class"] == "TattooGenerationJob" }
     assert_equal [ generation.id ], enqueued["arguments"]

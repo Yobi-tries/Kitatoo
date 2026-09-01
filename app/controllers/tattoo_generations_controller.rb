@@ -46,8 +46,7 @@ class TattooGenerationsController < ApplicationController
     prompt = TattooGeneration.build_guided_prompt(
       idea: idea,
       style_names: style_tags.map(&:name),
-      reference_count: reference_count,
-      reference_use_for: Array(params[:reference_use_for]).first(MAX_REFERENCE_IMAGES)
+      reference_count: reference_count
     )
     [ prompt, nil ]
   end
