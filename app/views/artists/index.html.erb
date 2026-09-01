@@ -11,9 +11,14 @@
   </div>
 
   <div data-sticky-search-target="placeholder">
-    <%= form_with url: root_path, method: :get, data: { sticky_search_target: "bar" } do %>
+    <%= form_with url: root_path,
+                  method: :get,
+                  class: "home-search-form",
+                  data: { sticky_search_target: "bar" } do %>
+      <span class="material-symbols-outlined home-search-icon" aria-hidden="true">search</span>
       <%= text_field_tag :query, params[:query],
             placeholder: "Search artists, styles, studios...",
+            aria: { label: "Search artists, styles, studios" },
             class: "home-search" %>
     <% end %>
   </div>
