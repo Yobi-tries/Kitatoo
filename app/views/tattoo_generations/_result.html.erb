@@ -1,5 +1,6 @@
 <div id="tattoo_generation_result" class="tattoo-drawer__result">
-  <% if tattoo_generation.completed? %>
+  <% if tattoo_generation.nil? %>
+  <% elsif tattoo_generation.completed? %>
     <h2 class="tattoo-drawer__title">Generated design</h2>
     <%= image_tag tattoo_generation.image_url, class: "tattoo-drawer__image", alt: "Generated tattoo design" %>
     <% download_url = Cloudinary::Utils.cloudinary_url(

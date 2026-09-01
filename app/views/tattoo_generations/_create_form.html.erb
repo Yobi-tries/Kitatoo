@@ -1,4 +1,4 @@
-<div id="tattoo_generation_result">
+<div id="tattoo_generation_form">
   <% if local_assigns[:error] %>
     <div class="alert alert-danger"><%= error %></div>
   <% end %>
@@ -6,14 +6,17 @@
   <%= form_with url: tattoo_generations_path, method: :post, multipart: true do %>
     <div class="tattoo-generator-form-grid">
       <div class="tattoo-generator-form-block">
-        <label class="tattoo-drawer__label">Your idea</label>
+        <label class="tattoo-drawer__label d-block">
+          Your idea
+          <span class="text-muted small">(optional if you add a reference image)</span>
+        </label>
 
         <textarea
           name="idea"
           class="form-control tattoo-drawer__textarea"
           rows="4"
           maxlength="300"
-          placeholder="e.g. A two-headed snake wrapped around a dagger"><%= local_assigns[:idea] %></textarea>
+          placeholder="e.g. A two-headed snake wrapped around a dagger. Add any extra detail here too."><%= local_assigns[:idea] %></textarea>
       </div>
 
       <div class="tattoo-generator-form-block">
@@ -23,20 +26,6 @@
 
       <div class="tattoo-generator-form-block">
         <%= render "tattoo_generations/reference_images" %>
-      </div>
-
-      <div class="tattoo-generator-form-block">
-        <label class="tattoo-drawer__label d-block">
-          Additional guidance
-          <span class="text-muted small">(optional)</span>
-        </label>
-
-        <input
-          type="text"
-          name="reference_instruction"
-          class="form-control"
-          placeholder="e.g. Keep the snake tightly wrapped"
-          value="<%= local_assigns[:reference_instruction] %>">
       </div>
     </div>
 

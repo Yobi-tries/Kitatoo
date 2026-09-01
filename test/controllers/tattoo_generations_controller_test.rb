@@ -66,4 +66,24 @@ class TattooGenerationsControllerTest < ActionDispatch::IntegrationTest
     assert_empty generation.reference_image_public_ids
     assert_not_includes generation.prompt, "[REFERENCE"
   end
+
+  test "create with a reference image and no idea is valid" do
+    file = fixture_file_upload("reference_snake.png", "image/png")
+
+    stub_singleton_method(Cloudinary::Uploader, :upload, ->(*) {
+      { "secure_url" => "https://res.cloudinary.com/demo/image/upload/uploaded_ref.png", "public_id" => "uploaded_ref" }
+    }) do
+      post tattoo_generations_path, params: { reference_images: [ file ] }, as: :multipart_form
+    end
+
+    generation = TattooGeneration.last
+    assert_not_nil generation
+    assert_includes generation.prompt, "No written concept was provided"
+  end
+
+  test "create without idea and without reference image is rejected" do
+    assert_no_difference -> { TattooGeneration.count } do
+      post tattoo_generations_path, params: {}, as: :multipart_form
+    end
+  end
 end

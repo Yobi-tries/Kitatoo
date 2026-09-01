@@ -2,6 +2,8 @@ class TattooGenerationsController < ApplicationController
   MAX_REFERENCE_IMAGES = 3
 
   def new
+    @tattoo_generation = current_user.tattoo_generations.order(created_at: :desc).first
+    @body_preview = current_user.body_previews.order(created_at: :desc).first
   end
 
   def create
@@ -37,7 +39,7 @@ class TattooGenerationsController < ApplicationController
 
   def build_prompt(reference_count:)
     idea = params[:idea].to_s.strip
-    return [ nil, "Please describe your tattoo idea." ] if idea.blank?
+    return [ nil, "Please describe your idea or add a reference image." ] if idea.blank? && reference_count.zero?
 
     style_tags = Tag.where(id: Array(params[:style_tag_ids]).first(1)).to_a
 
@@ -45,8 +47,7 @@ class TattooGenerationsController < ApplicationController
       idea: idea,
       style_names: style_tags.map(&:name),
       reference_count: reference_count,
-      reference_use_for: Array(params[:reference_use_for]).first(MAX_REFERENCE_IMAGES),
-      additional_guidance: params[:reference_instruction].to_s.strip.presence
+      reference_use_for: Array(params[:reference_use_for]).first(MAX_REFERENCE_IMAGES)
     )
     [ prompt, nil ]
   end
@@ -72,14 +73,13 @@ class TattooGenerationsController < ApplicationController
     locals = {
       error: message,
       idea: params[:idea],
-      selected_style_ids: Array(params[:style_tag_ids]),
-      reference_instruction: params[:reference_instruction]
+      selected_style_ids: Array(params[:style_tag_ids])
     }
 
     respond_to do |format|
       format.turbo_stream do
         render turbo_stream: turbo_stream.replace(
-          "tattoo_generation_result",
+          "tattoo_generation_form",
           partial: "tattoo_generations/create_form",
           locals: locals
         )

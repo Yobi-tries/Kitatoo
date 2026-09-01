@@ -93,6 +93,7 @@
         </div>
       </div>
       <%= render "tattoo_generations/create_form" %>
+      <%= render "tattoo_generations/result", tattoo_generation: @tattoo_generation %>
     </div>
 
     <div class="tattoo-generator-card">
@@ -104,6 +105,7 @@
         </div>
       </div>
       <%= render "body_previews/form" %>
+      <%= render "body_previews/result", body_preview: @body_preview %>
     </div>
   </div>
 </div>
