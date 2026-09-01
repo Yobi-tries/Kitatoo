@@ -112,6 +112,44 @@
   }
 }
 
+.profile-form-btn {
+  width: 100%;
+  height: 52px;
+  border-radius: 10px;
+  border: none;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  transition: background-color 150ms ease;
+  margin-bottom: 10px;
+
+  &--secondary {
+    background: $surface;
+    color: $primary-custom;
+    box-shadow: inset 0 -2px 0 rgba($ink, 0.10);
+
+    &:hover {
+      background: $surface-dim;
+      color: $primary-custom;
+    }
+  }
+
+  &--danger {
+    background: $red;
+    color: #fff;
+    box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.25);
+
+    &:hover {
+      background: darken(#FD1015, 8%);
+      color: #fff;
+    }
+  }
+}
+
 .schedule-period {
   @media (max-width: 576px) {
     grid-template-columns: 1fr;

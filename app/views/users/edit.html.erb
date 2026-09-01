@@ -7,7 +7,8 @@
     <%= simple_form_for @user, url: user_path, method: :patch, html: { multipart: true } do |f| %>
       <%= f.error_notification %>
 
-      <div class="avatar-edit-wrapper mb-4" data-controller="avatar">
+      <div class="d-flex justify-content-center mt-4 mb-4">
+      <div class="avatar-edit-wrapper" data-controller="avatar">
         <label class="avatar-edit-label" for="user_avatar">
           <%= image_tag @user.avatar_url.presence || "https://ui-avatars.com/api/?size=176&background=000000&color=ffffff&name=#{@user.username.tr(" ", "+")}",
                 class: "avatar-edit-preview", alt: @user.username, data: { avatar_target: "preview" } %>
@@ -18,16 +19,29 @@
         <%= f.file_field :avatar, accept: "image/*", class: "d-none", id: "user_avatar",
               data: { avatar_target: "input", action: "change->avatar#preview" } %>
       </div>
+      </div>
 
       <div class="form-inputs">
         <%= f.input :username, label: "Username", required: true %>
         <%= f.input :city, label: "Location", placeholder: "e.g. Paris" %>
+        <%= f.input :bio, as: :text, label: "Bio",
+              placeholder: "Tell us a bit about yourself...",
+              input_html: { rows: 3 } %>
       </div>
 
       <div class="profile-form-actions">
         <%= f.button :submit, "Save profile", class: "profile-form-submit" %>
       </div>
     <% end %>
+
+    <div class="profile-form-actions">
+      <%= link_to edit_user_registration_path, class: "profile-form-btn profile-form-btn--secondary" do %>
+        Edit my account
+      <% end %>
+      <%= link_to user_registration_path, data: { turbo_method: :delete, turbo_confirm: "Are you sure? This will permanently delete your account." }, class: "profile-form-btn profile-form-btn--danger" do %>
+        Delete my account
+      <% end %>
+    </div>
   </div>
 </div>
 
