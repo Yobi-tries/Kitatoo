@@ -3,8 +3,14 @@ class TattooGenerationJob < ApplicationJob
 
   def perform(tattoo_generation_id)
     tattoo_generation = TattooGeneration.find(tattoo_generation_id)
+    references = tattoo_generation.reference_image_urls.presence
 
-    image = RubyLLM.paint(tattoo_generation.prompt, model: "gpt-image-1", with: tattoo_generation.reference_image_urls.presence)
+    image = RubyLLM.paint(
+      tattoo_generation.prompt,
+      model: "gpt-image-1",
+      with: references,
+      params: references ? { input_fidelity: "high" } : {}
+    )
 
     upload = Cloudinary::Uploader.upload(
       StringIO.new(image.to_blob),
