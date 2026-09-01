@@ -11,8 +11,7 @@
       <% end %>
     </h3>
     <span class="booking-row-meta">
-      <%= booking.availability.starts_at.strftime("%H:%M") %>
-      <% if booking.duration %> &middot; <%= "#{booking.duration / 60}h#{format('%02d', booking.duration % 60)}" %><% end %>
+      <%= booking.availability.starts_at.strftime("%H:%M") %> – <%= booking.availability.ends_at.strftime("%H:%M") %>
     </span>
   </div>
 
