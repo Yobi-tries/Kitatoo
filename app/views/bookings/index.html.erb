@@ -7,10 +7,6 @@
   <% end %>
 
   <% if @view == "client" %>
-  <div class="home-section-header">
-    <h2 class="home-section-title">My bookings</h2>
-  </div>
-
   <% if @client_upcoming.empty? && @client_past.empty? && @client_cancelled.empty? %>
     <p class="bookings-empty">
       No bookings yet. <%= link_to "Browse artists", artists_path %> to get started.
@@ -23,7 +19,7 @@
       </div>
       <div class="bookings-list">
         <% @client_upcoming.each do |booking| %>
-          <%= render "bookings/booking_row", booking: booking, role: :client,
+          <%= render "bookings/booking_card", booking: booking, viewer_role: :client,
                 conversation: @client_conversations_by_artist[booking.availability.artist_profile_id],
                 show_cancel: !booking.confirmed? %>
         <% end %>
@@ -37,7 +33,7 @@
       </div>
       <div class="bookings-list">
         <% @client_past.each do |booking| %>
-          <%= render "bookings/booking_row", booking: booking, role: :client,
+          <%= render "bookings/booking_card", booking: booking, viewer_role: :client,
                 conversation: @client_conversations_by_artist[booking.availability.artist_profile_id],
                 show_cancel: false %>
         <% end %>
@@ -51,7 +47,7 @@
       </div>
       <div class="bookings-list">
         <% @client_cancelled.each do |booking| %>
-          <%= render "bookings/booking_row", booking: booking, role: :client,
+          <%= render "bookings/booking_card", booking: booking, viewer_role: :client,
                 conversation: @client_conversations_by_artist[booking.availability.artist_profile_id],
                 show_cancel: false %>
         <% end %>
@@ -79,8 +75,9 @@
         <% else %>
           <div class="bookings-list">
             <% @artist_pending.each do |booking| %>
-              <%= render "bookings/request_row", booking: booking,
-                    conversation: @artist_conversations_by_client[booking.client_id] %>
+              <%= render "bookings/booking_card", booking: booking, viewer_role: :artist,
+                    conversation: @artist_conversations_by_client[booking.client_id],
+                    show_cancel: true %>
             <% end %>
           </div>
         <% end %>
@@ -108,7 +105,7 @@
           <% end %>
           <div class="bookings-list">
             <% @artist_history.each do |booking| %>
-              <%= render "bookings/booking_row", booking: booking, role: :artist,
+              <%= render "bookings/booking_row", booking: booking,
                     conversation: @artist_conversations_by_client[booking.client_id],
                     show_cancel: false %>
             <% end %>
@@ -120,7 +117,7 @@
         <% else %>
           <div class="bookings-list">
             <% @artist_cancelled.each do |booking| %>
-              <%= render "bookings/booking_row", booking: booking, role: :artist,
+              <%= render "bookings/booking_row", booking: booking,
                     conversation: @artist_conversations_by_client[booking.client_id],
                     show_cancel: false %>
             <% end %>
