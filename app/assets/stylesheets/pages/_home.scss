@@ -430,7 +430,7 @@
   }
 
   .material-symbols-outlined {
-    color: $primary-custom;
+    color: $accent;
   }
 }
 
@@ -442,13 +442,17 @@
   color: $text-secondary;
 }
 
+.home-generator-card__title-accent {
+  color: $accent-text-safe;
+}
+
 .home-generator-card__button {
   width: 100%;
   min-height: 60px;
   border: none;
   border-radius: 14px;
-  background: $primary-custom;
-  color: $on-primary;
+  background: $accent;
+  color: $ink;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -458,16 +462,16 @@
   font-weight: 700;
   text-decoration: none;
   cursor: pointer;
-  box-shadow: 0 6px 18px rgba($primary-custom, 0.25);
+  box-shadow: 0 6px 18px rgba($accent, 0.25);
   transition: background-color 150ms ease;
 
   &:hover {
-    background: $primary-pressed;
-    color: $on-primary;
+    background: darken($accent, 8%);
+    color: $ink;
   }
 
   &:focus-visible {
-    outline: 3px solid $primary-custom;
+    outline: 3px solid $accent-text-safe;
     outline-offset: 3px;
   }
 }
