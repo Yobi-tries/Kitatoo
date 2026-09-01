@@ -51,7 +51,7 @@
 }
 
 .booking-card .booking-row {
-  background: transparent;
+  background: $canvas;
   box-shadow: none;
   border-radius: 0;
   padding: 14px 16px 10px;
@@ -103,17 +103,16 @@
 
 .booking-card--pending,
 .booking-card--artist-confirmed {
-  .booking-row-avatar {
-    background: rgba($on-primary, 0.16);
-    color: $on-primary;
+  border: 1px solid $primary-custom;
+
+  .booking-row-body {
+    color: $primary-custom;
   }
 
-  .booking-row-name {
-    color: $on-primary;
-  }
-
-  .booking-row-meta {
-    color: rgba($on-primary, 0.75);
+  .booking-card-pill {
+    border: 1px solid $primary-custom;
+    color: $primary-custom;
+    background: transparent;
   }
 }
 
@@ -126,12 +125,6 @@
 
   .booking-card-date {
     color: $on-primary;
-  }
-
-  .booking-card-pill {
-    color: $on-primary;
-    border: 1px solid rgba($on-primary, 0.5);
-    background: transparent;
   }
 
   .booking-card-strip {
@@ -158,11 +151,6 @@
 
   .booking-card-date {
     color: $on-primary;
-  }
-
-  .booking-card-pill {
-    background: $on-primary;
-    color: $primary-custom;
   }
 
   .booking-card-strip {
