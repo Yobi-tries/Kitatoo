@@ -61,4 +61,14 @@ class TattooGenerationJobTest < ActiveJob::TestCase
     assert_equal({}, captured_params)
     assert generation.reload.completed?
   end
+
+  test "marks the record failed (not left pending) when RubyLLM.paint raises a network error" do
+    generation = @user.tattoo_generations.create!(prompt: "test prompt")
+
+    stub_singleton_method(RubyLLM, :paint, ->(*, **) { raise Faraday::ConnectionFailed, "Connection reset by peer" }) do
+      TattooGenerationJob.perform_now(generation.id)
+    end
+
+    assert generation.reload.failed?
+  end
 end

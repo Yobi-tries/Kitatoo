@@ -39,4 +39,17 @@ class BodyPreviewJobTest < ActiveJob::TestCase
     assert_equal({ input_fidelity: "high" }, captured_params)
     assert body_preview.reload.completed?
   end
+
+  test "marks the record failed (not left pending) when RubyLLM.paint raises a network error" do
+    body_preview = @user.body_previews.create!(
+      source_image_url: "https://res.cloudinary.com/demo/image/upload/design.png",
+      body_image_url: "https://res.cloudinary.com/demo/image/upload/body.png"
+    )
+
+    stub_singleton_method(RubyLLM, :paint, ->(*, **) { raise Faraday::ConnectionFailed, "Connection reset by peer" }) do
+      BodyPreviewJob.perform_now(body_preview.id)
+    end
+
+    assert body_preview.reload.failed?
+  end
 end
