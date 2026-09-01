@@ -1,0 +1,30 @@
+<% icons = {
+  "Forearm" => "fa-hand", "Upper arm" => "fa-hand-fist", "Shoulder" => "fa-user",
+  "Chest" => "fa-shirt", "Back" => "fa-vest", "Thigh" => "fa-person-walking",
+  "Calf" => "fa-socks", "Ankle" => "fa-shoe-prints", "Other" => "fa-ellipsis"
+} %>
+<div class="mb-3" data-controller="placement-picker">
+  <label class="tattoo-drawer__label d-block">Placement</label>
+  <div class="placement-grid mb-2">
+    <% BodyPreview::PLACEMENTS.each_with_index do |option, index| %>
+      <% checked = placement.present? && placement == option %>
+      <% extra = index >= 4 %>
+      <input type="radio" class="btn-check" name="placement" id="body_placement_<%= option.parameterize %>"
+             value="<%= option %>" autocomplete="off" <%= "checked" if checked %>
+             data-action="placement-picker#toggleOther" data-placement-picker-target="option"
+             data-is-other="<%= option == "Other" %>">
+      <label class="placement-card <%= "placement-card--extra" if extra %> <%= "is-visible" if extra && checked %>"
+             for="body_placement_<%= option.parameterize %>"
+             <%= 'data-placement-picker-target="extraCard"' if extra %>>
+        <i class="fa-solid <%= icons[option] %>"></i>
+        <span><%= option %></span>
+      </label>
+    <% end %>
+  </div>
+  <button type="button" class="placement-more-toggle" data-action="placement-picker#showMore" data-placement-picker-target="moreToggle">
+    More placements <i class="fa-solid fa-chevron-down"></i>
+  </button>
+  <input type="text" name="placement_other" class="form-control mt-2 <%= "d-none" unless placement == "Other" %>"
+         placeholder="Specify placement" value="<%= placement_other %>"
+         data-placement-picker-target="otherInput" <%= "required" if placement == "Other" %>>
+</div>

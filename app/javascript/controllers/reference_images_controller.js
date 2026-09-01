@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["fileInput", "previews"]
+  static targets = ["fileInput", "previews", "addTile"]
   static values = { max: { type: Number, default: 3 } }
 
   connect() {
@@ -26,16 +26,18 @@ export default class extends Controller {
     const transfer = new DataTransfer()
     this.files.forEach((file) => transfer.items.add(file))
     this.fileInputTarget.files = transfer.files
+    this.addTileTarget.classList.toggle("d-none", this.files.length >= this.maxValue)
   }
 
   #renderPreviews() {
     this.previewsTarget.innerHTML = this.files
       .map(
         (file, index) => `
-          <div class="position-relative" style="width: 72px; height: 72px;">
-            <img src="${URL.createObjectURL(file)}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">
-            <button type="button" class="btn-close btn-close-white position-absolute top-0 end-0 m-1 bg-dark bg-opacity-50 rounded-circle p-1"
-                    style="font-size: 0.5rem;" data-action="reference-images#remove" data-index="${index}"></button>
+          <div class="reference-thumb">
+            <img src="${URL.createObjectURL(file)}">
+            <button type="button" class="reference-thumb-remove" data-action="reference-images#remove" data-index="${index}">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
           </div>
         `
       )

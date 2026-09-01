@@ -1,0 +1,51 @@
+<div id="tattoo_generation_result">
+  <% if local_assigns[:error] %>
+    <div class="alert alert-danger"><%= error %></div>
+  <% end %>
+
+  <%= form_with url: tattoo_generations_path, method: :post do %>
+    <div class="tattoo-generator-form-grid">
+      <div class="tattoo-generator-form-block">
+        <label class="tattoo-drawer__label">Your idea</label>
+
+        <textarea
+          name="idea"
+          class="form-control tattoo-drawer__textarea"
+          rows="4"
+          maxlength="300"
+          placeholder="Describe what the tattoo represents: subjects, objects, symbols... e.g. A two-headed snake wrapped around a dagger, with peonies"><%= local_assigns[:idea] %></textarea>
+      </div>
+
+      <div class="tattoo-generator-form-block">
+        <%= render "tattoo_generations/style_picker",
+              selected_style_ids: local_assigns[:selected_style_ids] || [] %>
+      </div>
+
+      <div class="tattoo-generator-form-block">
+        <%= render "tattoo_generations/reference_images" %>
+      </div>
+
+      <div class="tattoo-generator-form-block">
+        <label class="tattoo-drawer__label d-block">
+          Reference instructions
+          <span class="text-muted small">(optional)</span>
+        </label>
+
+        <input
+          type="text"
+          name="reference_instruction"
+          class="form-control"
+          placeholder="e.g. composition, shapes, style, details..."
+          value="<%= local_assigns[:reference_instruction] %>">
+      </div>
+    </div>
+
+    <%= submit_tag "Generate my tattoo",
+          class: "btn btn-primary w-100 tattoo-drawer__submit mt-3",
+          data: { turbo_submits_with: "Generating..." } %>
+
+    <p class="text-center text-muted small mt-2 mb-0">
+      Takes ~45–60 seconds
+    </p>
+  <% end %>
+</div>

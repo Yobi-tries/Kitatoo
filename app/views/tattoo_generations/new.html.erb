@@ -1,4 +1,100 @@
-<div class="container py-4" style="max-width: 640px;">
-  <h1 class="h3 mb-4">AI Tattoo Generator</h1>
-  <%= render "tattoo_generations/form", standalone: true %>
+<%= render "shared/topappbar" %>
+
+<%= turbo_stream_from [ current_user, :tattoo_generations ] %>
+<%= turbo_stream_from [ current_user, :body_previews ] %>
+
+<div class="container tattoo-generator-page" data-controller="body-preview-source">
+  <div class="tattoo-generator-hero">
+  <div class="tattoo-generator-hero-copy">
+    <p class="section-label">AI Tattoo Generator</p>
+
+    <h1 class="tattoo-generator-title">
+      <span class="tattoo-generator-title-main">Your tattoo.</span>
+      <span class="tattoo-generator-title-accent">Designed for you.</span>
+    </h1>
+
+    <p class="tattoo-generator-subtitle">
+      Professional prompts. Stunning results.<br>
+      See it on your body before you ink.
+    </p>
+
+        <div class="tattoo-generator-benefits">
+      <div class="tattoo-generator-benefit">
+        <i class="fa-solid fa-shield-halved"></i>
+        <div>
+          <strong>Made for tattoos</strong>
+          <span>Built around tattoo logic, not generic image prompts</span>
+        </div>
+      </div>
+
+      <div class="tattoo-generator-benefit">
+        <i class="fa-solid fa-wand-magic-sparkles"></i>
+        <div>
+          <strong>Personalized</strong>
+          <span>Your idea, your style, your story</span>
+        </div>
+      </div>
+
+      <div class="tattoo-generator-benefit">
+        <i class="fa-solid fa-eye"></i>
+        <div>
+          <strong>See it on you</strong>
+          <span>Realistic preview on your body</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+    <div class="tattoo-generator-hero-demo">
+    <div class="tattoo-generator-demo-card">
+      <span class="tattoo-generator-demo-step">1</span>
+      <span class="tattoo-generator-demo-label">FLAT DESIGN</span>
+
+      <%= image_tag "https://res.cloudinary.com/efbi2pls/image/upload/v1788259722/Your_design.jpg",
+            alt: "Flat tattoo design example",
+            class: "tattoo-generator-demo-image" %>
+    </div>
+
+    <div class="tattoo-generator-demo-arrow">
+      <i class="fa-solid fa-arrow-right"></i>
+    </div>
+
+    <div class="tattoo-generator-demo-card">
+      <span class="tattoo-generator-demo-step">2</span>
+      <span class="tattoo-generator-demo-label">ON YOUR BODY</span>
+
+      <%= image_tag "https://res.cloudinary.com/efbi2pls/image/upload/v1788259722/Preview.jpg",
+            alt: "Tattoo previewed on a forearm",
+            class: "tattoo-generator-demo-image" %>
+    </div>
+  </div>
 </div>
+
+  <p class="tattoo-generator-divider"><span>Two ways to get started</span></p>
+
+  <div class="tattoo-generator-grid">
+    <div class="tattoo-generator-card">
+      <div class="tattoo-generator-card-header">
+        <span class="tattoo-generator-card-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></span>
+        <div>
+          <h2 class="tattoo-generator-card-title">Create my tattoo</h2>
+          <p class="tattoo-generator-card-subtitle">Describe your idea. We handle the rest.</p>
+        </div>
+      </div>
+      <%= render "tattoo_generations/create_form" %>
+    </div>
+
+    <div class="tattoo-generator-card">
+      <div class="tattoo-generator-card-header">
+        <span class="tattoo-generator-card-icon"><i class="fa-solid fa-street-view"></i></span>
+        <div>
+          <h2 class="tattoo-generator-card-title">See on body</h2>
+          <p class="tattoo-generator-card-subtitle">Already have a design? See it on your body.</p>
+        </div>
+      </div>
+      <%= render "body_previews/form" %>
+    </div>
+  </div>
+</div>
+
+<%= render "shared/botappbar" %>

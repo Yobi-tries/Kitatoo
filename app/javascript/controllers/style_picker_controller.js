@@ -1,53 +1,55 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["pill"]
-  static values = { max: { type: Number, default: 2 } }
+  static targets = ["pill", "selected", "unselected"]
+  static values = { max: { type: Number, default: 2 }, preselected: Array }
+
+  connect() {
+    this.preselectedValue.forEach((id) => {
+      const pill = this.pillTargets.find((p) => p.dataset.tagId === String(id))
+      if (pill) this.#select(pill)
+    })
+    this.#refreshAvailability()
+  }
 
   toggle(event) {
     const pill = event.currentTarget
-
-    if (pill.classList.contains("disabled")) return
-
-    if (this.#isSelected(pill)) {
+    if (pill.dataset.selected === "true") {
       this.#deselect(pill)
     } else if (this.#selectedCount() < this.maxValue) {
       this.#select(pill)
     }
-
     this.#refreshAvailability()
   }
 
-  #isSelected(pill) {
-    return pill.classList.contains("text-bg-dark")
-  }
-
   #select(pill) {
-    pill.classList.remove("text-bg-light", "border")
-    pill.classList.add("text-bg-dark")
-
-    const input = document.createElement("input")
-    input.type = "hidden"
-    input.name = "style_tag_ids[]"
-    input.value = pill.dataset.tagId
-    input.dataset.stylePickerTarget = "input"
-    pill.appendChild(input)
+    pill.dataset.selected = "true"
+    pill.className = "style-tile style-picker-card"
+    const img = pill.dataset.tagImage
+    pill.innerHTML = `
+      ${img ? `<img src="${img}" class="style-tile-image" alt="">` : ""}
+      <span class="style-tile-name">${pill.dataset.tagName}</span>
+      <i class="fa-solid fa-circle-check style-picker-check"></i>
+      <input type="hidden" name="style_tag_ids[]" value="${pill.dataset.tagId}">
+    `
+    this.selectedTarget.appendChild(pill)
   }
 
   #deselect(pill) {
-    pill.classList.remove("text-bg-dark")
-    pill.classList.add("text-bg-light", "border")
-    pill.querySelector("input[type=hidden]")?.remove()
+    pill.dataset.selected = "false"
+    pill.className = "badge rounded-pill text-bg-light border style-pill"
+    pill.innerHTML = pill.dataset.tagName
+    this.unselectedTarget.appendChild(pill)
   }
 
   #selectedCount() {
-    return this.pillTargets.filter((pill) => this.#isSelected(pill)).length
+    return this.pillTargets.filter((p) => p.dataset.selected === "true").length
   }
 
   #refreshAvailability() {
     const full = this.#selectedCount() >= this.maxValue
-    this.pillTargets.forEach((pill) => {
-      pill.classList.toggle("disabled", full && !this.#isSelected(pill))
+    this.pillTargets.forEach((p) => {
+      if (p.dataset.selected !== "true") p.classList.toggle("disabled", full)
     })
   }
 }

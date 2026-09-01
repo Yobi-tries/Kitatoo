@@ -6,23 +6,20 @@
          tattoo_generation.image_public_id,
          resource_type: "image", type: "upload", flags: "attachment", secure: true
        ) %>
+    <%= button_tag "See on body", type: "button", class: "btn btn-primary w-100 tattoo-drawer__action",
+          data: { action: "body-preview-source#useGenerated",
+                  "body-preview-source-image-url-param": tattoo_generation.image_url,
+                  "body-preview-source-generation-id-param": tattoo_generation.id } %>
     <%= link_to "Download image", download_url,
           download: "tattoo-#{tattoo_generation.id}.png",
           class: "btn btn-outline-dark w-100 tattoo-drawer__action" %>
-    <% if local_assigns[:in_drawer] %>
-      <button type="button" class="btn w-100 tattoo-drawer__action tattoo-drawer__action--secondary" data-action="tattoo-drawer#reset">
-        Generate again
-      </button>
-    <% end %>
+    <%= link_to "Generate again", new_tattoo_generation_path,
+          class: "btn w-100 tattoo-drawer__action tattoo-drawer__action--secondary" %>
   <% elsif tattoo_generation.failed? %>
     <div class="alert tattoo-drawer__error mb-0">
       Image generation failed. Please try again.
     </div>
-    <% if local_assigns[:in_drawer] %>
-      <button type="button" class="btn btn-outline-dark w-100 tattoo-drawer__action" data-action="tattoo-drawer#reset">
-        Try again
-      </button>
-    <% end %>
+    <%= link_to "Try again", new_tattoo_generation_path, class: "btn btn-outline-dark w-100 tattoo-drawer__action" %>
   <% else %>
     <div class="tattoo-drawer__pending">
       <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>

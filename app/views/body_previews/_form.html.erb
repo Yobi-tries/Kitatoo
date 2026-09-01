@@ -1,0 +1,34 @@
+<div id="body_preview_result">
+  <% if local_assigns[:error] %>
+    <div class="alert alert-danger"><%= error %></div>
+  <% end %>
+
+  <%= form_with url: body_previews_path, method: :post do %>
+    <input type="hidden" name="tattoo_generation_id" value="<%= local_assigns[:tattoo_generation_id] %>"
+           data-body-preview-source-target="generationIdInput">
+
+    <div class="row g-3">
+      <div class="col-md-6">
+        <label class="tattoo-drawer__label d-block">Upload your tattoo design</label>
+        <%= image_tag local_assigns[:source_image_url].presence || "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBTAA7",
+              class: "tattoo-drawer__image mb-2 #{"d-none" if local_assigns[:source_image_url].blank?}",
+              data: { "body-preview-source-target": "preview" }, alt: "Selected tattoo design" %>
+        <label class="body-upload-dropzone <%= "d-none" if local_assigns[:source_image_url].present? %>"
+               data-body-preview-source-target="uploadField">
+          <i class="fa-solid fa-cloud-arrow-up"></i>
+          <span class="body-upload-dropzone-title">Upload image</span>
+          <span class="body-upload-dropzone-hint">PNG, JPG</span>
+          <input type="file" name="design_image" accept="image/*" class="visually-hidden">
+        </label>
+      </div>
+
+      <div class="col-md-6">
+        <%= render "body_previews/placement_picker", placement: local_assigns[:placement], placement_other: local_assigns[:placement_other] %>
+      </div>
+    </div>
+
+    <%= submit_tag "Preview on body", class: "btn btn-primary w-100 tattoo-drawer__submit mt-2",
+          data: { turbo_submits_with: "Generating..." } %>
+    <p class="text-center text-muted small mt-2 mb-0">Takes ~45–60 seconds</p>
+  <% end %>
+</div>
