@@ -159,7 +159,7 @@ class BookingsController < ApplicationController
 
     respond_to do |format|
       format.html { redirect_to conversation_path(conversation), notice: "Booking cancelled." }
-      format.turbo_stream { render turbo_stream: turbo_stream.remove(dom_id(@booking)) }
+      format.turbo_stream { render turbo_stream: booking_removal_streams(@booking) }
     end
   end
 
@@ -180,7 +180,7 @@ class BookingsController < ApplicationController
 
     respond_to do |format|
       format.html { redirect_to conversation_path(conversation), notice: "Booking marked as completed!" }
-      format.turbo_stream { render turbo_stream: turbo_stream.remove(dom_id(@booking)) }
+      format.turbo_stream { render turbo_stream: booking_removal_streams(@booking) }
     end
   end
 
@@ -210,6 +210,24 @@ class BookingsController < ApplicationController
 
   def booking_params
     params.require(:booking).permit(:address_id, :starts_at, :ends_at, :description)
+  end
+
+  def needs_action_chip_id(date)
+    "needs_action_#{date.iso8601}"
+  end
+
+  def booking_removal_streams(booking)
+    streams = [ turbo_stream.remove(dom_id(booking)) ]
+    return streams unless booking.availability.starts_at < Time.current
+
+    date = booking.availability.starts_at.to_date
+    artist_profile = booking.availability.artist_profile
+    still_needs_action = Booking.joins(:availability)
+                                .where(availabilities: { artist_profile_id: artist_profile.id, starts_at: date.all_day })
+                                .where(status: :confirmed)
+                                .exists?
+    streams << turbo_stream.remove(needs_action_chip_id(date)) unless still_needs_action
+    streams
   end
 
   def history_csv(bookings)
