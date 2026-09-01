@@ -1,5 +1,6 @@
 <div id="body_preview_result" class="tattoo-drawer__result">
-  <% if body_preview.completed? %>
+  <% if body_preview.nil? %>
+  <% elsif body_preview.completed? %>
     <h2 class="tattoo-drawer__title">Body preview</h2>
     <%= image_tag body_preview.preview_image_url, class: "tattoo-drawer__image", alt: "Tattoo body preview" %>
     <% download_url = Cloudinary::Utils.cloudinary_url(

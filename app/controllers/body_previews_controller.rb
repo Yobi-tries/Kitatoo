@@ -1,7 +1,10 @@
 class BodyPreviewsController < ApplicationController
   def create
-    source_url, source_public_id = resolve_source_image
-    return render_error("Please upload a tattoo design or generate one first.") if source_url.blank?
+    design_url, design_public_id = resolve_design_image
+    return render_error("Please choose a tattoo design (generated or uploaded).") if design_url.blank?
+
+    body_url, body_public_id = resolve_body_image
+    return render_error("Please upload a photo of your body.") if body_url.blank?
 
     placement = resolve_placement
     return render_error("Please choose a placement.") if placement.blank?
@@ -9,8 +12,10 @@ class BodyPreviewsController < ApplicationController
     body_preview = current_user.body_previews.create!(
       tattoo_generation_id: source_generation&.id,
       placement: placement,
-      source_image_url: source_url,
-      source_image_public_id: source_public_id
+      source_image_url: design_url,
+      source_image_public_id: design_public_id,
+      body_image_url: body_url,
+      body_image_public_id: body_public_id
     )
     BodyPreviewJob.perform_later(body_preview.id)
 
@@ -32,13 +37,21 @@ class BodyPreviewsController < ApplicationController
     return @source_generation if defined?(@source_generation)
 
     @source_generation = params[:tattoo_generation_id].presence &&
-      current_user.tattoo_generations.find_by(id: params[:tattoo_generation_id])
+      current_user.tattoo_generations.completed.find_by(id: params[:tattoo_generation_id])
   end
 
-  def resolve_source_image
+  def resolve_design_image
     return [ source_generation.image_url, source_generation.image_public_id ] if source_generation
 
-    file = params[:design_image]
+    upload_image_param(:design_image)
+  end
+
+  def resolve_body_image
+    upload_image_param(:body_photo)
+  end
+
+  def upload_image_param(key)
+    file = params[key]
     return [ nil, nil ] unless file.respond_to?(:tempfile) && file.content_type.to_s.start_with?("image/")
 
     upload = Cloudinary::Uploader.upload(file.tempfile.path)
@@ -57,7 +70,7 @@ class BodyPreviewsController < ApplicationController
     respond_to do |format|
       format.turbo_stream do
         render turbo_stream: turbo_stream.replace(
-          "body_preview_result",
+          "body_preview_form",
           partial: "body_previews/form",
           locals: locals
         )

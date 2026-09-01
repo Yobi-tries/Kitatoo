@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_01_092439) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_01_145024) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -69,6 +69,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_01_092439) do
   end
 
   create_table "body_previews", force: :cascade do |t|
+    t.string "body_image_public_id"
+    t.string "body_image_url"
     t.datetime "created_at", null: false
     t.string "placement", null: false
     t.string "preview_image_public_id"

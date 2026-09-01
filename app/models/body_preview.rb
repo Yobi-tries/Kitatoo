@@ -4,6 +4,7 @@ class BodyPreview < ApplicationRecord
 
   validates :placement, presence: true
   validates :source_image_url, presence: true
+  validates :body_image_url, presence: true
 
   enum :status, { pending: 0, completed: 1, failed: 2 }
 
@@ -22,13 +23,15 @@ class BodyPreview < ApplicationRecord
 
   def self.build_prompt(placement:)
     <<~PROMPT
-      You are creating a realistic body-placement preview, not a new tattoo design.
+      You are creating a realistic body-placement preview from two reference images, not a new tattoo design.
 
-      Take the exact tattoo design shown in the supplied reference image and preserve it as faithfully as possible: same composition, shapes, proportions, linework, shading, details, and overall visual identity. Do not add or remove any tattoo elements, and do not reinterpret or change the tattoo style.
+      Image 1 is the user's body photo. Preserve the person, pose, framing, anatomy, skin tone and texture, lighting and background exactly as shown.
 
-      Show this exact tattoo realistically applied to a human #{placement.downcase}, as if actually tattooed on real skin. #{PLACEMENT_HINTS[placement] || "adapt only what is necessary for realistic perspective and natural placement on this body area"}.
+      Image 2 is the exact tattoo design. Preserve it as faithfully as possible: same composition, shapes, proportions, linework, shading, details, and overall visual identity. Do not add or remove any tattoo elements, and do not reinterpret or change the tattoo style.
 
-      The result should look like a real photo: realistic skin texture, natural lighting, the tattoo clearly and fully visible.
+      Apply the tattoo from Image 2 realistically onto Image 1's #{placement.downcase}, as if actually tattooed on that real skin. #{PLACEMENT_HINTS[placement] || 'adapt only what is necessary for realistic perspective and natural placement on this body area'}.
+
+      The result must look like a real, unedited photo of the same person from Image 1: realistic skin texture, natural lighting and shadow, the tattoo clearly and fully visible and wrapped naturally to body contours.
     PROMPT
   end
 end
