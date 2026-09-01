@@ -108,10 +108,19 @@ end
 
 puts "Creating confirmed bookings..."
 
+# Main studio is closed Wednesdays and Sundays — nudge these fixed offsets forward so
+# they never silently land on a closed day no matter what "today" happens to be.
+next_open_weekday = ->(offset) {
+  offset += 1 while [ 0, 3 ].include?(offset.days.from_now.wday) # Sunday, Wednesday
+  offset
+}
+fred_offset = next_open_weekday.call(5)
+sam_offset = next_open_weekday.call(12)
+
 [
-  { client: fred_user, starts_at: 5.days.from_now.change(hour: 11),
+  { client: fred_user, starts_at: fred_offset.days.from_now.change(hour: 11),
     duration: 90, description: "Small blackwork piece on the forearm." },
-  { client: second_client_user, starts_at: 12.days.from_now.change(hour: 11),
+  { client: second_client_user, starts_at: sam_offset.days.from_now.change(hour: 11),
     duration: 45, description: "Fine line geometric design on the wrist." }
 ].each do |data|
   conversation = Conversation.create!(client: data[:client], artist_profile: artist_profile)
@@ -144,7 +153,7 @@ end
 puts "Adding day offs to InkMaster's schedule..."
 artist_profile.update!(
   schedule: artist_profile.schedule.merge(
-    "days_off" => artist_profile.schedule["days_off"] + [ (Date.current + 6).to_s, (Date.current + 15).to_s ]
+    "days_off" => artist_profile.schedule["days_off"] + [ (Date.current + 20).to_s, (Date.current + 30).to_s ]
   )
 )
 
@@ -171,7 +180,7 @@ main_schedule = {
     "sunday" => nil
   },
   "days_off" => [
-    (Date.current + 6).to_s, (Date.current + 15).to_s, (Date.current + 26).to_s,
+    (Date.current + 20).to_s, (Date.current + 30).to_s, (Date.current + 40).to_s,
     "2026-12-24", "2026-12-25", "2026-12-31"
   ]
 }
@@ -377,7 +386,7 @@ addresses = [ address, address2 ]
 schedules = [ main_schedule, riverside_schedule ]
 # Days already used by the two hand-written "confirmed" bookings and the 3 legacy open
 # availabilities created above, so the generator below never lands on the same day.
-used_offsets = [ 1, 2, 3, 5, 12 ]
+used_offsets = [ 1, 2, 3, fred_offset, sam_offset ]
 future_cursors = { address => 1, address2 => 1 }
 past_cursors = { address => -1, address2 => -1 }
 
@@ -418,6 +427,41 @@ seed_batch(16, history_pool.first(16), :completed, addresses, schedules, past_cu
 # Cancelled bookings
 seed_batch(6, history_pool.first(6), :cancelled, addresses, schedules, past_cursors, -1, used_offsets,
            booking_options, artist_user, artist_replies, client_followups)
+
+puts "Adding extra same-day bookings for today, tomorrow, and the day after..."
+
+# inkmaster_history_clients only carry completed/cancelled bookings so far, so they're
+# free to also take on one of these extra confirmed sessions each.
+same_day_clients = inkmaster_history_clients.dup
+
+[ 0, 1, 2 ].each do |offset|
+  date = offset.days.from_now.to_date
+  addr = seed_weekday_open?(main_schedule, date) ? address : address2
+  next unless seed_weekday_open?(addr.schedule, date)
+
+  2.times do
+    client = same_day_clients.shift
+    next unless client
+
+    option = booking_options.sample
+    day_start = Time.parse(addr.schedule.dig("days", date.strftime("%A").downcase)["start"])
+    desired_start = date.to_time.change(hour: day_start.hour, min: day_start.min)
+    slot = Availability.next_available_slot(artist_profile: artist_profile, starts_at: desired_start,
+                                             ends_at: desired_start + option[:duration].minutes, schedule: addr.schedule)
+    next unless slot
+
+    conversation = Conversation.find_or_create_by!(client: client, artist_profile: artist_profile)
+    request_time = [ slot[:starts_at] - rand(2..10).days, Time.current - rand(1..5).days ].min
+    seed_conversation_thread(conversation, client, artist_user, option[:description], request_time,
+                              artist_replies: artist_replies, client_followups: client_followups)
+
+    availability = artist_profile.availabilities.create!(
+      address: addr, starts_at: slot[:starts_at], ends_at: slot[:ends_at], state: :booked
+    )
+    availability.build_booking(client: client, description: option[:description], duration: option[:duration],
+                                status: :confirmed).save!
+  end
+end
 
 puts "Done!"
 
