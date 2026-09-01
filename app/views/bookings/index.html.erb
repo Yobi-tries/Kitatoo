@@ -64,17 +64,7 @@
     <% if @artist_pending.empty? && @artist_upcoming.empty? && @artist_to_complete.empty? && @artist_history.empty? && @artist_cancelled.empty? %>
       <p class="bookings-empty">No booking requests yet.</p>
     <% else %>
-      <%= form_tag bookings_path, method: :get, data: { controller: "filter-select" } do %>
-        <%= hidden_field_tag :address_id, @selected_address&.id %>
-        <%= select_tag :status,
-              options_for_select([
-                [ "Requests#{" (#{@artist_pending.size})" if @artist_pending.any?}", "requests" ],
-                [ "Upcoming#{" (#{@artist_to_complete.size} to complete)" if @artist_to_complete.any?}", "upcoming" ],
-                [ "History", "history" ],
-                [ "Cancelled", "cancelled" ]
-              ], @status),
-              class: "booking-status-filter", data: { action: "change->filter-select#navigate" } %>
-      <% end %>
+      <%= render "bookings/status_dropdown", status: @status, address: @selected_address %>
 
       <% case @status
          when "requests" %>
