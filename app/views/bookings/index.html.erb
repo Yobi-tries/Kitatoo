@@ -2,6 +2,11 @@
 
 <div class="container bookings-index">
 
+  <% if @artist_profile %>
+    <%= render "bookings/role_toggle", view: @view %>
+  <% end %>
+
+  <% if @view == "client" %>
   <div class="home-section-header">
     <h2 class="home-section-title">My bookings</h2>
   </div>
@@ -53,8 +58,9 @@
       </div>
     <% end %>
   <% end %>
+  <% end %>
 
-  <% if @artist_profile %>
+  <% if @view == "artist" %>
     <div class="home-section-header">
       <h2 class="home-section-title">Requests received</h2>
     </div>
