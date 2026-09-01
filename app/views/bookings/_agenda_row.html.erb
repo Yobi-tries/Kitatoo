@@ -4,7 +4,8 @@
   <div class="booking-row-body">
     <h3 class="booking-row-name">
       <% if conversation %>
-        <%= link_to booking.client.username, conversation_path(conversation), class: "stretched-link" %>
+        <%= link_to booking.client.username, conversation_path(conversation),
+              class: "stretched-link", data: { turbo_frame: "_top" } %>
       <% else %>
         <%= booking.client.username %>
       <% end %>
