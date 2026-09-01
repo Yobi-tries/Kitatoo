@@ -24,6 +24,7 @@
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.14em;
+  color: $ink;
 }
 
 .booking-card-date {
@@ -107,6 +108,10 @@
 
   .booking-row-body {
     color: $primary-custom;
+
+    .booking-card-label {
+      color: $text-secondary;
+    }
   }
 
   .booking-card-pill {
