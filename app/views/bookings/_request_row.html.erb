@@ -1,40 +1,31 @@
 <% slot_duration = booking.duration || (booking.availability.address.schedule&.dig("slot_duration") || 30) %>
+<% pending = booking.selected? %>
 <div id="<%= dom_id(booking) %>" class="booking-request">
-  <div class="booking-row">
-    <div class="booking-row-avatar"><%= booking.client.username.first(2).upcase %></div>
-    <div class="booking-row-body">
-      <h3 class="booking-row-name">
-        <% if conversation %>
-          <%= link_to booking.client.username, conversation_path(conversation), class: "stretched-link" %>
-        <% else %>
-          <%= booking.client.username %>
-        <% end %>
-      </h3>
-      <span class="booking-row-meta"><%= booking.availability.starts_at.strftime("%a %d %b · %H:%M") %></span>
-    </div>
-  </div>
-
-  <% if booking.selected? %>
-    <div class="booking-card booking-card--pending">
-      <div class="booking-card-info">
-        <div class="booking-card-info-left">
-          <span class="booking-card-label">slot requested</span>
-        </div>
-        <span class="booking-card-pill">pending</span>
-      </div>
-      <%= render "bookings/confirm_form", booking: booking, slot_duration: slot_duration %>
-    </div>
-  <% else %>
-    <div class="booking-card booking-card--artist-confirmed">
-      <div class="booking-card-info">
-        <div class="booking-card-info-left">
+  <div class="booking-card <%= pending ? "booking-card--pending" : "booking-card--artist-confirmed" %>">
+    <div class="booking-row">
+      <div class="booking-row-avatar"><%= booking.client.username.first(2).upcase %></div>
+      <div class="booking-row-body">
+        <h3 class="booking-row-name">
+          <% if conversation %>
+            <%= link_to booking.client.username, conversation_path(conversation), class: "stretched-link" %>
+          <% else %>
+            <%= booking.client.username %>
+          <% end %>
+        </h3>
+        <span class="booking-row-meta"><%= booking.availability.starts_at.strftime("%a %d %b · %H:%M") %></span>
+        <% unless pending %>
           <span class="booking-card-label">slot · duration <%= "#{booking.duration / 60}h#{format('%02d', booking.duration % 60)}" %></span>
-        </div>
-        <span class="booking-card-pill">confirmed</span>
+        <% end %>
       </div>
+      <span class="booking-card-pill"><%= pending ? "pending" : "confirmed" %></span>
+    </div>
+
+    <% if pending %>
+      <%= render "bookings/confirm_form", booking: booking, slot_duration: slot_duration %>
+    <% else %>
       <div class="booking-card-strip">
         <span class="booking-card-label" style="flex:1;">Waiting for client</span>
       </div>
-    </div>
-  <% end %>
+    <% end %>
+  </div>
 </div>
