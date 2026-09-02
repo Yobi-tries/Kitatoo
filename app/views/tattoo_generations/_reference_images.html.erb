@@ -1,0 +1,12 @@
+<div class="mb-3" data-controller="reference-images" data-reference-images-max-value="3">
+  <label class="tattoo-drawer__label d-block">Reference images <span class="text-muted small">(optional, up to 3)</span></label>
+  <div class="d-flex flex-wrap gap-2">
+    <div class="d-flex flex-wrap gap-2" data-reference-images-target="previews"></div>
+    <label class="reference-add-tile" data-reference-images-target="addTile">
+      <i class="fa-solid fa-image"></i>
+      <span>Add</span>
+      <input type="file" name="reference_images[]" accept="image/*" multiple class="visually-hidden"
+             data-reference-images-target="fileInput" data-action="change->reference-images#filesSelected">
+    </label>
+  </div>
+</div>

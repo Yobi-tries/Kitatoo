@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_31_131644) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_01_152318) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -94,6 +94,23 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_31_131644) do
     t.index ["address_id"], name: "index_availabilities_on_address_id"
     t.index ["artist_profile_id"], name: "index_availabilities_on_artist_profile_id"
     t.index ["starts_at"], name: "index_availabilities_on_starts_at"
+  end
+
+  create_table "body_previews", force: :cascade do |t|
+    t.string "body_image_public_id"
+    t.string "body_image_url"
+    t.datetime "created_at", null: false
+    t.string "placement"
+    t.string "preview_image_public_id"
+    t.string "preview_image_url"
+    t.string "source_image_public_id"
+    t.string "source_image_url", null: false
+    t.integer "status", default: 0, null: false
+    t.bigint "tattoo_generation_id"
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["tattoo_generation_id"], name: "index_body_previews_on_tattoo_generation_id"
+    t.index ["user_id"], name: "index_body_previews_on_user_id"
   end
 
   create_table "bookings", force: :cascade do |t|
@@ -334,6 +351,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_31_131644) do
     t.string "image_public_id"
     t.string "image_url"
     t.text "prompt", null: false
+    t.text "reference_image_public_ids", default: [], null: false, array: true
+    t.text "reference_image_urls", default: [], null: false, array: true
     t.integer "status", default: 0, null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
@@ -371,6 +390,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_31_131644) do
   add_foreign_key "artist_profiles", "users"
   add_foreign_key "availabilities", "addresses"
   add_foreign_key "availabilities", "artist_profiles"
+  add_foreign_key "body_previews", "tattoo_generations"
+  add_foreign_key "body_previews", "users"
   add_foreign_key "bookings", "availabilities"
   add_foreign_key "bookings", "users", column: "client_id"
   add_foreign_key "conversations", "artist_profiles"

@@ -38,6 +38,7 @@ Rails.application.routes.draw do
   resource :user, only: [:show, :edit, :update]
 
   resources :tattoo_generations, only: [:new, :create, :show]
+  resources :body_previews, only: [:create]
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
