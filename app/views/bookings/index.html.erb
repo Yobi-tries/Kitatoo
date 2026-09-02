@@ -1,3 +1,8 @@
+<%= turbo_stream_from [ current_user, :bookings ] %>
+<% if @artist_profile %>
+  <%= turbo_stream_from [ @artist_profile, :bookings ] %>
+<% end %>
+
 <%= render "shared/topappbar", hide_right: true %>
 
 <div class="container bookings-index">
