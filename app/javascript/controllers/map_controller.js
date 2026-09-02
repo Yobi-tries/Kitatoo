@@ -2,7 +2,7 @@ import { Controller } from "@hotwired/stimulus"
 import mapboxgl from "mapbox-gl"
 
 export default class extends Controller {
-  static targets = ["canvas", "card", "count", "list", "listButton", "mapButton", "more", "notice"]
+  static targets = ["canvas", "card", "count", "list", "listButton", "mapButton", "more"]
   static values = {
     apiKey: String,
     markers: Array
@@ -66,6 +66,9 @@ export default class extends Controller {
   }
 
   #addMarkersToMap() {
+    this.pins = []
+    this.clusters = []
+
     this.markersValue.forEach((marker) => {
       const popup = new mapboxgl.Popup({ offset: 24, closeButton: false })
         .setHTML(`
@@ -82,6 +85,8 @@ export default class extends Controller {
         .setLngLat([ marker.lng, marker.lat ])
         .setPopup(popup)
         .addTo(this.map)
+
+      this.pins.push({ pin, lng: marker.lng, lat: marker.lat })
 
       let timer
 
@@ -102,6 +107,56 @@ export default class extends Controller {
         popup.getElement().addEventListener("mouseleave", close)
       })
     })
+
+    this.map.on("moveend", () => this.#groupPins())
+    this.#groupPins()
+  }
+
+  #groupPins() {
+    this.clusters.forEach((cluster) => cluster.remove())
+    this.clusters = []
+    this.pins.forEach(({ pin }) => { pin.getElement().style.display = "" })
+
+    const grouped = new Set()
+
+    this.pins.forEach((current, index) => {
+      if (grouped.has(index)) return
+
+      const origin = this.map.project([ current.lng, current.lat ])
+      const near = [ index ]
+
+      this.pins.forEach((other, position) => {
+        if (position <= index || grouped.has(position)) return
+
+        const point = this.map.project([ other.lng, other.lat ])
+        if (Math.hypot(origin.x - point.x, origin.y - point.y) < 44) near.push(position)
+      })
+
+      if (near.length < 2) return
+
+      near.forEach((position) => {
+        grouped.add(position)
+        this.pins[position].pin.getElement().style.display = "none"
+      })
+
+      this.clusters.push(this.#buildCluster(current, near.length))
+    })
+  }
+
+  #buildCluster(anchor, count) {
+    const element = document.createElement("button")
+    element.type = "button"
+    element.className = "map-cluster"
+    element.textContent = count
+    element.setAttribute("aria-label", `${count} studios here, zoom in`)
+
+    element.addEventListener("click", () => {
+      this.map.easeTo({ center: [ anchor.lng, anchor.lat ], zoom: this.map.getZoom() + 3 })
+    })
+
+    return new mapboxgl.Marker({ element })
+      .setLngLat([ anchor.lng, anchor.lat ])
+      .addTo(this.map)
   }
 
   #fitMapToMarkers() {
@@ -121,31 +176,24 @@ export default class extends Controller {
     const outZone = []
 
     this.orderedCards.forEach((card) => {
-      const inside = !bounds || bounds.contains([ Number(card.dataset.lng), Number(card.dataset.lat) ])
+      const locations = JSON.parse(card.dataset.locations)
+      const inside = !bounds || locations.some((location) => bounds.contains(location))
       ;(inside ? inZone : outZone).push(card)
     })
 
-    const nearby = inZone.slice(0, this.visibleCount)
-    const missing = this.visibleCount - nearby.length
-    const fallback = missing > 0 ? outZone.slice(0, missing) : []
+    const visibleCards = inZone.slice(0, this.visibleCount)
 
     this.orderedCards.forEach((card) => { card.hidden = true })
-    nearby.concat(fallback).forEach((card) => { card.hidden = false })
+    visibleCards.forEach((card) => { card.hidden = false })
 
-    this.listTarget.append(...nearby)
-    if (this.hasNoticeTarget) this.listTarget.append(this.noticeTarget)
-    this.listTarget.append(...fallback, ...outZone.slice(missing > 0 ? missing : 0), ...inZone.slice(this.visibleCount))
-
-    if (this.hasNoticeTarget) {
-      this.noticeTarget.hidden = fallback.length === 0
-    }
+    this.listTarget.append(...inZone, ...outZone)
 
     if (this.hasCountTarget) {
       this.countTarget.textContent = inZone.length
     }
 
     if (this.hasMoreTarget) {
-      this.moreTarget.hidden = this.orderedCards.length <= this.visibleCount
+      this.moreTarget.hidden = inZone.length <= this.visibleCount
     }
   }
 }

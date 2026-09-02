@@ -74,15 +74,11 @@
       <div class="home-map" data-map-target="canvas" hidden></div>
     <% end %>
 
-    <p class="home-list-notice" data-map-target="notice" hidden>
-      Outside the map view. Nearest artists below.
-    </p>
-
     <div class="home-artists-list" data-map-target="list">
       <% @artists.each do |artist| %>
-        <% located = artist.addresses.find { |address| address.latitude.present? } %>
+        <% locations = artist.addresses.filter_map { |address| [address.longitude, address.latitude] if address.longitude.present? && address.latitude.present? } %>
         <div class="artist-card" data-map-target="card"
-             data-lat="<%= located&.latitude %>" data-lng="<%= located&.longitude %>">
+             data-locations="<%= locations.to_json %>">
           <%= image_tag artist.avatar_url.presence || "https://ui-avatars.com/api/?size=124&background=16130F&color=FBF9F5&name=#{artist.display_name.tr(" ", "+")}",
                 class: "artist-card-thumb", alt: artist.display_name %>
           <div class="artist-card-body">
