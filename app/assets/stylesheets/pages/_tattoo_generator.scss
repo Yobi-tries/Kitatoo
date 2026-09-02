@@ -359,6 +359,33 @@
   }
 }
 
+.tattoo-generator-card-stack {
+  min-width: 0;
+}
+
+.tattoo-generator-disclaimer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  max-width: 320px;
+  margin: 20px auto 0;
+  padding: 0 12px;
+  color: $text-muted-custom;
+  font-size: 13px;
+  line-height: 1.4;
+  text-align: center;
+
+  i {
+    flex-shrink: 0;
+  }
+
+  @media (max-width: 599px) {
+    min-height: 76px;
+    margin-top: 12px;
+  }
+}
+
 .tattoo-generator-card-header {
   width: 100%;
   display: flex;
@@ -708,6 +735,82 @@
 
 .body-upload-dropzone-hint {
   font-size: 12px;
+}
+
+.body-photo-picker {
+  margin-bottom: 12px;
+}
+
+.body-photo-picker-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.body-photo-picker-action {
+  min-height: 96px;
+  padding: 12px 8px;
+  border-radius: $border-radius-lg;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  font-family: $body-font;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 150ms ease, border-color 150ms ease;
+
+  i {
+    font-size: 20px;
+  }
+
+  &:focus-within {
+    outline: 2px solid $accent;
+    outline-offset: 3px;
+  }
+}
+
+.body-photo-picker-action--camera {
+  border: 2px solid $accent;
+  background: $surface;
+  color: $accent-text-safe;
+
+  &:hover {
+    background: rgba($accent, 0.1);
+  }
+}
+
+.body-photo-picker-action--upload {
+  border: 2px solid $hairline-canvas;
+  background: $surface;
+  color: $ink;
+
+  &:hover {
+    border-color: $ink;
+  }
+}
+
+.body-photo-picker-action-title {
+  font-weight: 700;
+}
+
+.body-photo-picker-action-hint {
+  color: inherit;
+  font-size: 10px;
+  font-weight: 400;
+  opacity: 0.75;
+}
+
+.body-photo-picker-hint {
+  margin: 8px 4px 0;
+  color: $text-secondary;
+  font-size: 11px;
+  line-height: 1.35;
+  text-align: center;
 }
 
 .placement-grid {

@@ -111,37 +111,44 @@
       </div>
     </div>
 
-    <div class="tattoo-generator-card"
-         data-controller="collapsible-card"
-         data-body-preview-source-target="bodyPreviewCard"
-         data-action="body-preview-source:open-card->collapsible-card#open">
-      <h2 class="tattoo-generator-card-heading">
-        <button class="tattoo-generator-card-header"
-                type="button"
-                data-action="collapsible-card#toggle"
-                data-collapsible-card-target="button"
-                aria-expanded="false"
-                aria-controls="body-preview-card-content"
-                aria-labelledby="body-preview-card-title"
-                aria-describedby="body-preview-card-subtitle">
-          <span class="tattoo-generator-card-icon" aria-hidden="true"><i class="fa-solid fa-street-view"></i></span>
-          <span class="tattoo-generator-card-copy">
-            <span id="body-preview-card-title" class="tattoo-generator-card-title">See on body</span>
-            <span id="body-preview-card-subtitle" class="tattoo-generator-card-subtitle">Already have a design? See it on your body.</span>
-          </span>
-          <span class="tattoo-generator-card-arrow" aria-hidden="true"><i class="fa-solid fa-chevron-down"></i></span>
-        </button>
-      </h2>
+    <div class="tattoo-generator-card-stack">
+      <div class="tattoo-generator-card"
+           data-controller="collapsible-card"
+           data-body-preview-source-target="bodyPreviewCard"
+           data-action="body-preview-source:open-card->collapsible-card#open">
+        <h2 class="tattoo-generator-card-heading">
+          <button class="tattoo-generator-card-header"
+                  type="button"
+                  data-action="collapsible-card#toggle"
+                  data-collapsible-card-target="button"
+                  aria-expanded="false"
+                  aria-controls="body-preview-card-content"
+                  aria-labelledby="body-preview-card-title"
+                  aria-describedby="body-preview-card-subtitle">
+            <span class="tattoo-generator-card-icon" aria-hidden="true"><i class="fa-solid fa-street-view"></i></span>
+            <span class="tattoo-generator-card-copy">
+              <span id="body-preview-card-title" class="tattoo-generator-card-title">See on body</span>
+              <span id="body-preview-card-subtitle" class="tattoo-generator-card-subtitle">Already have a design? See it on your body.</span>
+            </span>
+            <span class="tattoo-generator-card-arrow" aria-hidden="true"><i class="fa-solid fa-chevron-down"></i></span>
+          </button>
+        </h2>
 
-      <div id="body-preview-card-content"
-           class="tattoo-generator-card-content"
-           data-collapsible-card-target="content"
-           role="region"
-           aria-labelledby="body-preview-card-title"
-           hidden>
-        <%= render "body_previews/form" %>
-        <%= render "body_previews/result", body_preview: @body_preview %>
+        <div id="body-preview-card-content"
+             class="tattoo-generator-card-content"
+             data-collapsible-card-target="content"
+             role="region"
+             aria-labelledby="body-preview-card-title"
+             hidden>
+          <%= render "body_previews/form" %>
+          <%= render "body_previews/result", body_preview: @body_preview %>
+        </div>
       </div>
+
+      <p class="tattoo-generator-disclaimer">
+        <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+        <span>AI-generated sketches and previews are for inspiration only. Your tattoo artist will refine the design and adapt it to your body.</span>
+      </p>
     </div>
   </div>
 </div>

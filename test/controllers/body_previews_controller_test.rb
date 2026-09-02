@@ -26,7 +26,7 @@ class BodyPreviewsControllerTest < ActionDispatch::IntegrationTest
       assert_enqueued_with(job: BodyPreviewJob) do
         post body_previews_path, params: {
           design_image: design_file,
-          body_photo: body_file
+          body_photo_upload: body_file
         }, as: :multipart_form
       end
     end
@@ -53,7 +53,7 @@ class BodyPreviewsControllerTest < ActionDispatch::IntegrationTest
     }) do
       post body_previews_path, params: {
         tattoo_generation_id: generation.id,
-        body_photo: body_file
+        body_photo_camera: body_file
       }, as: :multipart_form
     end
 

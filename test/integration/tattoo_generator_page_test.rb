@@ -17,6 +17,18 @@ class TattooGeneratorPageTest < ActionDispatch::IntegrationTest
     assert_select ".tattoo-generator-card[data-body-preview-source-target='bodyPreviewCard'][data-action='body-preview-source:open-card->collapsible-card#open']", count: 1 do
       assert_select "#body-preview-card-content", count: 1
     end
+    assert_select "label.body-photo-picker-action--camera", count: 1 do
+      assert_select ".body-photo-picker-action-title", text: "Take body photo"
+      assert_select ".body-photo-picker-action-hint", text: "With phone"
+      assert_select "input[type='file'][name='body_photo_camera'][capture='environment']", count: 1
+    end
+    assert_select "label.body-photo-picker-action--upload", count: 1 do
+      assert_select ".body-photo-picker-action-title", text: "Upload body photo"
+      assert_select ".body-photo-picker-action-hint", text: "PNG, JPG"
+      assert_select "input[type='file'][name='body_photo_upload']:not([capture])", count: 1
+    end
+    assert_select ".body-upload-dropzone-title", text: "Upload tattoo design", count: 1
+    assert_select ".tattoo-generator-disclaimer", text: /AI-generated sketches and previews are for inspiration only/
   end
 
   test "new page restores the user's last generation and body preview across every status" do

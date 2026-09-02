@@ -3,7 +3,7 @@ import { Controller } from "@hotwired/stimulus"
 export default class extends Controller {
   static targets = [
     "generationIdInput", "preview", "uploadField",
-    "bodyPhotoInput", "bodyPreview", "bodyUploadField", "bodyPreviewCard"
+    "bodyPreview", "bodyUploadField", "bodyPreviewCard"
   ]
 
   useGenerated(event) {

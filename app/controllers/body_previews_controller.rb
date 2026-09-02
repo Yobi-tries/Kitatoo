@@ -43,7 +43,10 @@ class BodyPreviewsController < ApplicationController
   end
 
   def resolve_body_image
-    upload_image_param(:body_photo)
+    key = %i[body_photo_camera body_photo_upload body_photo].find { |param| params[param].present? }
+    return [ nil, nil ] unless key
+
+    upload_image_param(key)
   end
 
   def upload_image_param(key)

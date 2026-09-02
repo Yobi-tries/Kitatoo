@@ -16,7 +16,7 @@
         <label class="body-upload-dropzone <%= "d-none" if local_assigns[:source_image_url].present? %>"
                data-body-preview-source-target="uploadField">
           <i class="fa-solid fa-cloud-arrow-up"></i>
-          <span class="body-upload-dropzone-title">Upload image</span>
+          <span class="body-upload-dropzone-title">Upload tattoo design</span>
           <span class="body-upload-dropzone-hint">PNG, JPG</span>
           <input type="file" name="design_image" accept="image/*" class="visually-hidden"
                  data-action="change->body-preview-source#designImageSelected">
@@ -28,14 +28,26 @@
         <%= image_tag "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBTAA7",
               class: "tattoo-drawer__image mb-2 d-none",
               data: { "body-preview-source-target": "bodyPreview" }, alt: "Your body photo" %>
-        <label class="body-upload-dropzone" data-body-preview-source-target="bodyUploadField">
-          <i class="fa-solid fa-camera"></i>
-          <span class="body-upload-dropzone-title">Upload body photo</span>
-          <span class="body-upload-dropzone-hint">Frame the area you want tattooed</span>
-          <input type="file" name="body_photo" accept="image/*" class="visually-hidden"
-                 data-body-preview-source-target="bodyPhotoInput"
-                 data-action="change->body-preview-source#bodyPhotoSelected">
-        </label>
+        <div class="body-photo-picker" data-body-preview-source-target="bodyUploadField">
+          <div class="body-photo-picker-actions">
+            <label class="body-photo-picker-action body-photo-picker-action--camera">
+              <i class="fa-solid fa-camera" aria-hidden="true"></i>
+              <span class="body-photo-picker-action-title">Take body photo</span>
+              <span class="body-photo-picker-action-hint">With phone</span>
+              <input type="file" name="body_photo_camera" accept="image/*" capture="environment" class="visually-hidden"
+                     data-action="change->body-preview-source#bodyPhotoSelected">
+            </label>
+
+            <label class="body-photo-picker-action body-photo-picker-action--upload">
+              <i class="fa-solid fa-cloud-arrow-up" aria-hidden="true"></i>
+              <span class="body-photo-picker-action-title">Upload body photo</span>
+              <span class="body-photo-picker-action-hint">PNG, JPG</span>
+              <input type="file" name="body_photo_upload" accept="image/*" class="visually-hidden"
+                     data-action="change->body-preview-source#bodyPhotoSelected">
+            </label>
+          </div>
+          <p class="body-photo-picker-hint">Use a clear, well-lit photo of the area you want tattooed.</p>
+        </div>
       </div>
     </div>
 
