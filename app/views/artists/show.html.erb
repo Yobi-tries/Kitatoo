@@ -197,6 +197,12 @@
     <% end %>
   </div>
 
+  <% if owner %>
+    <div class="artist-section text-center">
+      <%= button_to "Sign out", destroy_user_session_path, method: :delete, class: "btn-sign-out" %>
+    </div>
+  <% end %>
+
 </div>
 
 <div class="modal fade" id="pricingModal" tabindex="-1">

@@ -17,8 +17,8 @@
       <span class="material-symbols-outlined">person</span>
     <% end %>
   <% else %>
-    <a class="botappbar-link" href="#" aria-label="Profile">
+    <%= link_to new_user_session_path, class: "botappbar-link", "aria-label": "Profile" do %>
       <span class="material-symbols-outlined">person</span>
-    </a>
+    <% end %>
   <% end %>
 </nav>
