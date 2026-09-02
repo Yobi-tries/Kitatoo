@@ -5,21 +5,23 @@ class BookingsController < ApplicationController
 
   def index
     @artist_profile = current_user.artist_profile
+    @view = @artist_profile ? (params[:view].presence_in(%w[client artist]) || "artist") : "client"
 
-    client_scope = current_user.bookings.joins(:availability)
-                               .includes(availability: :artist_profile)
+    if @view == "client"
+      client_scope = current_user.bookings.joins(:availability)
+                                 .includes(availability: :artist_profile)
 
-    @client_upcoming = client_scope.where.not(status: :cancelled)
-                                   .where("availabilities.starts_at >= ?", Time.current)
-                                   .order("availabilities.starts_at ASC")
-    @client_past = client_scope.where.not(status: :cancelled)
-                               .where("availabilities.starts_at < ?", Time.current)
-                               .order("availabilities.starts_at DESC")
-    @client_cancelled = client_scope.where(status: :cancelled)
-                                    .order("availabilities.starts_at DESC")
-    @client_conversations_by_artist = current_user.conversations.index_by(&:artist_profile_id)
-
-    return unless @artist_profile
+      @client_upcoming = client_scope.where.not(status: :cancelled)
+                                     .where("availabilities.starts_at >= ?", Time.current)
+                                     .order("availabilities.starts_at ASC")
+      @client_past = client_scope.where.not(status: :cancelled)
+                                 .where("availabilities.starts_at < ?", Time.current)
+                                 .order("availabilities.starts_at DESC")
+      @client_cancelled = client_scope.where(status: :cancelled)
+                                      .order("availabilities.starts_at DESC")
+      @client_conversations_by_artist = current_user.conversations.index_by(&:artist_profile_id)
+      return
+    end
 
     @addresses = @artist_profile.addresses.order(:id)
     @selected_address = @addresses.find_by(id: params[:address_id]) if params[:address_id].present?
