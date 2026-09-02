@@ -21,63 +21,66 @@
       </div>
     </div>
 
-    <% if @addresses.size > 1 || @selected_address.nil? %>
-      <p class="section-label">Select location</p>
-      <%= render "shared/location_selector", addresses: @addresses, selected_address: @selected_address,
-            path_for: ->(a) { artist_profile_public_availabilities_path(@artist_profile, address_id: a.id) } %>
-    <% end %>
-
-    <% if @selected_address.nil? %>
-      <p class="booking-empty">Choose a location above to see its availability.</p>
-    <% elsif @selected_address.schedule.blank? %>
-      <p class="booking-empty">No availability for this location yet.</p>
-    <% else %>
-      <% address = @selected_address %>
-
-      <% if address.latitude.present? && address.longitude.present? %>
-        <div class="booking-location-map"
-             data-controller="map"
-             data-map-markers-value="<%= [ { lat: address.latitude, lng: address.longitude } ].to_json %>"
-             data-map-api-key-value="<%= ENV["MAPBOX_API_KEY"] %>"></div>
+    <%= turbo_frame_tag "booking-panel" do %>
+      <% if @addresses.size > 1 || @selected_address.nil? %>
+        <p class="section-label">Select location</p>
+        <%= render "shared/location_selector", addresses: @addresses, selected_address: @selected_address,
+              path_for: ->(a) { artist_profile_public_availabilities_path(@artist_profile, address_id: a.id) },
+              turbo_frame: "booking-panel" %>
       <% end %>
 
-      <% if @prefill_starts_at.present? %>
-        <div class="booking-warning">
-          Your original slot was just booked. We've proposed the next available time below.
-        </div>
-      <% end %>
+      <% if @selected_address.nil? %>
+        <p class="booking-empty">Choose a location above to see its availability.</p>
+      <% elsif @selected_address.schedule.blank? %>
+        <p class="booking-empty">No availability for this location yet.</p>
+      <% else %>
+        <% address = @selected_address %>
 
-      <%= simple_form_for @booking, url: artist_profile_bookings_path(@artist_profile),
-            html: { data: { controller: "booking-form" } } do |f| %>
-        <%= f.error_notification %>
-        <%= hidden_field_tag "booking[address_id]", address.id %>
+        <% if address.latitude.present? && address.longitude.present? %>
+          <div class="booking-location-map"
+               data-controller="map"
+               data-map-markers-value="<%= [ { lat: address.latitude, lng: address.longitude } ].to_json %>"
+               data-map-api-key-value="<%= ENV["MAPBOX_API_KEY"] %>"></div>
+        <% end %>
 
-        <div class="booking-section" data-action="calendar:slotSelected->booking-form#onSlotSelected">
-          <p class="section-label">Calendar</p>
-          <%= render "shared/calendar", artist_profile: @artist_profile, address: address, month: @month,
-                prefill_starts_at: @prefill_starts_at, prefill_ends_at: @prefill_ends_at %>
-        </div>
+        <% if @prefill_starts_at.present? %>
+          <div class="booking-warning">
+            Your original slot was just booked. We've proposed the next available time below.
+          </div>
+        <% end %>
 
-        <div class="booking-section">
-          <%= f.input :description, as: :text, required: true, label: false,
-                placeholder: "Describe your tattoo idea: style, size, placement...",
-                input_html: {
-                  class: "booking-description",
-                  data: { booking_form_target: "description", action: "input->booking-form#update" }
-                } %>
-        </div>
+        <%= simple_form_for @booking, url: artist_profile_bookings_path(@artist_profile),
+              html: { data: { controller: "booking-form", turbo_frame: "_top" } } do |f| %>
+          <%= f.error_notification %>
+          <%= hidden_field_tag "booking[address_id]", address.id %>
 
-        <div class="booking-footer">
-          <div class="booking-summary" data-booking-form-target="summary">
-            <span class="booking-summary-label">Selected session</span>
-            <span class="booking-summary-value" data-booking-form-target="summaryDate">Pick a slot above</span>
-            <span class="booking-summary-detail" data-booking-form-target="summaryLocation"><%= address.label.presence || address.city %></span>
+          <div class="booking-section" data-action="calendar:slotSelected->booking-form#onSlotSelected">
+            <p class="section-label">Calendar</p>
+            <%= render "shared/calendar", artist_profile: @artist_profile, address: address, month: @month,
+                  prefill_starts_at: @prefill_starts_at, prefill_ends_at: @prefill_ends_at %>
           </div>
 
-          <button type="submit" class="booking-submit" data-booking-form-target="submit" disabled>
-            Request booking <i class="fa-solid fa-arrow-right"></i>
-          </button>
-        </div>
+          <div class="booking-section">
+            <%= f.input :description, as: :text, required: true, label: false,
+                  placeholder: "Describe your tattoo idea: style, size, placement...",
+                  input_html: {
+                    class: "booking-description",
+                    data: { booking_form_target: "description", action: "input->booking-form#update" }
+                  } %>
+          </div>
+
+          <div class="booking-footer">
+            <div class="booking-summary" data-booking-form-target="summary">
+              <span class="booking-summary-label">Selected session</span>
+              <span class="booking-summary-value" data-booking-form-target="summaryDate">Pick a slot above</span>
+              <span class="booking-summary-detail" data-booking-form-target="summaryLocation"><%= address.label.presence || address.city %></span>
+            </div>
+
+            <button type="submit" class="booking-submit" data-booking-form-target="submit" disabled>
+              Request booking <i class="fa-solid fa-arrow-right"></i>
+            </button>
+          </div>
+        <% end %>
       <% end %>
     <% end %>
   <% end %>

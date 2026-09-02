@@ -3,6 +3,53 @@
   padding-bottom: 96px;
 }
 
+.role-toggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: fit-content;
+  margin-left: auto;
+  margin-bottom: 20px;
+}
+
+.role-toggle-label {
+  font-family: $body-font;
+  font-size: 14px;
+  font-weight: 700;
+  color: $ink;
+}
+
+.role-toggle-switch {
+  position: relative;
+  display: inline-block;
+  flex: none;
+  width: 46px;
+  height: 26px;
+  border-radius: 999px;
+  background: $surface-dim;
+  transition: background 150ms ease;
+}
+
+.role-toggle-switch--on {
+  background: $primary-custom;
+}
+
+.role-toggle-knob {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: $surface;
+  box-shadow: 0 2px 0 rgba($ink, 0.10);
+  transition: transform 150ms ease;
+
+  .role-toggle-switch--on & {
+    transform: translateX(20px);
+  }
+}
+
 .bookings-list {
   display: flex;
   flex-direction: column;
