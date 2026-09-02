@@ -1,4 +1,4 @@
-<% month ||= Date.today %>
+<% month ||= Date.current %>
 <% prefill_starts_at ||= nil %>
 <% prefill_ends_at ||= nil %>
 <% schedule = address.schedule %>
@@ -37,7 +37,7 @@
             <div class="calendar-day
                         <%= 'calendar-day--outside' unless in_month %>
                         <%= 'calendar-day--available' if available %>
-                        <%= 'calendar-day--today' if day == Date.today %>"
+                        <%= 'calendar-day--today' if day == Date.current %>"
                  <% if available %>
                  role="button"
                  data-action="click->calendar#showSlots"
