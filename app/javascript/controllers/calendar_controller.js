@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["popup", "popupTitle", "popupSlots", "startsAt", "endsAt"]
+  static targets = ["popup", "popupTitle", "popupSlots", "startsAt", "endsAt", "day"]
   static values = { prefillStartsAt: String, prefillEndsAt: String, prefillLabel: String }
 
   connect() {
@@ -9,6 +9,7 @@ export default class extends Controller {
       this.startsAtTarget.value = this.prefillStartsAtValue
       this.endsAtTarget.value = this.prefillEndsAtValue
       this.dispatch("slotSelected", { detail: { label: this.prefillLabelValue }, bubbles: true })
+      this.#selectDayByIso(this.prefillStartsAtValue.slice(0, 10))
     }
   }
 
@@ -19,6 +20,17 @@ export default class extends Controller {
     this.popupTitleTarget.textContent = `Available times for ${date}`
     this.popupSlotsTarget.innerHTML = this.#groupedSlotsHtml(slots, date)
     this.popupTarget.classList.remove("d-none")
+    this.#selectDay(event.currentTarget)
+  }
+
+  #selectDay(dayEl) {
+    this.dayTargets.forEach((el) => el.classList.remove("calendar-day--selected"))
+    dayEl.classList.add("calendar-day--selected")
+  }
+
+  #selectDayByIso(iso) {
+    const match = this.dayTargets.find((el) => el.dataset.calendarDayParam === iso)
+    if (match) this.#selectDay(match)
   }
 
   selectSlot(event) {

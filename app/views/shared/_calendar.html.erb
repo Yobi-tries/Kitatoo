@@ -40,6 +40,8 @@
                         <%= 'calendar-day--today' if day == Date.current %>"
                  <% if available %>
                  role="button"
+                 data-calendar-target="day"
+                 data-calendar-day-param="<%= day.iso8601 %>"
                  data-action="click->calendar#showSlots"
                  data-calendar-date-param="<%= l(day, format: '%A %d %B') %>"
                  data-calendar-slots-param="<%= slots.to_json %>"
