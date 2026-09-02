@@ -1,0 +1,32 @@
+<% if addresses.size > 1 %>
+  <div class="location-selector">
+    <%= link_to bookings_path(status: status), class: "location-card #{'location-card--selected' unless selected_address}" do %>
+      <div class="location-card-top">
+        <i class="fa-solid fa-layer-group location-card-icon"></i>
+        <% unless selected_address %><i class="fa-solid fa-check location-card-check"></i><% end %>
+      </div>
+      <span class="location-card-label">All locations</span>
+    <% end %>
+
+    <% addresses.each do |address| %>
+      <% selected = selected_address.present? && address.id == selected_address.id %>
+      <%= link_to bookings_path(address_id: address.id, status: status), class: "location-card #{'location-card--selected' if selected}" do %>
+        <div class="location-card-top">
+          <i class="fa-solid fa-store location-card-icon"></i>
+          <% if selected %><i class="fa-solid fa-check location-card-check"></i><% end %>
+        </div>
+        <span class="location-card-label"><%= address.label.presence || "Studio" %></span>
+        <span class="location-card-detail">
+          <span><%= address.street %></span>
+          <span><%= address.zipcode %> <%= address.city %></span>
+        </span>
+      <% end %>
+    <% end %>
+  </div>
+<% elsif addresses.one? %>
+  <% address = addresses.first %>
+  <div class="booking-location-single">
+    <i class="fa-solid fa-store"></i>
+    <span><%= address.label.presence || "Studio" %> — <%= address.street %>, <%= address.zipcode %> <%= address.city %></span>
+  </div>
+<% end %>

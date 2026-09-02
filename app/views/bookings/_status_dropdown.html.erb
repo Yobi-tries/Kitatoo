@@ -1,0 +1,28 @@
+<%
+  status_options = [
+    [ "requests", "Requests", @artist_pending.size ],
+    [ "upcoming", "Upcoming", @artist_to_complete.size ],
+    [ "history", "History", nil ],
+    [ "cancelled", "Cancelled", nil ]
+  ]
+  current_label = status_options.find { |value, _, _| value == status }[1]
+%>
+<div class="dropdown-filter" data-controller="dropdown"
+     data-action="click@window->dropdown#closeOnOutsideClick keydown@window->dropdown#closeOnEscape">
+  <button type="button" class="dropdown-filter-trigger" data-action="dropdown#toggle">
+    <span><%= current_label %></span>
+    <i class="fa-solid fa-chevron-down"></i>
+  </button>
+
+  <div class="dropdown-filter-panel" data-dropdown-target="panel" hidden>
+    <% status_options.each do |value, label, count| %>
+      <% active = status == value %>
+      <%= link_to bookings_path(status: value, address_id: address&.id),
+            class: "dropdown-filter-item #{'dropdown-filter-item--active' if active}" do %>
+        <span class="dropdown-filter-item-label"><%= label %></span>
+        <% if count&.positive? %><span class="dropdown-filter-item-count"><%= count %></span><% end %>
+        <% if active %><i class="fa-solid fa-check"></i><% end %>
+      <% end %>
+    <% end %>
+  </div>
+</div>

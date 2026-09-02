@@ -1,4 +1,8 @@
+require "csv"
+
 class BookingsController < ApplicationController
+  include ActionView::RecordIdentifier
+
   def index
     @artist_profile = current_user.artist_profile
 
@@ -17,9 +21,14 @@ class BookingsController < ApplicationController
 
     return unless @artist_profile
 
+    @addresses = @artist_profile.addresses.order(:id)
+    @selected_address = @addresses.find_by(id: params[:address_id]) if params[:address_id].present?
+    @status = params[:status].presence_in(%w[requests upcoming history cancelled]) || "requests"
+
     artist_scope = Booking.joins(:availability)
                           .where(availabilities: { artist_profile_id: @artist_profile.id })
-                          .includes(:client, availability: :artist_profile)
+                          .includes(:client, availability: %i[artist_profile address])
+    artist_scope = artist_scope.where(availabilities: { address_id: @selected_address.id }) if @selected_address
 
     @artist_pending = artist_scope.where(status: %i[selected artist_confirmed])
                                   .order("availabilities.starts_at ASC")
@@ -34,6 +43,27 @@ class BookingsController < ApplicationController
     @artist_cancelled = artist_scope.where(status: :cancelled)
                                     .order("availabilities.starts_at DESC")
     @artist_conversations_by_client = @artist_profile.conversations.index_by(&:client_id)
+
+    if @status == "upcoming"
+      @agenda_date = begin
+        params[:date].present? ? Date.parse(params[:date]) : Date.current
+      rescue Date::Error
+        Date.current
+      end
+      @agenda_bookings = artist_scope.where(status: :confirmed)
+                                     .where(availabilities: { starts_at: @agenda_date.all_day })
+                                     .order("availabilities.starts_at ASC")
+      @needs_action_dates = artist_scope.where(status: :confirmed)
+                                        .where("availabilities.starts_at < ?", Time.current)
+                                        .pluck("availabilities.starts_at").map(&:to_date).uniq.sort
+    end
+
+    respond_to do |format|
+      format.html
+      format.csv do
+        send_data history_csv(@artist_history), filename: "booking-history-#{Date.current.iso8601}.csv"
+      end
+    end
   end
 
   def create
@@ -125,7 +155,10 @@ class BookingsController < ApplicationController
     )
     @booking.cancelled!
 
-    redirect_to conversation_path(conversation), notice: "Booking cancelled."
+    respond_to do |format|
+      format.html { redirect_to conversation_path(conversation), notice: "Booking cancelled." }
+      format.turbo_stream { render turbo_stream: turbo_stream.remove(dom_id(@booking)) }
+    end
   end
 
   def complete
@@ -143,7 +176,10 @@ class BookingsController < ApplicationController
     )
     @booking.completed!
 
-    redirect_to conversation_path(conversation), notice: "Booking marked as completed!"
+    respond_to do |format|
+      format.html { redirect_to conversation_path(conversation), notice: "Booking marked as completed!" }
+      format.turbo_stream { render turbo_stream: turbo_stream.remove(dom_id(@booking)) }
+    end
   end
 
   private
@@ -172,5 +208,21 @@ class BookingsController < ApplicationController
 
   def booking_params
     params.require(:booking).permit(:address_id, :starts_at, :ends_at, :description)
+  end
+
+  def history_csv(bookings)
+    CSV.generate(headers: true) do |csv|
+      csv << ["Client", "Date", "Time", "Duration", "Address", "Description"]
+      bookings.each do |booking|
+        csv << [
+          booking.client.username,
+          booking.availability.starts_at.strftime("%Y-%m-%d"),
+          booking.availability.starts_at.strftime("%H:%M"),
+          booking.duration ? "#{booking.duration / 60}h#{format('%02d', booking.duration % 60)}" : "",
+          booking.availability.address.label.presence || booking.availability.address.city,
+          booking.description
+        ]
+      end
+    end
   end
 end

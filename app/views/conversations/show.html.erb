@@ -42,7 +42,7 @@
 
 <div class="conversation-bottom">
   <% if booking&.selected? && is_artist %>
-    <div class="booking-card booking-card--pending">
+    <div id="<%= dom_id(booking) %>" class="booking-card booking-card--pending">
       <div class="booking-card-info">
         <div class="booking-card-info-left">
           <span class="booking-card-label">slot requested</span>
@@ -50,26 +50,11 @@
         </div>
         <span class="booking-card-pill">pending</span>
       </div>
-      <%= simple_form_for booking, url: confirm_booking_path(booking), method: :patch do |f| %>
-        <div class="booking-card-strip">
-          <div class="booking-stepper" data-controller="duration" data-duration-step-value="30">
-            <button type="button" class="booking-stepper-btn" data-action="duration#decrement">−</button>
-            <%= f.input :duration, as: :hidden, input_html: {
-              value: slot_duration, data: { duration_target: "input" }
-            } %>
-            <span class="booking-stepper-display" data-duration-target="display"><%= format_duration.call(slot_duration) %></span>
-            <button type="button" class="booking-stepper-btn" data-action="duration#increment">+</button>
-          </div>
-          <%= f.submit "Confirm", class: "booking-card-confirm" %>
-          <%= link_to "✕", cancel_booking_path(booking),
-                data: { turbo_method: :patch, turbo_confirm: "Cancel this booking?" },
-                class: "booking-card-cancel", title: "Cancel" %>
-        </div>
-      <% end %>
+      <%= render "bookings/confirm_form", booking: booking, slot_duration: slot_duration %>
     </div>
 
   <% elsif booking&.selected? && !is_artist %>
-    <div class="booking-card booking-card--pending">
+    <div id="<%= dom_id(booking) %>" class="booking-card booking-card--pending">
       <div class="booking-card-info">
         <div class="booking-card-info-left">
           <span class="booking-card-label">slot requested</span>
@@ -86,7 +71,7 @@
     </div>
 
   <% elsif booking&.artist_confirmed? && !is_artist %>
-    <div class="booking-card booking-card--artist-confirmed">
+    <div id="<%= dom_id(booking) %>" class="booking-card booking-card--artist-confirmed">
       <div class="booking-card-info">
         <div class="booking-card-info-left">
           <span class="booking-card-label">slot · duration <%= format_duration.call(booking.duration) %></span>
@@ -104,7 +89,7 @@
     </div>
 
   <% elsif booking&.artist_confirmed? && is_artist %>
-    <div class="booking-card booking-card--artist-confirmed">
+    <div id="<%= dom_id(booking) %>" class="booking-card booking-card--artist-confirmed">
       <div class="booking-card-info">
         <div class="booking-card-info-left">
           <span class="booking-card-label">slot · duration <%= format_duration.call(booking.duration) %></span>
@@ -122,7 +107,7 @@
   <% end %>
 
   <% if confirmed_booking %>
-    <div class="booking-card booking-card--confirmed">
+    <div id="<%= dom_id(confirmed_booking) %>" class="booking-card booking-card--confirmed">
       <div class="booking-card-info">
         <div class="booking-card-info-left">
           <span class="booking-card-label">booked · <%= format_duration.call(confirmed_booking.duration) %></span>
