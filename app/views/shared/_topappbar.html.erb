@@ -1,5 +1,5 @@
 <header class="topappbar d-flex justify-content-between align-items-center" data-controller="search-modal topappbar">
-  <%= link_to "Kitatoo", root_path, class: "topappbar-title" %>
+  <%= link_to root_path, class: "topappbar-title" do %><span class="topappbar-title__accent">Ki</span>tatoo<% end %>
 
   <div class="topappbar-right">
     <% if user_signed_in? %>

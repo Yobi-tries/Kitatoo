@@ -7,9 +7,14 @@
 <div class="container home<%= ' home--no-hero' if @searching %>" data-controller="sticky-search">
 
   <div class="home-search-placeholder" data-sticky-search-target="placeholder">
-    <%= form_with url: root_path, method: :get, data: { sticky_search_target: "bar" } do %>
+    <%= form_with url: root_path,
+                  method: :get,
+                  class: "home-search-form",
+                  data: { sticky_search_target: "bar" } do %>
+      <span class="material-symbols-outlined home-search-icon" aria-hidden="true">search</span>
       <%= text_field_tag :query, params[:query],
             placeholder: "Search artists, styles, studios...",
+            aria: { label: "Search artists, styles, studios" },
             class: "home-search" %>
     <% end %>
   </div>
@@ -102,7 +107,18 @@
       See more artists
     </button>
   </div>
-
+  <% if user_signed_in? %>
+    <button type="button"
+            class="home-see-more home-generator-button"
+            data-bs-toggle="offcanvas"
+            data-bs-target="#tattooGeneratorDrawer"
+            aria-controls="tattooGeneratorDrawer">
+      Tattoo idea generator
+    </button>
+  <% else %>
+    <%= link_to "Tattoo idea generator", new_tattoo_generation_path,
+                class: "home-see-more home-generator-button" %>
+  <% end %>
 </div>
 
 <%= render "shared/botappbar", hidden: @searching ? false : true %>
