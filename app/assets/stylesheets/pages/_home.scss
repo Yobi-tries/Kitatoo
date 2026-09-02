@@ -1,69 +1,253 @@
 .home {
   max-width: 640px;
-  padding: 84px 20px 120px;
+  padding: 0 20px 120px;
+  margin: 0 auto;
 }
 
-.home-hero {
+.home--no-hero {
+  padding-top: 84px;
+}
+
+.find-your-hero {
   position: relative;
-  height: 220px;
-  margin-bottom: 0;
-  border-radius: 16px;
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
   overflow: hidden;
-  display: flex;
-  align-items: center;
-  padding: 20px;
-
-  &::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(to right, rgba($ink, 0.9) 0%, rgba($ink, 0.6) 40%, transparent 70%);
-    z-index: 1;
-  }
+  isolation: isolate;
+  color: $on-primary;
+  background: #09090b;
 }
 
-.home-hero-image {
+.find-your-hero__backgrounds,
+.find-your-hero__overlay {
+  position: absolute;
+  inset: 0;
+}
+
+.find-your-hero__backgrounds {
+  z-index: 0;
+}
+
+.find-your-hero__image {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center center;
+  opacity: 0;
+  transition: opacity 550ms ease-in-out, object-position 550ms ease-in-out;
+  will-change: opacity;
 }
 
-.home-hero-title {
+.find-your-hero__image.is-active {
+  opacity: 1;
+}
+
+.find-your-hero__overlay {
+  z-index: 1;
+  background: rgba(0, 0, 0, 0.65);
+  transition: background 550ms ease-in-out;
+}
+
+.find-your-hero--collapsed .find-your-hero__overlay {
+  background: rgba(0, 0, 0, 0.75);
+}
+
+.find-your-hero__content {
   position: relative;
   z-index: 2;
+  padding: 96px 24px 0;
+}
+
+.find-your-hero__lead {
   margin: 0;
-  text-align: left;
-  line-height: 1.05;
-}
-
-.home-hero-title-lead {
-  display: block;
-  font-family: $body-font;
-  font-size: 24px;
-  font-weight: 500;
-  letter-spacing: 0.01em;
-  color: $on-primary;
-  text-shadow: 0 2px 8px rgba($ink, 0.9);
-}
-
-.home-hero-title-strong {
-  display: block;
   font-family: $headers-font;
-  font-size: 42px;
-  font-weight: 800;
-  letter-spacing: -0.02em;
+  font-size: 28px;
+  font-weight: 500;
+  line-height: 34px;
+  color: $on-primary;
+}
+
+.find-your-hero__word-slot {
+  height: 72px;
+  margin-top: 4px;
+  overflow: hidden;
+}
+
+.find-your-hero__word-track {
+  transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+
+.find-your-hero__word-track--no-transition {
+  transition: none !important;
+}
+
+.find-your-hero__word {
+  display: block;
+  height: 72px;
+  margin: 0;
+  font-family: $headers-font;
+  font-size: 60px;
+  font-weight: 700;
+  line-height: 72px;
+  text-transform: uppercase;
   color: $primary-custom;
-  text-shadow: 0 0 14px rgba($on-primary, 0.95), 0 1px 3px rgba($on-primary, 0.8);
+}
+
+.find-your-hero__footer {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 24px;
+}
+
+.find-your-hero__meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.find-your-hero__counter {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: $body-font;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 18px;
+
+  span:first-child {
+    color: $primary-custom;
+  }
+}
+
+.find-your-hero__counter-total {
+  color: #8e9bae;
+}
+
+.find-your-hero__progress-track {
+  flex: 0 0 120px;
+  height: 3px;
+  border-radius: 1.5px;
+  background: rgba(255, 255, 255, 0.125);
+  overflow: hidden;
+}
+
+.find-your-hero__progress-fill {
+  display: block;
+  height: 100%;
+  background: $primary-custom;
+  transition: width 400ms ease-out;
+  will-change: width;
+}
+
+.find-your-hero__cta-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.find-your-hero__prompt {
+  max-width: 240px;
+  margin: 0;
+  font-family: $body-font;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 22px;
+  color: $on-primary;
+}
+
+.find-your-hero__arrow {
+  flex: 0 0 56px;
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: $primary-custom;
+  color: #09090b;
+  font-size: 18px;
+  pointer-events: none;
+}
+
+.find-your-hero--intro {
+  position: fixed;
+  inset: 0;
+  z-index: 1040;
+  min-height: 100svh;
+  height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.find-your-hero--intro .find-your-hero__content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-top: 64px;
+}
+
+.find-your-hero--collapsed {
+  margin-top: 0;
+  height: 304px;
+  padding-top: 64px;
+  box-sizing: border-box;
+}
+
+.find-your-hero--collapsed .find-your-hero__content {
+  padding: 48px 24px 0;
+}
+
+.find-your-hero--collapsing {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1040;
+  height: 100svh;
+  margin-left: 0;
+  width: 100%;
+  box-sizing: border-box;
+  transition: height 550ms ease-in-out;
+}
+
+.find-your-hero--collapsing.find-your-hero--collapse-active {
+  height: 304px;
+  padding-top: 64px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .find-your-hero__word-track,
+  .find-your-hero__image,
+  .find-your-hero__overlay,
+  .find-your-hero--collapsing {
+    transition: none;
+  }
+}
+
+.home-search-placeholder {
+  position: relative;
+  z-index: 5;
+  margin-top: -26px;
+  padding-bottom: 8px;
 }
 
 .home-search {
   position: relative;
   z-index: 3;
   display: block;
-  margin: -26px auto 0;
+  margin: 0 auto;
   width: calc(100% - 36px);
+  max-width: 604px;
   height: 48px;
   padding: 0 14px;
   border-radius: 12px;

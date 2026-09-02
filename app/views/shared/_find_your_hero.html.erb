@@ -1,0 +1,61 @@
+<% collapsed_positions = [
+  "58% 30%",
+  "center 25%",
+  "center 35%",
+  "center 20%",
+  "center 30%"
+] %>
+
+<section class="find-your-hero find-your-hero--collapsed"
+         data-controller="find-your-hero"
+         aria-label="Find your tattoo introduction">
+  <div class="find-your-hero__backgrounds" aria-hidden="true">
+    <% (1..5).each do |i| %>
+      <% image = "hero/find-your-0#{i}.jpg" %>
+      <% src = Rails.root.join("app/assets/images", image).exist? ? image : "find-your-artist-hero-bw-light.png" %>
+      <%= image_tag src,
+            class: "find-your-hero__image#{' is-active' if i == 1}",
+            data: {
+              find_your_hero_target: "image",
+              collapsed_position: collapsed_positions[i - 1]
+            },
+            alt: "" %>
+    <% end %>
+  </div>
+
+  <div class="find-your-hero__overlay" aria-hidden="true"></div>
+
+  <div class="find-your-hero__content">
+    <p class="find-your-hero__lead">Find your</p>
+    <div class="find-your-hero__word-slot">
+      <div class="find-your-hero__word-track" data-find-your-hero-target="wordTrack">
+        <% %w[Tattoo Style Artist Client].each do |word| %>
+          <span class="find-your-hero__word"><%= word %></span>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <div class="find-your-hero__footer" data-find-your-hero-target="footer">
+    <div class="find-your-hero__meta">
+      <div class="find-your-hero__counter">
+        <span data-find-your-hero-target="counterCurrent">01</span>
+        <span class="find-your-hero__counter-total">/ 04</span>
+      </div>
+      <div class="find-your-hero__progress-track" aria-hidden="true">
+        <span class="find-your-hero__progress-fill"
+              data-find-your-hero-target="progress"
+              style="width: 25%;"></span>
+      </div>
+    </div>
+
+    <div class="find-your-hero__cta-row">
+      <p class="find-your-hero__prompt" data-find-your-hero-target="prompt">
+        Discover the right tattoo design and aesthetics for your personal story.
+      </p>
+      <span class="find-your-hero__arrow" aria-hidden="true">
+        <i class="fa-solid fa-arrow-right"></i>
+      </span>
+    </div>
+  </div>
+</section>

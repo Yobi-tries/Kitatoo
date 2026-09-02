@@ -1,23 +1,18 @@
 <%= render "shared/topappbar" %>
 
-<div class="container home" data-controller="sticky-search">
+<% unless @searching %>
+  <%= render "shared/find_your_hero" %>
+<% end %>
 
-  <div class="home-hero">
-    <%= image_tag "find-your-artist-hero-bw-light.png", class: "home-hero-image", alt: "" %>
-    <h1 class="home-hero-title">
-      <span class="home-hero-title-lead">Find your</span>
-      <span class="home-hero-title-strong">Artist</span>
-    </h1>
-  </div>
+<div class="container home<%= ' home--no-hero' if @searching %>" data-controller="sticky-search">
 
-  <div data-sticky-search-target="placeholder">
+  <div class="home-search-placeholder" data-sticky-search-target="placeholder">
     <%= form_with url: root_path, method: :get, data: { sticky_search_target: "bar" } do %>
       <%= text_field_tag :query, params[:query],
             placeholder: "Search artists, styles, studios...",
             class: "home-search" %>
     <% end %>
   </div>
-
 
   <div class="home-section-header">
     <h2 class="home-section-title">Discover Styles</h2>
@@ -61,11 +56,11 @@
       <div class="view-switch">
         <button type="button" class="view-switch-option view-switch-option--active"
                 data-map-target="listButton" data-action="map#showList">
-          <i class="fa-solid fa-list-ul"></i>List
+          <i class="fa-solid fa-list-ul"></i>
         </button>
         <button type="button" class="view-switch-option"
                 data-map-target="mapButton" data-action="map#showMap">
-          <i class="fa-solid fa-map-location-dot"></i>Map
+          <i class="fa-solid fa-map-location-dot"></i>
         </button>
       </div>
     </div>
@@ -110,4 +105,4 @@
 
 </div>
 
-<%= render "shared/botappbar" %>
+<%= render "shared/botappbar", hidden: @searching ? false : true %>
