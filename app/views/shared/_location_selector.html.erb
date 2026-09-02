@@ -1,7 +1,8 @@
 <div class="location-selector">
   <% addresses.each do |address| %>
     <% selected = selected_address.present? && address.id == selected_address.id %>
-    <%= link_to path_for.call(address), class: "location-card #{'location-card--selected' if selected}" do %>
+    <%= link_to path_for.call(address), class: "location-card #{'location-card--selected' if selected}",
+          data: (local_assigns[:turbo_frame] ? { turbo_frame: local_assigns[:turbo_frame] } : {}) do %>
       <div class="location-card-top">
         <i class="fa-solid fa-store location-card-icon"></i>
         <% if selected %><i class="fa-solid fa-check location-card-check"></i><% end %>

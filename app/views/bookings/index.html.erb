@@ -87,7 +87,7 @@
             <% @needs_action_dates.each do |d| %>
               <%= link_to d.strftime("%b %-d"),
                     bookings_path(status: "upcoming", address_id: @selected_address&.id, date: d),
-                    class: "agenda-needs-action-chip" %>
+                    id: "needs_action_#{d.iso8601}", class: "agenda-needs-action-chip" %>
             <% end %>
           </div>
         <% end %>
