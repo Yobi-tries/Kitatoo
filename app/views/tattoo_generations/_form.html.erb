@@ -1,0 +1,52 @@
+<% mode = local_assigns[:mode].presence || "guided" %>
+<% form_data = { controller: "tattoo-generator-form" } %>
+<% if local_assigns[:standalone] %>
+  <% form_data[:turbo] = false %>
+<% else %>
+  <% form_data[:action] = "submit->tattoo-drawer#closeOnGenerate" %>
+<% end %>
+
+<div id="tattoo_generation_result">
+  <% if local_assigns[:error] %>
+    <div class="alert alert-danger"><%= error %></div>
+  <% end %>
+
+  <%= form_with url: tattoo_generations_path,
+              method: :post,
+              data: form_data,
+              html: { multipart: true } do %>
+    <div class="btn-group w-100 mb-3" role="group" aria-label="Generation mode">
+      <input type="radio" class="btn-check" name="mode" id="tattoo_mode_guided" value="guided" autocomplete="off"
+             <%= "checked" if mode == "guided" %> data-action="tattoo-generator-form#switchMode">
+      <label class="btn btn-outline-dark" for="tattoo_mode_guided">Guided</label>
+
+      <input type="radio" class="btn-check" name="mode" id="tattoo_mode_free_text" value="free_text" autocomplete="off"
+             <%= "checked" if mode == "free_text" %> data-action="tattoo-generator-form#switchMode">
+      <label class="btn btn-outline-dark" for="tattoo_mode_free_text">Free text</label>
+    </div>
+
+    <div data-tattoo-generator-form-target="guidedPanel" class="<%= "d-none" unless mode == "guided" %>">
+      <div class="mb-3">
+        <label class="tattoo-drawer__label">Idea</label>
+        <textarea name="idea" class="form-control tattoo-drawer__textarea" rows="3"
+                  placeholder="e.g. A snake wrapped around a katana with peonies"><%= local_assigns[:idea] %></textarea>
+      </div>
+
+      <%= render "tattoo_generations/style_picker", selected_style_ids: local_assigns[:selected_style_ids] || [] %>
+      <%= render "tattoo_generations/placement_picker", placement: local_assigns[:placement], placement_other: local_assigns[:placement_other] %>
+    </div>
+
+    <div data-tattoo-generator-form-target="freeTextPanel" class="<%= "d-none" if mode == "guided" %>">
+      <div class="mb-3">
+        <label class="tattoo-drawer__label">Describe the tattoo you want</label>
+        <textarea name="prompt" class="form-control tattoo-drawer__textarea" rows="4"
+                  placeholder="e.g. Minimal blackwork snake flash, white background"><%= local_assigns[:free_text_prompt] %></textarea>
+      </div>
+    </div>
+
+    <%= render "tattoo_generations/reference_images" %>
+
+    <%= submit_tag "Generate", class: "btn btn-primary w-100 tattoo-drawer__submit",
+          data: { turbo_submits_with: "Generating..." } %>
+  <% end %>
+</div>

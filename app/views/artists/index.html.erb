@@ -1,11 +1,20 @@
 <%= render "shared/topappbar" %>
 
-<div class="container home" data-controller="sticky-search">
+<% unless @searching %>
+  <%= render "shared/find_your_hero" %>
+<% end %>
 
-  <div data-sticky-search-target="placeholder">
-    <%= form_with url: root_path, method: :get, data: { sticky_search_target: "bar" } do %>
+<div class="container home<%= ' home--no-hero' if @searching %>" data-controller="sticky-search">
+
+  <div class="home-search-placeholder" data-sticky-search-target="placeholder">
+    <%= form_with url: root_path,
+                  method: :get,
+                  class: "home-search-form",
+                  data: { sticky_search_target: "bar" } do %>
+      <span class="material-symbols-outlined home-search-icon" aria-hidden="true">search</span>
       <%= text_field_tag :query, params[:query],
             placeholder: "Search artists, styles, studios...",
+            aria: { label: "Search artists, styles, studios" },
             class: "home-search" %>
     <% end %>
   </div>
@@ -34,51 +43,82 @@
     </div>
   </div>
 
-  <div class="home-section-header">
-    <h2 class="home-section-title"><%= @searching ? "Results" : "Nearby Artists" %></h2>
-    <span class="home-section-meta">
-      <%= @artists.size %> · <%= @default_city || "Paris" %>
-      <% if @searching %>
-        &middot; <%= link_to "Clear", root_path %>
-      <% end %>
-    </span>
-  </div>
+  <div data-controller="map"
+       data-map-markers-value="<%= @map_markers.to_json %>"
+       data-map-api-key-value="<%= ENV["MAPBOX_API_KEY"] %>">
 
-  <div data-controller="show-more">
-  <div class="home-artists-list">
-    <% @artists.first(10).each_with_index do |artist, index| %>
-      <div class="artist-card" data-show-more-target="item" <%= 'style=display:none' if index >= 5 %>>
-        <%= image_tag artist.avatar_url.presence || "https://ui-avatars.com/api/?size=124&background=16130F&color=FBF9F5&name=#{artist.display_name.tr(" ", "+")}",
-              class: "artist-card-thumb", alt: artist.display_name %>
-        <div class="artist-card-body">
-          <h3 class="artist-card-name">
-            <%= link_to artist.display_name, artist_path(artist), class: "stretched-link" %>
-          </h3>
-          <span class="artist-card-meta">
-            <%= artist.styles %>
-            <% if artist.addresses.any? %>
-              &middot; <%= artist.addresses.map { |a| a.city }.uniq.join(", ") %>
-            <% end %>
-          </span>
-          <% if @distances[artist.id] %>
-            <span class="artist-card-status">
-              <span class="artist-card-dot"></span>
-              Booking open &middot; <%= @distances[artist.id].round(1) %> km
-            </span>
+    <div class="home-section-header">
+      <div>
+        <h2 class="home-section-title"><%= @searching ? "Results" : "Nearby Artists" %></h2>
+        <span class="home-section-meta">
+          <span data-map-target="count"><%= @artists.size %></span> · <%= @default_city || "Paris" %>
+          <% if @searching %>
+            &middot; <%= link_to "Clear", root_path %>
           <% end %>
-        </div>
-        <i class="fa-solid fa-chevron-right artist-card-chevron"></i>
+        </span>
       </div>
-    <% end %>
-  </div>
 
-  <% if @artists.size > 5 %>
-    <button class="home-see-more" data-action="show-more#reveal" data-show-more-target="button">
+      <div class="view-switch">
+        <button type="button" class="view-switch-option view-switch-option--active"
+                data-map-target="listButton" data-action="map#showList">
+          <i class="fa-solid fa-list-ul"></i>
+        </button>
+        <button type="button" class="view-switch-option"
+                data-map-target="mapButton" data-action="map#showMap">
+          <i class="fa-solid fa-map-location-dot"></i>
+        </button>
+      </div>
+    </div>
+
+    <% if @map_markers.any? %>
+      <div class="home-map" data-map-target="canvas" hidden></div>
+    <% end %>
+
+    <div class="home-artists-list" data-map-target="list">
+      <% @artists.each do |artist| %>
+        <% locations = artist.addresses.filter_map { |address| [address.longitude, address.latitude] if address.longitude.present? && address.latitude.present? } %>
+        <div class="artist-card" data-map-target="card"
+             data-locations="<%= locations.to_json %>">
+          <%= image_tag artist.avatar_url.presence || "https://ui-avatars.com/api/?size=124&background=16130F&color=FBF9F5&name=#{artist.display_name.tr(" ", "+")}",
+                class: "artist-card-thumb", alt: artist.display_name %>
+          <div class="artist-card-body">
+            <h3 class="artist-card-name">
+              <%= link_to artist.display_name, artist_path(artist), class: "stretched-link" %>
+            </h3>
+            <span class="artist-card-meta">
+              <%= artist.styles %>
+              <% if artist.addresses.any? %>
+                &middot; <%= artist.addresses.map { |a| a.city }.uniq.join(", ") %>
+              <% end %>
+            </span>
+            <% if @distances[artist.id] %>
+              <span class="artist-card-status">
+                <span class="artist-card-dot"></span>
+                Booking open &middot; <%= @distances[artist.id].round(1) %> km
+              </span>
+            <% end %>
+          </div>
+          <i class="fa-solid fa-chevron-right artist-card-chevron"></i>
+        </div>
+      <% end %>
+    </div>
+    <button type="button" class="home-see-more"
+            data-map-target="more" data-action="map#showMore" hidden>
       See more artists
     </button>
-  <% end %>
   </div>
-
+  <% if user_signed_in? %>
+    <button type="button"
+            class="home-see-more home-generator-button"
+            data-bs-toggle="offcanvas"
+            data-bs-target="#tattooGeneratorDrawer"
+            aria-controls="tattooGeneratorDrawer">
+      Tattoo idea generator
+    </button>
+  <% else %>
+    <%= link_to "Tattoo idea generator", new_tattoo_generation_path,
+                class: "home-see-more home-generator-button" %>
+  <% end %>
 </div>
 
-<%= render "shared/botappbar" %>
+<%= render "shared/botappbar", hidden: @searching ? false : true %>

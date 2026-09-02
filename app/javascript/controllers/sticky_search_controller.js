@@ -39,7 +39,10 @@ export default class extends Controller {
   dock() {
     this.docked = true
     const rect = this.bar.getBoundingClientRect()
-    this.placeholder.style.height = `${rect.height}px`
+    const placeholderStyles = window.getComputedStyle(this.placeholder)
+    const paddingBottom = Number.parseFloat(placeholderStyles.paddingBottom) || 0
+
+    this.placeholder.style.height = `${rect.height + paddingBottom}px`
     this.bar.style.display = "none"
     // Show the topappbar search button when inline bar is hidden
     if (this.topappbarSearchBtn) this.topappbarSearchBtn.style.display = ""

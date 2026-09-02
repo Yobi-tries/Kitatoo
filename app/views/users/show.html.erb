@@ -20,6 +20,18 @@
     <%= link_to "Edit my profile", edit_user_path, class: "artist-action-edit" %>
   </div>
 
+  <% if @user.bio.present? %>
+    <div class="artist-section">
+      <div class="artist-info-card artist-info-card--row">
+        <span class="artist-info-card-icon"><i class="fa-solid fa-quote-left"></i></span>
+        <div>
+          <span class="artist-info-card-value">About me</span>
+          <span class="artist-info-card-label"><%= @user.bio %></span>
+        </div>
+      </div>
+    </div>
+  <% end %>
+
   <div class="artist-section">
     <h2 class="artist-section-title">My Likes</h2>
     <% if @liked_artist_profiles.any? %>

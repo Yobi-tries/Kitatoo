@@ -22,7 +22,7 @@ class UsersController < ApplicationController
   private
 
   def user_params
-    params.require(:user).permit(:username, :city)
+    params.require(:user).permit(:username, :city, :bio)
   end
 
   def upload_avatar

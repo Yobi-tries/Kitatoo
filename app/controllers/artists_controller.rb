@@ -43,6 +43,24 @@ class ArtistsController < ApplicationController
     @styles = @style_counts.map(&:first)
     @cities = Address.joins(:artist_profile).where(artist_profiles: { published: true })
                      .distinct.order(:city).pluck(:city)
+
+    @map_markers = Address.geocoded.includes(:artist_profile)
+                          .where(artist_profile_id: @artists.map(&:id))
+                          .map do |address|
+      artist = address.artist_profile
+      initials = artist.display_name.tr(" ", "+")
+      fallback = "https://ui-avatars.com/api/?size=124&background=16130F&color=FBF9F5&name=#{initials}"
+
+      {
+        lat: address.latitude,
+        lng: address.longitude,
+        name: artist.display_name,
+        city: address.city,
+        url: artist_path(artist),
+        avatar: artist.avatar_url.presence || fallback,
+        distance: @distances[artist.id]&.round(1)
+      }
+    end
   end
 
   def show

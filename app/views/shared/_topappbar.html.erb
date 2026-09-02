@@ -1,7 +1,12 @@
 <header class="topappbar d-flex justify-content-between align-items-center" data-controller="search-modal topappbar">
-  <%= link_to "Kitatoo", root_path, class: "topappbar-title" %>
+  <%= link_to root_path, class: "topappbar-title" do %><span class="topappbar-title__accent">Ki</span>tatoo<% end %>
 
   <div class="topappbar-right">
+    <% if user_signed_in? %>
+      <%= link_to new_tattoo_generation_path, class: "topappbar-search-btn", "aria-label": "AI Tattoo Generator" do %>
+        <i class="fa-solid fa-wand-magic-sparkles"></i>
+      <% end %>
+    <% end %>
     <button type="button" class="topappbar-search-btn" data-action="search-modal#open" aria-label="Search">
       <span class="material-symbols-outlined">search</span>
     </button>
@@ -36,8 +41,3 @@
 </div>
 
 <%= render "shared/portfolio_upload_modal" if user_signed_in? && current_user.artist_profile.present? %>
-
-<% if user_signed_in? %>
-  <% tattoo_generation = current_user.last_tattoo_generation %>
-  <%= render "tattoo_generations/drawer", tattoo_generation: tattoo_generation %>
-<% end %>
