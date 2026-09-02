@@ -63,8 +63,8 @@ artist_profile = ArtistProfile.create!(
   ],
   schedule: {
     "slot_duration" => 45,
-    "period_start" => Date.today.to_s,
-    "period_end" => (Date.today + 6.months).to_s,
+    "period_start" => Date.current.to_s,
+    "period_end" => (Date.current + 6.months).to_s,
     "days" => {
       "monday" => { "start" => "09:00", "end" => "17:00" },
       "tuesday" => { "start" => "10:00", "end" => "18:00" },
@@ -331,7 +331,7 @@ def seed_slot_start(schedule, offset, duration)
   slack = ((window_end - window_start) / 60).to_i - duration
   padding = slack.positive? ? [ 0, 30, 60 ].select { |m| m <= slack }.sample : 0
 
-  date.to_time.change(hour: window_start.hour, min: window_start.min) + padding.minutes
+  date.in_time_zone.change(hour: window_start.hour, min: window_start.min) + padding.minutes
 end
 
 def seed_conversation_thread(conversation, client, artist_user, description, request_time, artist_replies:, client_followups:)
@@ -462,7 +462,7 @@ same_day_clients = inkmaster_history_clients.dup
 
     option = booking_options.sample
     day_start = Time.parse(addr.schedule.dig("days", date.strftime("%A").downcase)["start"])
-    desired_start = date.to_time.change(hour: day_start.hour, min: day_start.min)
+    desired_start = date.in_time_zone.change(hour: day_start.hour, min: day_start.min)
     slot = Availability.next_available_slot(artist_profile: artist_profile, starts_at: desired_start,
                                              ends_at: desired_start + option[:duration].minutes, schedule: addr.schedule)
     next unless slot
@@ -512,7 +512,7 @@ sept_bookings = [
 ]
 
 sept_bookings.each do |data|
-  desired_start = data[:date].to_time.change(hour: data[:hour])
+  desired_start = data[:date].in_time_zone.change(hour: data[:hour])
   slot = Availability.next_available_slot(artist_profile: artist_profile, starts_at: desired_start,
                                            ends_at: desired_start + data[:duration].minutes, schedule: address.schedule)
   raise "No slot available near #{data[:date]} #{data[:hour]}:00 for InkMaster" unless slot

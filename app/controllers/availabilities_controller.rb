@@ -6,7 +6,7 @@ class AvailabilitiesController < ApplicationController
   def index
     @artist_profile = ArtistProfile.find(params[:artist_profile_id])
     @addresses = @artist_profile.addresses.order(:id)
-    @month = params[:month] ? Date.parse("#{params[:month]}-01") : Date.today
+    @month = params[:month] ? Date.parse("#{params[:month]}-01") : Date.current
 
     draft = flash[:booking_draft] || {}
     @booking = Booking.new(description: draft["description"])
