@@ -384,9 +384,24 @@ puts "Creating a large batch of InkMaster bookings across both addresses..."
 
 addresses = [ address, address2 ]
 schedules = [ main_schedule, riverside_schedule ]
-# Days already used by the two hand-written "confirmed" bookings and the 3 legacy open
-# availabilities created above, so the generator below never lands on the same day.
-used_offsets = [ 1, 2, 3, fred_offset, sam_offset ]
+
+# Picks the next Friday (and the Saturday right after it) that are both actually open on
+# the main schedule, relative to Date.current — used below for the hand-written "demo
+# week" bookings, so those never drift into a hardcoded date that no longer makes sense.
+sept_fri_offset = 1
+loop do
+  sept_fri_offset += 1 until sept_fri_offset.days.from_now.wday == 5
+  fri_date = sept_fri_offset.days.from_now.to_date
+  break if seed_weekday_open?(main_schedule, fri_date) && seed_weekday_open?(main_schedule, fri_date + 1)
+
+  sept_fri_offset += 7
+end
+sept_sat_offset = sept_fri_offset + 1
+
+# Days already used by the two hand-written "confirmed" bookings, the 3 legacy open
+# availabilities created above, and the Friday/Saturday demo bookings created further
+# down, so the generator below never lands on the same day.
+used_offsets = [ 1, 2, 3, fred_offset, sam_offset, sept_fri_offset, sept_sat_offset ]
 future_cursors = { address => 1, address2 => 1 }
 past_cursors = { address => -1, address2 => -1 }
 
@@ -434,7 +449,9 @@ puts "Adding extra same-day bookings for today, tomorrow, and the day after..."
 # free to also take on one of these extra confirmed sessions each.
 same_day_clients = inkmaster_history_clients.dup
 
-[ 0, 1, 2 ].each do |offset|
+# Skips whichever of today/tomorrow/day-after happens to be the reserved Friday or
+# Saturday demo day below, so this filler never competes with those hand-written bookings.
+([ 0, 1, 2 ] - [ sept_fri_offset, sept_sat_offset ]).each do |offset|
   date = offset.days.from_now.to_date
   addr = seed_weekday_open?(main_schedule, date) ? address : address2
   next unless seed_weekday_open?(addr.schedule, date)
@@ -463,7 +480,7 @@ same_day_clients = inkmaster_history_clients.dup
   end
 end
 
-puts "Adding InkMaster confirmed bookings for Fri Sep 4 and Sat Sep 5, 2026..."
+puts "Adding InkMaster confirmed bookings for the upcoming Friday and Saturday..."
 
 sept_clients = [
   { username: "florad", first_name: "Flora", last_name: "Dubois" },
@@ -478,22 +495,25 @@ sept_clients = [
   )
 end
 
+sept_friday = sept_fri_offset.days.from_now.to_date
+sept_saturday = sept_sat_offset.days.from_now.to_date
+
 sept_bookings = [
-  { date: Date.new(2026, 9, 4), hour: 9, client: sept_clients[0], duration: 60,
+  { date: sept_friday, hour: 9, client: sept_clients[0], duration: 60,
     description: "Small blackwork script on the ribs." },
-  { date: Date.new(2026, 9, 4), hour: 11, client: sept_clients[1], duration: 75,
+  { date: sept_friday, hour: 11, client: sept_clients[1], duration: 75,
     description: "Geometric dotwork pattern on the forearm." },
-  { date: Date.new(2026, 9, 4), hour: 13, client: sept_clients[2], duration: 60,
+  { date: sept_friday, hour: 13, client: sept_clients[2], duration: 60,
     description: "Fine line botanical piece on the shoulder." },
-  { date: Date.new(2026, 9, 5), hour: 10, client: sept_clients[3], duration: 45,
+  { date: sept_saturday, hour: 10, client: sept_clients[3], duration: 45,
     description: "Blackwork sleeve, second session." },
-  { date: Date.new(2026, 9, 5), hour: 12, client: sept_clients[4], duration: 60,
+  { date: sept_saturday, hour: 12, client: sept_clients[4], duration: 60,
     description: "Small dotwork mandala on the wrist." }
 ]
 
 sept_bookings.each do |data|
   desired_start = data[:date].to_time.change(hour: data[:hour])
-  slot = Availability.next_available_slot(artist_profile: artist_profile, starts_at: desired_start - 15.minutes,
+  slot = Availability.next_available_slot(artist_profile: artist_profile, starts_at: desired_start,
                                            ends_at: desired_start + data[:duration].minutes, schedule: address.schedule)
   raise "No slot available near #{data[:date]} #{data[:hour]}:00 for InkMaster" unless slot
 
