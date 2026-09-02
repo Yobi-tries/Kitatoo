@@ -35,7 +35,7 @@
                   class: "artist-action-edit artist-action-edit--primary" %>
     </div>
   <% else %>
-    <div class="artist-actions" style="grid-template-columns: auto 1fr 1.35fr;">
+    <div class="artist-actions" style="grid-template-columns: <% if user_signed_in? %>auto 1fr 1.35fr<% else %>1fr 1.35fr<% end %>;">
       <% if user_signed_in? %>
         <% liked = current_user.likes.exists?(artist_profile: @artist_profile) %>
         <% if liked %>
