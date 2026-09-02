@@ -107,18 +107,9 @@
       See more artists
     </button>
   </div>
-  <% if user_signed_in? %>
-    <button type="button"
-            class="home-see-more home-generator-button"
-            data-bs-toggle="offcanvas"
-            data-bs-target="#tattooGeneratorDrawer"
-            aria-controls="tattooGeneratorDrawer">
-      Tattoo idea generator
-    </button>
-  <% else %>
-    <%= link_to "Tattoo idea generator", new_tattoo_generation_path,
-                class: "home-see-more home-generator-button" %>
-  <% end %>
+  <%= link_to "Tattoo idea generator",
+              new_tattoo_generation_path,
+              class: "home-see-more home-generator-button" %>
 </div>
 
 <%= render "shared/botappbar", hidden: @searching ? false : true %>
