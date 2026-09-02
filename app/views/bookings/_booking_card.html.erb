@@ -1,0 +1,66 @@
+<%
+  other = viewer_role == :client ? booking.availability.artist_profile : booking.client
+  other_name = viewer_role == :client ? other.display_name : other.username
+  photo_url = viewer_role == :client ? other.avatar_url : nil
+  starts_at = booking.availability.starts_at
+  ends_at = booking.availability.ends_at
+  format_duration = ->(min) { min ? "#{min / 60}h#{format('%02d', min % 60)}" : "" }
+  pill_label = booking.status.in?(%w[selected artist_confirmed]) ? "pending" : (booking.confirmed? ? "set" : booking.status)
+  card_variant = { "selected" => "pending", "artist_confirmed" => "artist-confirmed" }[booking.status] || booking.status
+%>
+<div id="<%= dom_id(booking) %>" class="booking-card booking-card--<%= card_variant %>">
+  <div class="booking-row">
+    <%= image_tag photo_url.presence || "https://ui-avatars.com/api/?size=96&background=16130F&color=FBF9F5&name=#{other_name.tr(' ', '+')}",
+          class: "booking-row-thumb", alt: other_name %>
+    <div class="booking-row-body">
+      <h3 class="booking-row-name">
+        <% if conversation %>
+          <%= link_to other_name, conversation_path(conversation), class: "stretched-link" %>
+        <% else %>
+          <%= other_name %>
+        <% end %>
+      </h3>
+      <span class="booking-row-meta">
+        <%= starts_at.strftime("%a %d %b · %H:%M") %> – <%= ends_at.strftime("%H:%M") %>
+      </span>
+      <% if booking.duration %>
+        <span class="booking-card-label">duration <%= format_duration.call(booking.duration) %></span>
+      <% end %>
+    </div>
+    <span class="booking-card-pill"><%= pill_label %></span>
+  </div>
+
+  <% if booking.selected? && viewer_role == :artist %>
+    <% slot_duration = booking.availability.address.schedule&.dig("slot_duration") || 30 %>
+    <%= render "bookings/confirm_form", booking: booking, slot_duration: slot_duration %>
+  <% elsif booking.selected? && viewer_role == :client %>
+    <div class="booking-card-strip">
+      <span class="booking-card-label" style="flex:1;">Waiting for artist</span>
+      <% if show_cancel %>
+        <%= link_to "✕", cancel_booking_path(booking),
+              data: { turbo_method: :patch, turbo_confirm: "Cancel this booking?" },
+              class: "booking-card-cancel", title: "Cancel" %>
+      <% end %>
+    </div>
+  <% elsif booking.artist_confirmed? && viewer_role == :client %>
+    <div class="booking-card-strip">
+      <%= button_to "Accept #{format_duration.call(booking.duration)}", accept_booking_path(booking),
+            method: :patch, class: "booking-card-accept" %>
+      <% if show_cancel %>
+        <%= link_to "✕", cancel_booking_path(booking),
+              data: { turbo_method: :patch, turbo_confirm: "Cancel this booking?" },
+              class: "booking-card-cancel", title: "Cancel" %>
+      <% end %>
+    </div>
+  <% elsif booking.artist_confirmed? && viewer_role == :artist %>
+    <div class="booking-card-strip">
+      <span class="booking-card-label" style="flex:1;">Waiting for client</span>
+    </div>
+  <% elsif booking.confirmed? %>
+    <div class="booking-card-strip">
+      <%= link_to artist_path(booking.availability.artist_profile), class: "booking-card-profile" do %>
+        <i class="fa-solid fa-location-dot"></i> Get directions
+      <% end %>
+    </div>
+  <% end %>
+</div>

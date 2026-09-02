@@ -19,7 +19,7 @@ artist_user = User.create!(
   birthdate: Date.new(1990, 5, 15)
 )
 
-User.create!(
+client_user = User.create!(
   email: "client@test.com",
   password: "password",
   username: "tattoolover",
@@ -463,6 +463,52 @@ same_day_clients = inkmaster_history_clients.dup
   end
 end
 
+puts "Adding InkMaster confirmed bookings for Fri Sep 4 and Sat Sep 5, 2026..."
+
+sept_clients = [
+  { username: "florad", first_name: "Flora", last_name: "Dubois" },
+  { username: "hugotr", first_name: "Hugo",  last_name: "Trentin" },
+  { username: "ninaqc", first_name: "Nina",  last_name: "Quach" },
+  { username: "leom",   first_name: "Leo",   last_name: "Marchetti" },
+  { username: "saral",  first_name: "Sara",  last_name: "Lenoir" }
+].map do |data|
+  User.create!(
+    email: "#{data[:username]}@test.local", password: "password", username: data[:username],
+    first_name: data[:first_name], last_name: data[:last_name], birthdate: rand(20..45).years.ago
+  )
+end
+
+sept_bookings = [
+  { date: Date.new(2026, 9, 4), hour: 9, client: sept_clients[0], duration: 60,
+    description: "Small blackwork script on the ribs." },
+  { date: Date.new(2026, 9, 4), hour: 11, client: sept_clients[1], duration: 75,
+    description: "Geometric dotwork pattern on the forearm." },
+  { date: Date.new(2026, 9, 4), hour: 13, client: sept_clients[2], duration: 60,
+    description: "Fine line botanical piece on the shoulder." },
+  { date: Date.new(2026, 9, 5), hour: 10, client: sept_clients[3], duration: 45,
+    description: "Blackwork sleeve, second session." },
+  { date: Date.new(2026, 9, 5), hour: 12, client: sept_clients[4], duration: 60,
+    description: "Small dotwork mandala on the wrist." }
+]
+
+sept_bookings.each do |data|
+  desired_start = data[:date].to_time.change(hour: data[:hour])
+  slot = Availability.next_available_slot(artist_profile: artist_profile, starts_at: desired_start - 15.minutes,
+                                           ends_at: desired_start + data[:duration].minutes, schedule: address.schedule)
+  raise "No slot available near #{data[:date]} #{data[:hour]}:00 for InkMaster" unless slot
+
+  conversation = Conversation.find_or_create_by!(client: data[:client], artist_profile: artist_profile)
+  request_time = [ slot[:starts_at] - rand(3..15).days, Time.current - rand(1..10).days ].min
+  seed_conversation_thread(conversation, data[:client], artist_user, data[:description], request_time,
+                            artist_replies: artist_replies, client_followups: client_followups)
+
+  availability = artist_profile.availabilities.create!(
+    address: address, starts_at: slot[:starts_at], ends_at: slot[:ends_at], state: :booked
+  )
+  availability.build_booking(client: data[:client], description: data[:description],
+                              duration: data[:duration], status: :confirmed).save!
+end
+
 puts "Done!"
 
 puts "Creating artists..."
@@ -696,6 +742,94 @@ artists.each do |data|
     zipcode: data[:zipcode],
     city: data[:city]
   )
+end
+
+def find_artist_profile(username)
+  ArtistProfile.joins(:user).find_by!(users: { username: username })
+end
+
+puts "Opening slots for Kai Irezumi and Maison Sumi, Tuesday to Saturday 10:00-20:00..."
+tue_sat_schedule = {
+  "slot_duration" => 60,
+  "period_start" => Date.current.to_s,
+  "period_end" => (Date.current + 6.months).to_s,
+  "days" => {
+    "monday" => nil,
+    "tuesday" => { "start" => "10:00", "end" => "20:00" },
+    "wednesday" => { "start" => "10:00", "end" => "20:00" },
+    "thursday" => { "start" => "10:00", "end" => "20:00" },
+    "friday" => { "start" => "10:00", "end" => "20:00" },
+    "saturday" => { "start" => "10:00", "end" => "20:00" },
+    "sunday" => nil
+  },
+  "days_off" => []
+}
+%w[kaiirezumi maisonsumi].each do |username|
+  find_artist_profile(username).addresses.first.update!(schedule: tue_sat_schedule)
+end
+
+puts "Adding tattoolover's bookings, likes, and conversations across several artists..."
+
+# Nudges a (possibly negative) day offset away from zero until it lands on a weekday
+# that isn't in closed_wdays (0 = Sunday ... 6 = Saturday) — same idea as the InkMaster
+# next_open_weekday helper above, generalized to any set of closed days and either
+# direction in time.
+nudge_to_open_day = ->(offset, closed_wdays) {
+  loop do
+    date = offset >= 0 ? offset.days.from_now : offset.abs.days.ago
+    break offset unless closed_wdays.include?(date.wday)
+
+    offset += offset >= 0 ? 1 : -1
+  end
+}
+sun_mon = [ 0, 1 ]
+
+tattoolover_bookings = [
+  { artist: "inkline", status: :selected, offset: 4, hour: 14, duration: 60,
+    description: "Small blackwork script along the collarbone." },
+  { artist: "noiretgris", status: :artist_confirmed, offset: 7, hour: 15, duration: 90,
+    description: "Black and grey portrait piece on the upper arm." },
+  { artist: "kaiirezumi", status: :confirmed, offset: nudge_to_open_day.call(10, sun_mon), hour: 12, duration: 120,
+    description: "Irezumi-style koi panel, first session." },
+  { artist: "maisonsumi", status: :completed, offset: nudge_to_open_day.call(-15, sun_mon), hour: 13, duration: 90,
+    description: "Fine line koi and wave motif on the calf." },
+  { artist: "mnemosyne", status: :completed, offset: -28, hour: 16, duration: 150,
+    description: "Surrealist eye-and-moon composition on the ribs." },
+  { artist: "sionink", status: :cancelled, offset: -6, hour: 11, duration: 60,
+    description: "Traditional swallow flash on the forearm." }
+]
+
+tattoolover_bookings.each do |data|
+  profile = find_artist_profile(data[:artist])
+  address = profile.addresses.first
+  starts_at = data[:offset] >= 0 ? data[:offset].days.from_now.change(hour: data[:hour]) :
+                                    data[:offset].abs.days.ago.change(hour: data[:hour])
+
+  conversation = Conversation.find_or_create_by!(client: client_user, artist_profile: profile)
+  request_time = [ starts_at - rand(3..10).days, Time.current - rand(2..20).days ].min
+  seed_conversation_thread(conversation, client_user, profile.user, data[:description], request_time,
+                            artist_replies: artist_replies, client_followups: client_followups)
+
+  if data[:status] == :completed
+    last_message = conversation.messages.order(:created_at).last
+    follow_up_time = [ last_message.created_at + rand(1..3).days, Time.current ].min
+    conversation.messages.create!(
+      user: client_user, body: "Thanks again, I love how it turned out!", created_at: follow_up_time
+    )
+    conversation.update_column(:updated_at, follow_up_time)
+  end
+
+  availability = profile.availabilities.create!(
+    address: address, starts_at: starts_at, ends_at: starts_at + data[:duration].minutes,
+    state: %i[confirmed completed cancelled].include?(data[:status]) ? :booked : :open
+  )
+  availability.build_booking(client: client_user, description: data[:description],
+                              duration: data[:status] == :selected ? nil : data[:duration],
+                              status: data[:status]).save!
+end
+
+%w[inkline kaiirezumi boldlines atelier9 encrenoire].each do |username|
+  Like.create!(user: client_user, artist_profile: find_artist_profile(username))
 end
 
 puts "Total: #{User.count} users, #{ArtistProfile.count} artist profiles, #{Address.count} addresses."

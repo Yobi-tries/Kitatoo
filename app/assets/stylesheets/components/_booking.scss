@@ -1,5 +1,7 @@
 .booking-card {
   border-radius: 16px;
+  background: $surface;
+  box-shadow: 0 2px 0 rgba($ink, 0.10), 0 10px 20px -16px rgba($ink, 0.5);
   overflow: hidden;
   margin-bottom: 14px;
 }
@@ -27,10 +29,15 @@
   color: $ink;
 }
 
+.booking-row-body .booking-card-label {
+  color: $text-secondary;
+}
+
 .booking-card-date {
   font-family: $headers-font;
   font-size: 16px;
   font-weight: 700;
+  color: $ink;
 }
 
 .booking-card-pill {
@@ -49,10 +56,10 @@
   display: flex;
   align-items: center;
   gap: 10px;
+  background: $canvas;
 }
 
 .booking-card .booking-row {
-  background: $canvas;
   box-shadow: none;
   border-radius: 0;
   padding: 14px 16px 10px;
@@ -68,6 +75,8 @@
   font-family: $body-font;
   font-weight: 700;
   font-size: 14px;
+  background: $primary-custom;
+  color: $on-primary;
   box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.25);
   cursor: pointer;
   text-decoration: none;
@@ -81,6 +90,7 @@
   &:hover {
     filter: brightness(0.94);
     text-decoration: none;
+    color: $on-primary;
   }
 }
 
@@ -90,6 +100,8 @@
   height: 34px;
   border: 0;
   border-radius: 8px;
+  background: $surface-dim;
+  color: $ink;
   font-size: 13px;
   cursor: pointer;
   display: flex;
@@ -104,16 +116,6 @@
 
 .booking-card--pending,
 .booking-card--artist-confirmed {
-  border: 1px solid $primary-custom;
-
-  .booking-row-body {
-    color: $primary-custom;
-
-    .booking-card-label {
-      color: $text-secondary;
-    }
-  }
-
   .booking-card-pill {
     border: 1px solid $primary-custom;
     color: $primary-custom;
@@ -121,87 +123,24 @@
   }
 }
 
-.booking-card--pending {
-  background: $primary-custom;
-
-  .booking-card-label {
-    color: rgba($on-primary, 0.75);
-  }
-
-  .booking-card-date {
-    color: $on-primary;
-  }
-
-  .booking-card-strip {
-    background: rgba(0, 0, 0, 0.18);
-  }
-
-  .booking-card-confirm {
-    background: $on-primary;
-    color: $primary-custom;
-  }
-
-  .booking-card-cancel {
-    background: rgba($on-primary, 0.16);
-    color: $on-primary;
-  }
-}
-
-.booking-card--artist-confirmed {
-  background: $primary-custom;
-
-  .booking-card-label {
-    color: rgba($on-primary, 0.75);
-  }
-
-  .booking-card-date {
-    color: $on-primary;
-  }
-
-  .booking-card-strip {
-    background: rgba(0, 0, 0, 0.18);
-  }
-
-  .booking-card-accept {
-    background: $on-primary;
-    color: $primary-custom;
-  }
-
-  .booking-card-cancel {
-    background: rgba($on-primary, 0.16);
-    color: $on-primary;
-  }
-}
-
 .booking-card--confirmed {
-  background: $surface;
-  border: 1px solid #E4DED3;
-
-  .booking-card-label {
-    color: $disabled;
-  }
-
-  .booking-card-date {
-    color: $ink;
-  }
-
   .booking-card-pill {
     background: $primary-custom;
     color: $on-primary;
   }
+}
 
-  .booking-card-strip {
-    background: $canvas;
+.booking-card--completed {
+  .booking-card-pill {
+    background: $surface-dim;
+    color: $disabled;
   }
+}
 
-  .booking-card-profile {
-    background: $primary-custom;
-    color: $on-primary;
-  }
-
-  .booking-card-cancel {
-    background: #E4DED3;
-    color: $ink;
+.booking-card--cancelled {
+  .booking-card-pill {
+    background: rgba($red, 0.10);
+    color: $red;
   }
 }
 
@@ -209,7 +148,7 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  background: rgba($on-primary, 0.14);
+  background: rgba($ink, 0.06);
   border-radius: 8px;
   padding: 4px;
 }
@@ -219,8 +158,8 @@
   height: 26px;
   border: 0;
   border-radius: 6px;
-  background: rgba($on-primary, 0.16);
-  color: $on-primary;
+  background: rgba($ink, 0.06);
+  color: $ink;
   font-size: 15px;
   line-height: 1;
   cursor: pointer;
@@ -229,7 +168,7 @@
   justify-content: center;
 
   &:hover {
-    background: rgba($on-primary, 0.24);
+    background: rgba($ink, 0.12);
   }
 }
 
@@ -237,7 +176,7 @@
   font-family: $headers-font;
   font-weight: 700;
   font-size: 14px;
-  color: $on-primary;
+  color: $primary-custom;
   min-width: 44px;
   text-align: center;
 }

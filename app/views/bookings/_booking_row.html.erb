@@ -12,31 +12,21 @@
   target_path = conversation ? conversation_path(conversation) : nil
 %>
 <div id="<%= dom_id(booking) %>" class="booking-row">
-  <% if role == :client %>
-    <% artist_profile = booking.availability.artist_profile %>
-    <%= image_tag artist_profile.avatar_url.presence ||
-          "https://ui-avatars.com/api/?size=96&background=16130F&color=FBF9F5&name=#{artist_profile.display_name.tr(' ', '+')}",
-          class: "booking-row-thumb", alt: artist_profile.display_name %>
-  <% else %>
-    <div class="booking-row-avatar"><%= booking.client.username.first(2).upcase %></div>
-  <% end %>
+  <div class="booking-row-avatar"><%= booking.client.username.first(2).upcase %></div>
 
   <div class="booking-row-body">
     <h3 class="booking-row-name">
       <% if target_path %>
-        <%= link_to (role == :client ? booking.availability.artist_profile.display_name : booking.client.username),
-              target_path, class: "stretched-link" %>
+        <%= link_to booking.client.username, target_path, class: "stretched-link" %>
       <% else %>
-        <%= role == :client ? booking.availability.artist_profile.display_name : booking.client.username %>
+        <%= booking.client.username %>
       <% end %>
     </h3>
     <span class="booking-row-meta">
       <%= starts_at.strftime("%a %d %b · %H:%M") %>
       <% if booking.duration %> &middot; <%= "#{booking.duration / 60}h#{format('%02d', booking.duration % 60)}" %><% end %>
     </span>
-    <% unless booking.cancelled? && role == :client %>
-      <span class="booking-row-status booking-row-status--<%= status_label %>"><%= status_label %></span>
-    <% end %>
+    <span class="booking-row-status booking-row-status--<%= status_label %>"><%= status_label %></span>
   </div>
 
   <% if show_cancel %>
