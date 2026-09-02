@@ -3,7 +3,7 @@ import { Controller } from "@hotwired/stimulus"
 export default class extends Controller {
   static targets = [
     "generationIdInput", "preview", "uploadField",
-    "bodyPhotoInput", "bodyPreview", "bodyUploadField"
+    "bodyPhotoInput", "bodyPreview", "bodyUploadField", "bodyPreviewCard"
   ]
 
   useGenerated(event) {
@@ -15,6 +15,7 @@ export default class extends Controller {
     this.previewTarget.classList.remove("d-none")
     this.uploadFieldTarget.classList.add("d-none")
 
+    this.dispatch("open-card", { target: this.bodyPreviewCardTarget })
     this.element.querySelector("#body_preview_form")?.scrollIntoView({ behavior: "smooth", block: "start" })
   }
 

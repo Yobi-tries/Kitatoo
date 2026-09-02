@@ -38,7 +38,7 @@
       <span class="booking-card-label" style="flex:1;">Waiting for artist</span>
       <% if show_cancel %>
         <%= link_to "✕", cancel_booking_path(booking),
-              data: { turbo_method: :patch, turbo_confirm: "Cancel this booking?" },
+              data: { turbo_method: :patch, turbo_confirm: "Cancel this booking?", confirm_button_label: "Cancel booking" },
               class: "booking-card-cancel", title: "Cancel" %>
       <% end %>
     </div>
@@ -48,7 +48,7 @@
             method: :patch, class: "booking-card-accept" %>
       <% if show_cancel %>
         <%= link_to "✕", cancel_booking_path(booking),
-              data: { turbo_method: :patch, turbo_confirm: "Cancel this booking?" },
+              data: { turbo_method: :patch, turbo_confirm: "Cancel this booking?", confirm_button_label: "Cancel booking" },
               class: "booking-card-cancel", title: "Cancel" %>
       <% end %>
     </div>

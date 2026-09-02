@@ -1,12 +1,21 @@
+<% if user_signed_in? %>
+  <%= turbo_stream_from "notifications_#{current_user.id}" %>
+<% end %>
 <nav class="botappbar"<% if local_assigns[:hidden] %> hidden<% end %>>
   <%= link_to artists_path, class: "botappbar-link #{'active' if controller_name == 'artists' && action_name == 'index'}", "aria-label": "Explore" do %>
     <span class="material-symbols-outlined">explore</span>
   <% end %>
   <%= link_to bookings_path, class: "botappbar-link #{'active' if controller_name == 'bookings' && action_name == 'index'}", "aria-label": "Bookings" do %>
     <span class="material-symbols-outlined">event_note</span>
+    <% if user_signed_in? && current_user.unnotified_bookings? %>
+      <span class="botappbar-dot"></span>
+    <% end %>
   <% end %>
   <%= link_to conversations_path, class: "botappbar-link #{'active' if controller_name == 'conversations'}", "aria-label": "Inbox" do %>
     <span class="material-symbols-outlined">chat_bubble</span>
+    <% if user_signed_in? && current_user.unread_conversations? %>
+      <span class="botappbar-dot"></span>
+    <% end %>
   <% end %>
   <% if current_user&.artist_profile&.persisted? %>
     <%= link_to artist_path(current_user.artist_profile), class: "botappbar-link #{'active' if controller_name == 'artists' && action_name == 'show'}", "aria-label": "Profile" do %>

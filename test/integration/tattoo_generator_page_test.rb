@@ -9,6 +9,14 @@ class TattooGeneratorPageTest < ActionDispatch::IntegrationTest
 
     get new_tattoo_generation_path
     assert_response :success
+    assert_select ".tattoo-generator-card[data-controller='collapsible-card']", count: 2
+    assert_select "button[data-collapsible-card-target='button'][aria-expanded='false']", count: 2
+    assert_select "[data-collapsible-card-target='content'][hidden]", count: 2
+    assert_select "#create-tattoo-card-content[role='region'][aria-labelledby='create-tattoo-card-title']", count: 1
+    assert_select "#body-preview-card-content[role='region'][aria-labelledby='body-preview-card-title']", count: 1
+    assert_select ".tattoo-generator-card[data-body-preview-source-target='bodyPreviewCard'][data-action='body-preview-source:open-card->collapsible-card#open']", count: 1 do
+      assert_select "#body-preview-card-content", count: 1
+    end
   end
 
   test "new page restores the user's last generation and body preview across every status" do

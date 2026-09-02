@@ -14,9 +14,9 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     get user_path
 
     assert_response :success
-    assert_select "a.liked-artist-tile[href='#{artist_path(artist_profile)}']", count: 1 do
-      assert_select "img.liked-artist-tile-image", count: 1
-      assert_select ".liked-artist-tile-name", text: "Ink Master", count: 1
+    assert_select "a.like-tile[href='#{artist_path(artist_profile)}']", count: 1 do
+      assert_select "img.like-tile-image", count: 1
+      assert_select ".like-tile-name", text: "Ink Master", count: 1
     end
   end
 end

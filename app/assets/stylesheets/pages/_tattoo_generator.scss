@@ -84,7 +84,7 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  color: $primary-custom;
+  color: $accent;
   box-shadow: inset 0 0 0 1px $hairline-canvas;
 }
 
@@ -107,23 +107,28 @@
   aspect-ratio: 0.76;
   border-radius: 22px;
   background: $surface;
+  border: 1.5px solid $accent;
   box-shadow:
-    0 2px 0 rgba($ink, 0.08),
-    0 16px 32px -20px rgba($ink, 0.4);
+    0 4px 0 rgba($ink, 0.08),
+    0 20px 36px -18px rgba($ink, 0.45);
 }
 
 .tattoo-generator-demo-card--reference {
   z-index: 1;
-  transform: translateX(18px) scale(0.94);
+  transform: translateX(24px) translateY(10px) rotate(-6deg) scale(0.95);
 }
 
 .tattoo-generator-demo-card--design {
   z-index: 3;
+  transform: translateY(-18px) scale(1.06);
+  box-shadow:
+    0 10px 0 rgba($ink, 0.10),
+    0 30px 48px -16px rgba($ink, 0.55);
 }
 
 .tattoo-generator-demo-card--body {
   z-index: 2;
-  transform: translateX(-18px) scale(0.94);
+  transform: translateX(-24px) translateY(14px) rotate(6deg) scale(0.95);
 }
 
 .tattoo-generator-demo-image {
@@ -287,18 +292,20 @@
     width: 36%;
     border-radius: 14px;
     aspect-ratio: 0.82;
+    border-width: 1px;
   }
 
   .tattoo-generator-demo-card--reference {
-    transform: translateX(12px) scale(0.95);
+    transform: translateX(10px) translateY(4px) rotate(-3deg) scale(0.96);
   }
 
   .tattoo-generator-demo-card--design {
     z-index: 3;
+    transform: translateY(-8px) scale(1.03);
   }
 
   .tattoo-generator-demo-card--body {
-    transform: translateX(-12px) scale(0.95);
+    transform: translateX(-10px) translateY(6px) rotate(3deg) scale(0.96);
   }
 
   .tattoo-generator-demo-step {
@@ -353,14 +360,30 @@
 }
 
 .tattoo-generator-card-header {
+  width: 100%;
   display: flex;
   align-items: center;
   gap: 14px;
-  margin-bottom: 14px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
 
-  @media (min-width: 900px) {
-    margin-bottom: 20px;
+  &:focus-visible {
+    outline: 2px solid $primary-custom;
+    outline-offset: 6px;
   }
+}
+
+.tattoo-generator-card-heading {
+  margin: 0;
+}
+
+.tattoo-generator-card-copy {
+  flex: 1;
+  min-width: 0;
 }
 
 .tattoo-generator-card-icon {
@@ -377,6 +400,7 @@
 }
 
 .tattoo-generator-card-title {
+  display: block;
   font-family: $headers-font;
   font-size: 18px;
   font-weight: 800;
@@ -385,9 +409,29 @@
 }
 
 .tattoo-generator-card-subtitle {
+  display: block;
   font-size: 13px;
   color: $text-secondary;
   margin: 0;
+}
+
+.tattoo-generator-card-arrow {
+  flex-shrink: 0;
+  color: $text-secondary;
+  font-size: 14px;
+  transition: transform 180ms ease;
+}
+
+.tattoo-generator-card-header[aria-expanded="true"] .tattoo-generator-card-arrow {
+  transform: rotate(180deg);
+}
+
+.tattoo-generator-card-content {
+  padding-top: 14px;
+
+  @media (min-width: 900px) {
+    padding-top: 20px;
+  }
 }
 
 .tattoo-drawer__label {
@@ -410,8 +454,8 @@
   width: 100%;
 
   &:focus {
-    border-color: $primary-custom;
-    box-shadow: 0 0 0 3px rgba($primary-custom, 0.12);
+    border-color: $accent;
+    box-shadow: 0 0 0 3px rgba($accent, 0.15);
   }
 
   &::placeholder {
@@ -423,11 +467,41 @@
   border-radius: $border-radius-lg;
   padding: 12px 20px;
   font-weight: 700;
-  box-shadow: 0 4px 14px rgba($primary-custom, 0.25);
+  box-shadow: 0 4px 14px rgba($accent, 0.25);
 
   &:hover,
   &:focus {
-    box-shadow: 0 4px 18px rgba($primary-custom, 0.32);
+    box-shadow: 0 4px 18px rgba($accent, 0.32);
+  }
+}
+
+// Scoped to the tattoo generator page only -- do not change $primary-custom
+// or Bootstrap's global $primary, this must not affect any other page.
+.tattoo-generator-page {
+  $tg-accent-hover: darken($accent, 12%);
+  $tg-accent-active: darken($accent, 20%);
+
+  .btn-primary {
+    background-color: $accent;
+    border-color: $accent;
+    color: $on-primary;
+
+    &:hover,
+    &:focus-visible {
+      background-color: $tg-accent-hover;
+      border-color: $tg-accent-hover;
+      color: $on-primary;
+    }
+
+    &:focus {
+      box-shadow: 0 0 0 3px rgba($accent, 0.35);
+    }
+
+    &:not(:disabled):not(.disabled):active {
+      background-color: $tg-accent-active;
+      border-color: $tg-accent-active;
+      color: $on-primary;
+    }
   }
 }
 
@@ -597,8 +671,8 @@
   }
 
   &:hover {
-    border-color: $primary-custom;
-    color: $primary-custom;
+    border-color: $accent;
+    color: $accent-text-safe;
   }
 }
 
@@ -621,8 +695,8 @@
   }
 
   &:hover {
-    border-color: $primary-custom;
-    color: $primary-custom;
+    border-color: $accent;
+    color: $accent-text-safe;
   }
 }
 

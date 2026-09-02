@@ -61,7 +61,7 @@
 .artist-identity-name {
   font-family: $headers-font;
   font-size: 30px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: -0.02em;
   color: $on-primary;
   margin: 0 0 10px;
@@ -279,12 +279,12 @@
   }
 }
 
-.liked-artist-tile {
-  position: relative;
+.like-tile {
   display: block;
+  position: relative;
+  overflow: hidden;
   width: 100%;
   aspect-ratio: 1;
-  overflow: hidden;
   border-radius: $border-radius-sm;
   background: $placeholder-bg;
   box-shadow: 0 2px 0 rgba($ink, 0.14);
@@ -309,22 +309,14 @@
   }
 }
 
-.liked-artist-tile-image,
-.liked-artist-tile-placeholder {
-  display: block;
+.like-tile-image {
   width: 100%;
   height: 100%;
-}
-
-.liked-artist-tile-image {
   object-fit: cover;
+  display: block;
 }
 
-.liked-artist-tile-placeholder {
-  background: $placeholder-bg-alt;
-}
-
-.liked-artist-tile-name {
+.like-tile-name {
   position: absolute;
   z-index: 2;
   right: 9px;

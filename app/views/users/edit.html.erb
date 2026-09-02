@@ -38,7 +38,7 @@
       <%= link_to edit_user_registration_path, class: "profile-form-btn profile-form-btn--secondary" do %>
         Edit my account
       <% end %>
-      <%= link_to user_registration_path, data: { turbo_method: :delete, turbo_confirm: "Are you sure? This will permanently delete your account." }, class: "profile-form-btn profile-form-btn--danger" do %>
+      <%= link_to user_registration_path, data: { turbo_method: :delete, turbo_confirm: "Are you sure? This will permanently delete your account.", confirm_button_label: "Delete account" }, class: "profile-form-btn profile-form-btn--danger" do %>
         Delete my account
       <% end %>
     </div>

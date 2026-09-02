@@ -65,7 +65,7 @@
       <div class="booking-card-strip">
         <span class="booking-card-label" style="flex:1;">Waiting for artist</span>
         <%= link_to "✕", cancel_booking_path(booking),
-              data: { turbo_method: :patch, turbo_confirm: "Cancel this booking?" },
+              data: { turbo_method: :patch, turbo_confirm: "Cancel this booking?", confirm_button_label: "Cancel booking" },
               class: "booking-card-cancel", title: "Cancel" %>
       </div>
     </div>
@@ -83,7 +83,7 @@
         <%= button_to "Accept #{format_duration.call(booking.duration)}", accept_booking_path(booking),
             method: :patch, class: "booking-card-accept" %>
         <%= link_to "✕", cancel_booking_path(booking),
-              data: { turbo_method: :patch, turbo_confirm: "Cancel this booking?" },
+              data: { turbo_method: :patch, turbo_confirm: "Cancel this booking?", confirm_button_label: "Cancel booking" },
               class: "booking-card-cancel", title: "Cancel" %>
       </div>
     </div>
@@ -100,7 +100,7 @@
       <div class="booking-card-strip">
         <span class="booking-card-label" style="flex:1;">Waiting for client</span>
         <%= link_to "✕", cancel_booking_path(booking),
-              data: { turbo_method: :patch, turbo_confirm: "Cancel this booking?" },
+              data: { turbo_method: :patch, turbo_confirm: "Cancel this booking?", confirm_button_label: "Cancel booking" },
               class: "booking-card-cancel", title: "Cancel" %>
       </div>
     </div>
@@ -118,12 +118,12 @@
       <div class="booking-card-strip">
         <% if is_artist %>
           <%= link_to complete_booking_path(confirmed_booking),
-                data: { turbo_method: :patch, turbo_confirm: "Mark this booking as completed?" },
+                data: { turbo_method: :patch, turbo_confirm: "Mark this booking as completed?", confirm_button_label: "Mark as completed" },
                 class: "booking-card-profile" do %>
             <i class="fa-solid fa-check"></i> Mark as completed
           <% end %>
           <%= link_to "✕", cancel_booking_path(confirmed_booking),
-                data: { turbo_method: :patch, turbo_confirm: "Cancel this confirmed booking?" },
+                data: { turbo_method: :patch, turbo_confirm: "Cancel this confirmed booking?", confirm_button_label: "Cancel booking" },
                 class: "booking-card-cancel", title: "Cancel" %>
         <% else %>
           <%= link_to artist_path(@conversation.artist_profile), class: "booking-card-profile" do %>
@@ -134,7 +134,7 @@
     </div>
   <% end %>
 
-<%= form_with model: Message.new, url: conversation_messages_path(@conversation), html: { multipart: true }, class: "conversation-composer", data: { controller: "photo-attach" } do |f| %>
+<%= form_with model: Message.new, url: conversation_messages_path(@conversation), html: { multipart: true }, class: "conversation-composer", data: { controller: "photo-attach", action: "turbo:submit-end->photo-attach#reset" } do |f| %>
   <label class="conversation-composer-attach" for="message_photo">
     <i class="fa-solid fa-plus"></i>
   </label>

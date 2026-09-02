@@ -60,6 +60,8 @@ class BookingsController < ApplicationController
                                         .pluck("availabilities.starts_at").map(&:to_date).uniq.sort
     end
 
+    mark_bookings_notified!
+
     respond_to do |format|
       format.html
       format.csv do
@@ -137,6 +139,11 @@ class BookingsController < ApplicationController
 
     conversation = Conversation.find_by(client_id: @booking.client_id,
                                         artist_profile: @booking.availability.artist_profile)
+    conversation.messages.create!(
+      user: current_user,
+      body: "Booking confirmed: #{@booking.availability.starts_at.strftime('%A %d %B, %H:%M')} — " \
+            "see you there!"
+    )
     redirect_to conversation_path(conversation), notice: "Booking confirmed!"
   end
 
@@ -228,6 +235,18 @@ class BookingsController < ApplicationController
                                 .exists?
     streams << turbo_stream.remove(needs_action_chip_id(date)) unless still_needs_action
     streams
+  end
+
+  def mark_bookings_notified!
+    scope = Booking.joins(:availability).includes(availability: :artist_profile).where.not(status: [ :cancelled, :completed ])
+    scope = if current_user.artist_profile
+      scope.where(client_id: current_user.id)
+        .or(scope.where(availabilities: { artist_profile_id: current_user.artist_profile.id }))
+    else
+      scope.where(client_id: current_user.id)
+    end
+
+    scope.find_each { |b| b.mark_notified!(current_user) }
   end
 
   def history_csv(bookings)

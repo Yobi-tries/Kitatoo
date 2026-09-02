@@ -25,8 +25,8 @@
                   input_html: { autocomplete: "new-password" } %>
       <%= f.input :birthdate,
                   as: :date,
-                  start_year: Time.now.year - 100,
-                  end_year: Time.now.year - 4,
+                  start_year: Date.current.year - 100,
+                  end_year: Date.current.year - 4,
                   order: [:day, :month, :year],
                   required: true %>
       <%= f.input :city,
