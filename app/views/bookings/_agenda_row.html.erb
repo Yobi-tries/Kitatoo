@@ -1,0 +1,30 @@
+<div id="<%= dom_id(booking) %>" class="booking-row">
+  <div class="booking-row-avatar"><%= booking.client.username.first(2).upcase %></div>
+
+  <div class="booking-row-body">
+    <h3 class="booking-row-name">
+      <% if conversation %>
+        <%= link_to booking.client.username, conversation_path(conversation),
+              class: "stretched-link", data: { turbo_frame: "_top" } %>
+      <% else %>
+        <%= booking.client.username %>
+      <% end %>
+    </h3>
+    <span class="booking-row-meta">
+      <%= booking.availability.starts_at.strftime("%H:%M") %> – <%= booking.availability.ends_at.strftime("%H:%M") %>
+    </span>
+  </div>
+
+  <div class="booking-row-actions">
+    <% if date <= Date.current %>
+      <%= link_to complete_booking_path(booking),
+            data: { turbo_method: :patch, turbo_confirm: "Mark this booking as completed?" },
+            class: "booking-row-complete", title: "Mark as completed" do %>
+        <i class="fa-solid fa-check"></i>
+      <% end %>
+    <% end %>
+    <%= link_to "✕", cancel_booking_path(booking),
+          data: { turbo_method: :patch, turbo_confirm: "Cancel this booking?" },
+          class: "booking-row-cancel", title: "Cancel" %>
+  </div>
+</div>

@@ -31,7 +31,8 @@
 
   <% if owner %>
     <div class="artist-actions" style="grid-template-columns: 1fr;">
-      <%= link_to "Edit my profile", edit_artist_profile_path, class: "artist-action-edit" %>
+      <%= link_to "Edit my profile", edit_artist_profile_path,
+                  class: "artist-action-edit artist-action-edit--primary" %>
     </div>
   <% else %>
     <div class="artist-actions" style="grid-template-columns: auto 1fr 1.35fr;">

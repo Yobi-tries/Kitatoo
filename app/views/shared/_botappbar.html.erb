@@ -1,4 +1,4 @@
-<nav class="botappbar">
+<nav class="botappbar"<% if local_assigns[:hidden] %> hidden<% end %>>
   <%= link_to artists_path, class: "botappbar-link #{'active' if controller_name == 'artists' && action_name == 'index'}", "aria-label": "Explore" do %>
     <span class="material-symbols-outlined">explore</span>
   <% end %>

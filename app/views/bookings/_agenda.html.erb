@@ -1,0 +1,24 @@
+<div class="agenda">
+  <div class="calendar-nav agenda-nav">
+    <%= link_to bookings_path(status: "upcoming", address_id: @selected_address&.id, date: date - 1),
+          class: "calendar-nav-btn" do %>
+      <i class="fa-solid fa-chevron-left"></i>
+    <% end %>
+    <span class="calendar-month agenda-date"><%= date.strftime("%A, %-d %B") %></span>
+    <%= link_to bookings_path(status: "upcoming", address_id: @selected_address&.id, date: date + 1),
+          class: "calendar-nav-btn" do %>
+      <i class="fa-solid fa-chevron-right"></i>
+    <% end %>
+  </div>
+
+  <% if bookings.empty? %>
+    <p class="bookings-empty">No sessions on this day.</p>
+  <% else %>
+    <div class="bookings-list">
+      <% bookings.each do |booking| %>
+        <%= render "bookings/agenda_row", booking: booking, date: date,
+              conversation: @artist_conversations_by_client[booking.client_id] %>
+      <% end %>
+    </div>
+  <% end %>
+</div>

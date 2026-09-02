@@ -24,6 +24,7 @@
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.14em;
+  color: $ink;
 }
 
 .booking-card-date {
@@ -48,6 +49,13 @@
   display: flex;
   align-items: center;
   gap: 10px;
+}
+
+.booking-card .booking-row {
+  background: $surface;
+  box-shadow: none;
+  border-radius: 0;
+  padding: 14px 16px 10px;
 }
 
 .booking-card-confirm,
@@ -94,7 +102,25 @@
   }
 }
 
-// State 1 — Pending (blue card)
+.booking-card--pending,
+.booking-card--artist-confirmed {
+  border: 1px solid $primary-custom;
+
+  .booking-row-body {
+    color: $primary-custom;
+
+    .booking-card-label {
+      color: $text-secondary;
+    }
+  }
+
+  .booking-card-pill {
+    border: 1px solid $primary-custom;
+    color: $primary-custom;
+    background: transparent;
+  }
+}
+
 .booking-card--pending {
   background: $primary-custom;
 
@@ -104,12 +130,6 @@
 
   .booking-card-date {
     color: $on-primary;
-  }
-
-  .booking-card-pill {
-    color: $on-primary;
-    border: 1px solid rgba($on-primary, 0.5);
-    background: transparent;
   }
 
   .booking-card-strip {
@@ -127,7 +147,6 @@
   }
 }
 
-// State 2 — Artist confirmed (blue card, filled pill)
 .booking-card--artist-confirmed {
   background: $primary-custom;
 
@@ -137,11 +156,6 @@
 
   .booking-card-date {
     color: $on-primary;
-  }
-
-  .booking-card-pill {
-    background: $on-primary;
-    color: $primary-custom;
   }
 
   .booking-card-strip {
@@ -159,7 +173,6 @@
   }
 }
 
-// State 3 — Confirmed / booked (cream card)
 .booking-card--confirmed {
   background: $surface;
   border: 1px solid #E4DED3;
@@ -192,7 +205,6 @@
   }
 }
 
-// Stepper (state 1 only)
 .booking-stepper {
   display: flex;
   align-items: center;

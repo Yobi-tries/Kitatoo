@@ -59,24 +59,67 @@
       <h2 class="home-section-title">Requests received</h2>
     </div>
 
+    <%= render "bookings/location_filter", addresses: @addresses, selected_address: @selected_address, status: @status %>
+
     <% if @artist_pending.empty? && @artist_upcoming.empty? && @artist_to_complete.empty? && @artist_history.empty? && @artist_cancelled.empty? %>
       <p class="bookings-empty">No booking requests yet.</p>
     <% else %>
-      <% [["Pending requests", @artist_pending], ["Upcoming", @artist_upcoming],
-          ["To complete", @artist_to_complete], ["History", @artist_history],
-          ["Cancelled", @artist_cancelled]].each do |title, bookings| %>
-        <% next if bookings.empty? %>
-        <div class="home-section-header">
-          <h3 class="home-section-title"><%= title %></h3>
-          <span class="home-section-meta"><%= bookings.size %></span>
-        </div>
-        <div class="bookings-list">
-          <% bookings.each do |booking| %>
-            <%= render "bookings/booking_row", booking: booking, role: :artist,
-                  conversation: @artist_conversations_by_client[booking.client_id],
-                  show_cancel: false %>
+      <%= render "bookings/status_dropdown", status: @status, address: @selected_address %>
+
+      <% case @status
+         when "requests" %>
+        <% if @artist_pending.empty? %>
+          <p class="bookings-empty">No pending requests.</p>
+        <% else %>
+          <div class="bookings-list">
+            <% @artist_pending.each do |booking| %>
+              <%= render "bookings/request_row", booking: booking,
+                    conversation: @artist_conversations_by_client[booking.client_id] %>
+            <% end %>
+          </div>
+        <% end %>
+      <% when "upcoming" %>
+        <% if @needs_action_dates.any? %>
+          <div class="agenda-needs-action">
+            <% @needs_action_dates.each do |d| %>
+              <%= link_to d.strftime("%b %-d"),
+                    bookings_path(status: "upcoming", address_id: @selected_address&.id, date: d),
+                    class: "agenda-needs-action-chip" %>
+            <% end %>
+          </div>
+        <% end %>
+
+        <%= turbo_frame_tag "agenda" do %>
+          <%= render "bookings/agenda", date: @agenda_date, bookings: @agenda_bookings %>
+        <% end %>
+      <% when "history" %>
+        <% if @artist_history.empty? %>
+          <p class="bookings-empty">No completed sessions yet.</p>
+        <% else %>
+          <%= link_to bookings_path(format: :csv, address_id: @selected_address&.id, status: "history"),
+                class: "bookings-csv-link" do %>
+            <i class="fa-solid fa-download"></i> Download CSV
           <% end %>
-        </div>
+          <div class="bookings-list">
+            <% @artist_history.each do |booking| %>
+              <%= render "bookings/booking_row", booking: booking, role: :artist,
+                    conversation: @artist_conversations_by_client[booking.client_id],
+                    show_cancel: false %>
+            <% end %>
+          </div>
+        <% end %>
+      <% when "cancelled" %>
+        <% if @artist_cancelled.empty? %>
+          <p class="bookings-empty">No cancelled bookings.</p>
+        <% else %>
+          <div class="bookings-list">
+            <% @artist_cancelled.each do |booking| %>
+              <%= render "bookings/booking_row", booking: booking, role: :artist,
+                    conversation: @artist_conversations_by_client[booking.client_id],
+                    show_cancel: false %>
+            <% end %>
+          </div>
+        <% end %>
       <% end %>
     <% end %>
   <% end %>

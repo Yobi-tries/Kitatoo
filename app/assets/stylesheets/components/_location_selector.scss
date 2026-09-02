@@ -12,10 +12,17 @@
   display: flex;
   gap: 12px;
   margin-bottom: 24px;
+  overflow-x: auto;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 .location-card {
-  flex: 1;
+  flex: 0 0 160px;
+  box-sizing: border-box;
   background: $surface;
   border-radius: 14px;
   padding: 14px;
