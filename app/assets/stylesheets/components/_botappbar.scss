@@ -16,6 +16,7 @@
 }
 
 .botappbar-link {
+  position: relative;
   width: 48px;
   height: 48px;
   display: flex;
@@ -39,4 +40,15 @@
     color: $primary-custom;
     background: rgba($primary-custom, 0.10);
   }
+}
+
+.botappbar-dot {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: $primary-custom;
+  border: 2px solid $surface;
 }

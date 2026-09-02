@@ -15,5 +15,8 @@ class Message < ApplicationRecord
       target: "messages",
       partial: "conversations/message",
       locals: { message: self }
+
+    Turbo::StreamsChannel.broadcast_refresh_to("conversations_#{conversation.client_id}")
+    Turbo::StreamsChannel.broadcast_refresh_to("conversations_#{conversation.artist_profile.user_id}")
   }
 end

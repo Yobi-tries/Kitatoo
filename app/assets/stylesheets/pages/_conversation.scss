@@ -48,6 +48,20 @@
   color: $primary-custom;
 }
 
+.conversation-item-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.conversation-item-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: $primary-custom;
+}
+
 .conversation-item-time {
   font-size: 12px;
   font-weight: 600;
