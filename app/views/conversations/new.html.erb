@@ -1,25 +1,25 @@
 <%= render "shared/topappbar" %>
 
-<div class="container conversation" style="padding-top: 64px; padding-bottom: 90px;">
-
-  <div class="conversation-header">
-    <%= link_to artist_path(@artist_profile), class: "conversation-header-back" do %>
-      <i class="fa-solid fa-arrow-left"></i>
-    <% end %>
-    <div class="conversation-header-avatar">
-      <%= @artist_profile.display_name.first(2).upcase %>
-    </div>
-    <span class="conversation-header-name"><%= @artist_profile.display_name %></span>
-  </div>
-
+<div class="container conversation" style="padding-top: 64px; padding-bottom: 90px;"
   <div class="new-message-form">
-    <h2 class="new-message-title">Start a conversation</h2>
+    <h2 class="new-message-title"style="padding-top: 24px; padding-bottom: 12px;">Start a conversation</h2>
     <p class="new-message-hint">Send a message to <%= @artist_profile.display_name %> about your tattoo idea.</p>
 
-    <%= simple_form_for @message, url: artist_profile_conversations_path(@artist_profile) do |f| %>
+    <%= simple_form_for @message, url: artist_profile_conversations_path(@artist_profile), html: { multipart: true } do |f| %>
       <%= f.input :body, as: :text, label: false,
             placeholder: "Describe your idea, ask a question...",
             input_html: { class: "new-message-input", rows: 4 } %>
+      <div class="new-message-photo" data-controller="photo-attach">
+        <label for="new_message_photo" class="new-message-photo-label">
+          <i class="fa-solid fa-image"></i> Add a photo
+        </label>
+        <%= file_field_tag "message[photo]", accept: "image/*", class: "d-none", id: "new_message_photo",
+              data: { photo_attach_target: "input", action: "change->photo-attach#preview" } %>
+        <div class="conversation-composer-preview d-none" data-photo-attach-target="preview">
+          <img data-photo-attach-target="image" class="conversation-composer-preview-img">
+          <button type="button" class="conversation-composer-preview-remove" data-action="photo-attach#remove">&times;</button>
+        </div>
+      </div>
       <button type="submit" class="new-message-submit">
         <i class="fa-solid fa-paper-plane"></i> Send message
       </button>
