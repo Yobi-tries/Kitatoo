@@ -381,6 +381,25 @@
   }
 }
 
+.home-generator-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: $primary-custom;
+  color: $on-primary;
+  text-decoration: none;
+
+  &:hover {
+    background: $primary-pressed;
+    color: $on-primary;
+  }
+
+  &:focus-visible {
+    outline: 3px solid $primary-custom;
+    outline-offset: 3px;
+  }
+}
+
 .mapboxgl-popup-content {
   border-radius: 14px;
   padding: 8px;
@@ -419,92 +438,4 @@
 .map-popup-city {
   font-size: 12px;
   color: $text-secondary;
-}
-
-.home-generator-card {
-  margin-top: 24px;
-  padding: 20px;
-  border: 1px solid $hairline;
-  border-radius: 16px;
-  background: $surface;
-  box-shadow: 0 2px 0 rgba($ink, 0.10), 0 10px 20px -16px rgba($ink, 0.5);
-}
-
-.home-generator-card__heading {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 8px;
-
-  h2 {
-    margin: 0;
-    font-family: $headers-font;
-    font-size: 18px;
-    font-weight: 800;
-    line-height: 1.2;
-    color: $ink;
-  }
-
-  .material-symbols-outlined {
-    color: $accent;
-  }
-}
-
-.home-generator-card__description {
-  margin: 0 0 16px;
-  font-family: $body-font;
-  font-size: 14px;
-  line-height: 1.5;
-  color: $text-secondary;
-}
-
-.home-generator-card__title-accent {
-  color: $accent-text-safe;
-}
-
-.home-generator-card__button {
-  width: 100%;
-  min-height: 60px;
-  border: none;
-  border-radius: 14px;
-  background: $accent;
-  color: $ink;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  font-family: $headers-font;
-  font-size: 16px;
-  font-weight: 700;
-  text-decoration: none;
-  cursor: pointer;
-  box-shadow: 0 6px 18px rgba($accent, 0.25);
-  transition: background-color 150ms ease;
-
-  &:hover {
-    background: darken($accent, 8%);
-    color: $ink;
-  }
-
-  &:focus-visible {
-    outline: 3px solid $accent-text-safe;
-    outline-offset: 3px;
-  }
-}
-
-.home-generator-card__disclaimer {
-  display: flex;
-  align-items: flex-start;
-  gap: 6px;
-  margin: 12px 0 0;
-  font-family: $body-font;
-  font-size: 12px;
-  line-height: 1.45;
-  color: $text-secondary;
-
-  .material-symbols-outlined {
-    flex-shrink: 0;
-    margin-top: 1px;
-    font-size: 14px;
-  }
 }

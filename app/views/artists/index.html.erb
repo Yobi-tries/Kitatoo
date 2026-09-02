@@ -116,44 +116,18 @@
       See more artists
     </button>
   </div>
-  <section class="home-generator-card" aria-labelledby="home-generator-title">
-    <div class="home-generator-card__heading">
-      <span class="material-symbols-outlined" aria-hidden="true">auto_awesome</span>
-      <h2 id="home-generator-title">
-        Design it. <span class="home-generator-card__title-accent">See it on you.</span>
-      </h2>
-    </div>
-
-    <p class="home-generator-card__description">
-      Create a personalized tattoo sketch, then preview how it could look on
-      your body before you ink.
-    </p>
-
-    <% if user_signed_in? %>
-      <button type="button"
-              class="home-generator-card__button"
-              data-bs-toggle="offcanvas"
-              data-bs-target="#tattooGeneratorDrawer"
-              aria-controls="tattooGeneratorDrawer">
-        <span class="material-symbols-outlined" aria-hidden="true">draw</span>
-        Start creating
-      </button>
-    <% else %>
-      <%= link_to new_tattoo_generation_path,
-                  class: "home-generator-card__button" do %>
-        <span class="material-symbols-outlined" aria-hidden="true">draw</span>
-        Start creating
-      <% end %>
-    <% end %>
-
-    <p class="home-generator-card__disclaimer">
-      <span class="material-symbols-outlined" aria-hidden="true">info</span>
-      <span>
-        AI-generated sketches and previews are for inspiration only. Your tattoo
-        artist will refine the design and adapt it to your body.
-      </span>
-    </p>
-  </section>
+  <% if user_signed_in? %>
+    <button type="button"
+            class="home-see-more home-generator-button"
+            data-bs-toggle="offcanvas"
+            data-bs-target="#tattooGeneratorDrawer"
+            aria-controls="tattooGeneratorDrawer">
+      Tattoo idea generator
+    </button>
+  <% else %>
+    <%= link_to "Tattoo idea generator", new_tattoo_generation_path,
+                class: "home-see-more home-generator-button" %>
+  <% end %>
 </div>
 
 <%= render "shared/botappbar" %>
