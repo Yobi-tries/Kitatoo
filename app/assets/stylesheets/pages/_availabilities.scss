@@ -113,12 +113,11 @@
   position: fixed;
   left: 20px;
   right: 20px;
-  bottom: 80px;
+  bottom: 65px;
   z-index: 1040;
-  max-width: 600px;
-  margin: 0 auto;
+  margin: 0 26px 0;
   background: #16130F;
-  border-radius: 20px;
+  border-radius: 16px 16px 0 0;
   padding: 20px 20px 24px;
   box-shadow: 0 10px 30px -10px rgba($ink, 0.5);
 }
