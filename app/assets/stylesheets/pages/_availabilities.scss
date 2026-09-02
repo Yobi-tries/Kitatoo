@@ -1,6 +1,6 @@
 .booking-page {
   max-width: 640px;
-  padding: 72px 20px 120px;
+  padding: 72px 20px 280px;
 }
 
 .booking-header {
@@ -110,10 +110,16 @@
 }
 
 .booking-footer {
+  position: fixed;
+  left: 20px;
+  right: 20px;
+  bottom: 65px;
+  z-index: 1040;
+  margin: 0 26px 0;
   background: #16130F;
-  border-radius: 20px 20px 0 0;
+  border-radius: 16px 16px 0 0;
   padding: 20px 20px 24px;
-  margin: 24px -20px 0;
+  box-shadow: 0 10px 30px -10px rgba($ink, 0.5);
 }
 
 .booking-summary {
