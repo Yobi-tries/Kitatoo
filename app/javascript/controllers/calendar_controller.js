@@ -24,7 +24,8 @@ export default class extends Controller {
   }
 
   #selectDay(dayEl) {
-    this.dayTargets.forEach((el) => el.classList.remove("calendar-day--selected"))
+    this.element.querySelectorAll(".calendar-day--selected, .calendar-day--today")
+      .forEach((el) => el.classList.remove("calendar-day--selected", "calendar-day--today"))
     dayEl.classList.add("calendar-day--selected")
   }
 
