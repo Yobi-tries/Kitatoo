@@ -20,4 +20,9 @@ export default class extends Controller {
     this.previewTarget.classList.add("d-none")
     this.imageTarget.src = ""
   }
+
+  reset() {
+    this.element.reset()
+    this.remove()
+  }
 }

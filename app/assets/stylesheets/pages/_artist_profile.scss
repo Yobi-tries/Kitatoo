@@ -61,7 +61,7 @@
 .artist-identity-name {
   font-family: $headers-font;
   font-size: 30px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: -0.02em;
   color: $on-primary;
   margin: 0 0 10px;
@@ -279,21 +279,41 @@
   }
 }
 
-.like-placeholder {
-  width: 100%;
+.like-tile {
+  display: block;
+  position: relative;
+  overflow: hidden;
+  border-radius: 8px;
   aspect-ratio: 1;
   background: $placeholder-bg;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 8px;
+  text-decoration: none;
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: linear-gradient(rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.75));
+  }
 }
 
-.like-placeholder-name {
-  font-size: 12px;
-  font-weight: 700;
-  color: $text-secondary;
-  text-align: center;
+.like-tile-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.like-tile-name {
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  right: 8px;
+  z-index: 2;
+  font-size: 11px;
+  font-weight: 600;
+  color: $on-primary;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
 }
 
 .btn-sign-out {
