@@ -43,8 +43,8 @@ module CalendarHelper
 
       slots << {
         label: slot_start.strftime('%H:%M'),
-        starts_at: date.to_time.change(hour: slot_start.hour, min: slot_start.min).iso8601,
-        ends_at: date.to_time.change(hour: slot_end.hour, min: slot_end.min).iso8601
+        starts_at: date.in_time_zone.change(hour: slot_start.hour, min: slot_start.min).iso8601,
+        ends_at: date.in_time_zone.change(hour: slot_end.hour, min: slot_end.min).iso8601
       }
       current += duration.minutes
     end

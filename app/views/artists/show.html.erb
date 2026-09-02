@@ -93,7 +93,7 @@
   <div class="artist-section">
     <% if owner %>
       <%= form_with url: bulk_destroy_artist_profile_portfolio_items_path, method: :delete,
-                    data: { controller: "portfolio", turbo_confirm: "Remove the selected photos?" } do %>
+                    data: { controller: "portfolio", turbo_confirm: "Remove the selected photos?", confirm_button_label: "Remove photos" } do %>
         <div class="d-flex justify-content-between align-items-center mb-3">
           <h2 class="artist-section-title mb-0">Portfolio</h2>
           <div class="d-flex align-items-center gap-3">
