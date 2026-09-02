@@ -6,7 +6,12 @@
   <div class="conversation-item-body">
     <div class="conversation-item-top">
       <span class="conversation-item-name"><%= conversation.other_participant_name(current_user) %></span>
-      <span class="conversation-item-time"><%= format_conversation_time(conversation.updated_at) %></span>
+      <div class="conversation-item-right">
+        <span class="conversation-item-time"><%= format_conversation_time(conversation.updated_at) %></span>
+        <% if conversation.unread_for?(current_user) %>
+          <span class="conversation-item-dot"></span>
+        <% end %>
+      </div>
     </div>
     <% if (last_message = conversation.messages.last) %>
       <p class="conversation-item-preview"><%= truncate(last_message.body, length: 60) %></p>

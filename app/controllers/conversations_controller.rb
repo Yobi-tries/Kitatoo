@@ -16,6 +16,7 @@ class ConversationsController < ApplicationController
     end
 
     @messages = @conversation.messages.order(:created_at)
+    @conversation.mark_read!(current_user)
     @message = Message.new
   end
 
