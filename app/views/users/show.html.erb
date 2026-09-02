@@ -56,6 +56,10 @@
     <% end %>
   </div>
 
+  <div class="artist-section text-center">
+    <%= button_to "Sign out", destroy_user_session_path, method: :delete, class: "btn-sign-out" %>
+  </div>
+
 </div>
 
 <%= render "shared/botappbar" %>
