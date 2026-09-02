@@ -353,14 +353,30 @@
 }
 
 .tattoo-generator-card-header {
+  width: 100%;
   display: flex;
   align-items: center;
   gap: 14px;
-  margin-bottom: 14px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
 
-  @media (min-width: 900px) {
-    margin-bottom: 20px;
+  &:focus-visible {
+    outline: 2px solid $primary-custom;
+    outline-offset: 6px;
   }
+}
+
+.tattoo-generator-card-heading {
+  margin: 0;
+}
+
+.tattoo-generator-card-copy {
+  flex: 1;
+  min-width: 0;
 }
 
 .tattoo-generator-card-icon {
@@ -377,6 +393,7 @@
 }
 
 .tattoo-generator-card-title {
+  display: block;
   font-family: $headers-font;
   font-size: 18px;
   font-weight: 800;
@@ -385,9 +402,29 @@
 }
 
 .tattoo-generator-card-subtitle {
+  display: block;
   font-size: 13px;
   color: $text-secondary;
   margin: 0;
+}
+
+.tattoo-generator-card-arrow {
+  flex-shrink: 0;
+  color: $text-secondary;
+  font-size: 14px;
+  transition: transform 180ms ease;
+}
+
+.tattoo-generator-card-header[aria-expanded="true"] .tattoo-generator-card-arrow {
+  transform: rotate(180deg);
+}
+
+.tattoo-generator-card-content {
+  padding-top: 14px;
+
+  @media (min-width: 900px) {
+    padding-top: 20px;
+  }
 }
 
 .tattoo-drawer__label {

@@ -84,28 +84,67 @@
   <p class="tattoo-generator-divider"><span>Two ways to get started</span></p>
 
   <div class="tattoo-generator-grid">
-    <div class="tattoo-generator-card">
-      <div class="tattoo-generator-card-header">
-        <span class="tattoo-generator-card-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></span>
-        <div>
-          <h2 class="tattoo-generator-card-title">Create my tattoo</h2>
-          <p class="tattoo-generator-card-subtitle">Describe your idea. We handle the rest.</p>
-        </div>
+    <div class="tattoo-generator-card" data-controller="collapsible-card">
+      <h2 class="tattoo-generator-card-heading">
+        <button class="tattoo-generator-card-header"
+                type="button"
+                data-action="collapsible-card#toggle"
+                data-collapsible-card-target="button"
+                aria-expanded="false"
+                aria-controls="create-tattoo-card-content"
+                aria-labelledby="create-tattoo-card-title"
+                aria-describedby="create-tattoo-card-subtitle">
+          <span class="tattoo-generator-card-icon" aria-hidden="true"><i class="fa-solid fa-wand-magic-sparkles"></i></span>
+          <span class="tattoo-generator-card-copy">
+            <span id="create-tattoo-card-title" class="tattoo-generator-card-title">Create my tattoo</span>
+            <span id="create-tattoo-card-subtitle" class="tattoo-generator-card-subtitle">Describe your idea. We handle the rest.</span>
+          </span>
+          <span class="tattoo-generator-card-arrow" aria-hidden="true"><i class="fa-solid fa-chevron-down"></i></span>
+        </button>
+      </h2>
+
+      <div id="create-tattoo-card-content"
+           class="tattoo-generator-card-content"
+           data-collapsible-card-target="content"
+           role="region"
+           aria-labelledby="create-tattoo-card-title"
+           hidden>
+        <%= render "tattoo_generations/create_form" %>
+        <%= render "tattoo_generations/result", tattoo_generation: @tattoo_generation %>
       </div>
-      <%= render "tattoo_generations/create_form" %>
-      <%= render "tattoo_generations/result", tattoo_generation: @tattoo_generation %>
     </div>
 
-    <div class="tattoo-generator-card">
-      <div class="tattoo-generator-card-header">
-        <span class="tattoo-generator-card-icon"><i class="fa-solid fa-street-view"></i></span>
-        <div>
-          <h2 class="tattoo-generator-card-title">See on body</h2>
-          <p class="tattoo-generator-card-subtitle">Already have a design? See it on your body.</p>
-        </div>
+    <div class="tattoo-generator-card"
+         data-controller="collapsible-card"
+         data-body-preview-source-target="bodyPreviewCard"
+         data-action="body-preview-source:open-card->collapsible-card#open">
+      <h2 class="tattoo-generator-card-heading">
+        <button class="tattoo-generator-card-header"
+                type="button"
+                data-action="collapsible-card#toggle"
+                data-collapsible-card-target="button"
+                aria-expanded="false"
+                aria-controls="body-preview-card-content"
+                aria-labelledby="body-preview-card-title"
+                aria-describedby="body-preview-card-subtitle">
+          <span class="tattoo-generator-card-icon" aria-hidden="true"><i class="fa-solid fa-street-view"></i></span>
+          <span class="tattoo-generator-card-copy">
+            <span id="body-preview-card-title" class="tattoo-generator-card-title">See on body</span>
+            <span id="body-preview-card-subtitle" class="tattoo-generator-card-subtitle">Already have a design? See it on your body.</span>
+          </span>
+          <span class="tattoo-generator-card-arrow" aria-hidden="true"><i class="fa-solid fa-chevron-down"></i></span>
+        </button>
+      </h2>
+
+      <div id="body-preview-card-content"
+           class="tattoo-generator-card-content"
+           data-collapsible-card-target="content"
+           role="region"
+           aria-labelledby="body-preview-card-title"
+           hidden>
+        <%= render "body_previews/form" %>
+        <%= render "body_previews/result", body_preview: @body_preview %>
       </div>
-      <%= render "body_previews/form" %>
-      <%= render "body_previews/result", body_preview: @body_preview %>
     </div>
   </div>
 </div>
