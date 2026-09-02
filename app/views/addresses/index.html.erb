@@ -42,7 +42,7 @@
     <%= button_to "Delete this location", artist_profile_address_path(address),
                   method: :delete,
                   class: "btn btn-outline-danger w-100 mt-2",
-                  form: { data: { turbo_confirm: "Remove this address?" } } %>
+                  form: { data: { turbo_confirm: "Remove this address?", confirm_button_label: "Remove address" } } %>
 
     <hr class="my-4">
   <% end %>

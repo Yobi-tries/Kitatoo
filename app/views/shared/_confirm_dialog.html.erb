@@ -1,0 +1,11 @@
+<dialog id="confirm-dialog" class="confirm-dialog" data-controller="confirm-dialog"
+        data-action="click->confirm-dialog#onBackdropClick" aria-labelledby="confirm-dialog-title">
+  <form method="dialog" class="confirm-dialog-form">
+    <h2 class="confirm-dialog-title" id="confirm-dialog-title" data-confirm-dialog-target="title"></h2>
+    <div class="confirm-dialog-actions">
+      <button type="submit" value="confirm" class="confirm-dialog-btn confirm-dialog-btn--confirm"
+              data-confirm-dialog-target="confirmButton"></button>
+      <button type="submit" value="cancel" class="confirm-dialog-btn confirm-dialog-btn--cancel">Cancel</button>
+    </div>
+  </form>
+</dialog>

@@ -18,13 +18,13 @@
   <div class="booking-row-actions">
     <% if date <= Date.current %>
       <%= link_to complete_booking_path(booking),
-            data: { turbo_method: :patch, turbo_confirm: "Mark this booking as completed?" },
+            data: { turbo_method: :patch, turbo_confirm: "Mark this booking as completed?", confirm_button_label: "Mark as completed" },
             class: "booking-row-complete", title: "Mark as completed" do %>
         <i class="fa-solid fa-check"></i>
       <% end %>
     <% end %>
     <%= link_to "✕", cancel_booking_path(booking),
-          data: { turbo_method: :patch, turbo_confirm: "Cancel this booking?" },
+          data: { turbo_method: :patch, turbo_confirm: "Cancel this booking?", confirm_button_label: "Cancel booking" },
           class: "booking-row-cancel", title: "Cancel" %>
   </div>
 </div>
