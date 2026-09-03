@@ -554,6 +554,10 @@
   &:hover {
     background: $surface-dim;
   }
+
+  &:focus {
+    outline: none;
+  }
 }
 
 .home-generator-button {
