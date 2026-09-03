@@ -1,4 +1,4 @@
-<% content_for(:title, "My Bookings — Kitatoo") %>
+<% content_for(:meta_title, "My Bookings — Kitatoo") %>
 
 <%= turbo_stream_from [ current_user, :bookings ] %>
 <% if @artist_profile %>
