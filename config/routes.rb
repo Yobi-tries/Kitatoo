@@ -37,8 +37,12 @@ Rails.application.routes.draw do
 
   resource :user, only: [:show, :edit, :update]
 
-  resources :tattoo_generations, only: [:new, :create, :show]
-  resources :body_previews, only: [:create]
+  resources :tattoo_generations, only: [:new, :create, :show] do
+    patch :mark_viewed, on: :member
+  end
+  resources :body_previews, only: [:create] do
+    patch :mark_viewed, on: :member
+  end
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 

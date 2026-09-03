@@ -4,6 +4,7 @@
   <div class="topappbar-right">
     <%= link_to new_tattoo_generation_path, class: "topappbar-search-btn", "aria-label": "AI Tattoo Generator" do %>
       <i class="fa-solid fa-wand-magic-sparkles"></i>
+      <%= render "shared/tattoo_generator_badge", user: current_user %>
     <% end %>
     <button type="button" class="topappbar-search-btn" data-action="search-modal#open" aria-label="Search">
       <span class="material-symbols-outlined">search</span>

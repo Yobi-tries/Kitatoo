@@ -39,6 +39,11 @@ class TattooGenerationsController < ApplicationController
     @tattoo_generation = current_user.tattoo_generations.find(params[:id])
   end
 
+  def mark_viewed
+    current_user.tattoo_generations.find(params[:id]).mark_viewed!
+    head :no_content
+  end
+
   private
 
   def build_prompt(reference_count:)

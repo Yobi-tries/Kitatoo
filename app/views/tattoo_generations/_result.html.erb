@@ -1,4 +1,7 @@
-<div id="tattoo_generation_result" class="tattoo-drawer__result">
+<div id="tattoo_generation_result" class="tattoo-drawer__result"
+     data-result-seen-target="result"
+     data-completed="<%= tattoo_generation&.completed? ? "true" : "false" %>"
+     data-mark-viewed-url="<%= mark_viewed_tattoo_generation_path(tattoo_generation) if tattoo_generation&.completed? %>">
   <% if tattoo_generation.nil? %>
   <% elsif tattoo_generation.completed? %>
     <h2 class="tattoo-drawer__title">Generated design</h2>

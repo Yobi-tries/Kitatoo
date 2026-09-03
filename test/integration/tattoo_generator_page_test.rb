@@ -9,7 +9,7 @@ class TattooGeneratorPageTest < ActionDispatch::IntegrationTest
 
     get new_tattoo_generation_path
     assert_response :success
-    assert_select ".tattoo-generator-card[data-controller='collapsible-card']", count: 2
+    assert_select ".tattoo-generator-card[data-controller~='collapsible-card']", count: 2
     assert_select "button[data-collapsible-card-target='button'][aria-expanded='false']", count: 2
     assert_select "[data-collapsible-card-target='content'][hidden]", count: 2
     assert_select "#create-tattoo-card-content[role='region'][aria-labelledby='create-tattoo-card-title']", count: 1

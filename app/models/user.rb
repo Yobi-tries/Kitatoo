@@ -24,6 +24,10 @@ class User < ApplicationRecord
     relevant_bookings.any? { |b| b.unnotified_for?(self) }
   end
 
+  def unnotified_tattoo_generator_results?
+    tattoo_generations.unnotified.exists? || body_previews.unnotified.exists?
+  end
+
   private
 
   def all_conversations

@@ -22,6 +22,7 @@ class BodyPreviewJob < ApplicationJob
       preview_image_url: upload["secure_url"],
       preview_image_public_id: upload["public_id"]
     )
+    body_preview.broadcast_notification_badge
   rescue RubyLLM::Error, RubyLLM::UnsupportedAttachmentError, CloudinaryException, Faraday::Error => e
     body_preview.update!(status: :failed)
     Rails.logger.error("BodyPreviewJob failed for ##{body_preview_id}: #{e.message}")

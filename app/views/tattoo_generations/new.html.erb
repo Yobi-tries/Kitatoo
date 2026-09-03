@@ -84,7 +84,7 @@
   <p class="tattoo-generator-divider"><span>Get started</span></p>
 
   <div class="tattoo-generator-grid">
-    <div class="tattoo-generator-card" data-controller="collapsible-card">
+    <div class="tattoo-generator-card" data-controller="collapsible-card result-seen">
       <h2 class="tattoo-generator-card-heading">
         <button class="tattoo-generator-card-header"
                 type="button"
@@ -106,6 +106,7 @@
       <div id="create-tattoo-card-content"
            class="tattoo-generator-card-content"
            data-collapsible-card-target="content"
+           data-result-seen-target="content"
            role="region"
            aria-labelledby="create-tattoo-card-title"
            hidden>
@@ -115,7 +116,7 @@
     </div>
 
     <div class="tattoo-generator-card"
-         data-controller="collapsible-card"
+         data-controller="collapsible-card result-seen"
          data-body-preview-source-target="bodyPreviewCard"
          data-action="body-preview-source:open-card->collapsible-card#open">
       <h2 class="tattoo-generator-card-heading">
@@ -139,6 +140,7 @@
       <div id="body-preview-card-content"
            class="tattoo-generator-card-content"
            data-collapsible-card-target="content"
+           data-result-seen-target="content"
            role="region"
            aria-labelledby="body-preview-card-title"
            hidden>

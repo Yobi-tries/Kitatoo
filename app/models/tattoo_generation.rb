@@ -6,6 +6,26 @@ class TattooGeneration < ApplicationRecord
 
   enum :status, { pending: 0, completed: 1, failed: 2 }
 
+  scope :unnotified, -> {
+    completed.where(viewed_at: nil).where.not(image_url: [ nil, "" ]).where.not(image_public_id: [ nil, "" ])
+  }
+
+  def mark_viewed!
+    return if viewed_at.present?
+
+    update_column(:viewed_at, Time.current)
+    broadcast_notification_badge
+  end
+
+  def broadcast_notification_badge
+    Turbo::StreamsChannel.broadcast_replace_to(
+      "notifications_#{user_id}",
+      target: "tattoo-generator-notification-badge",
+      partial: "shared/tattoo_generator_badge",
+      locals: { user: user }
+    )
+  end
+
   REFERENCE_GUIDANCE = "Use the supplied reference image(s) as visual guidance for the subject, composition, " \
                        "shapes and relevant visual details. Adapt them into the requested tattoo design and " \
                        "selected tattoo style. Do not reproduce photographic backgrounds, lighting, skin or " \
