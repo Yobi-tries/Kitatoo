@@ -1,6 +1,6 @@
 .tattoo-generator-page {
   max-width: 1380px;
-  padding: 56px 28px calc(96px + env(safe-area-inset-bottom, 0px));
+  padding: 100px 28px calc(96px + env(safe-area-inset-bottom, 0px));
 }
 
 .tattoo-generator-hero {
@@ -13,14 +13,15 @@
 
 .tattoo-generator-hero-copy {
   max-width: 560px;
+  padding-top: 24px;
 }
 
 .tattoo-generator-title {
   font-family: $headers-font;
   font-size: 20px;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  margin: 4px 0 6px;
+  font-weight: 700;
+  letter-spacing: -0.00em;
+  margin: 30px 0 6px;
 
   span {
     display: block;
@@ -52,6 +53,7 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 22px;
+  margin-bottom: 24px;
 }
 
 .tattoo-generator-benefit {
@@ -192,7 +194,7 @@
 
 @media (max-width: 899px) {
   .tattoo-generator-page {
-    padding-top: 36px;
+    padding-top: 72px;
   }
 
   .tattoo-generator-hero {
@@ -236,7 +238,7 @@
   }
 
   .tattoo-generator-page {
-    padding: 28px 16px calc(110px + env(safe-area-inset-bottom, 0px));
+    padding: 72px 16px calc(110px + env(safe-area-inset-bottom, 0px));
   }
 
   .tattoo-generator-hero {
@@ -384,6 +386,9 @@
 .tattoo-generator-card-copy {
   flex: 1;
   min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
 }
 
 .tattoo-generator-card-icon {
@@ -403,7 +408,7 @@
   display: block;
   font-family: $headers-font;
   font-size: 18px;
-  font-weight: 800;
+  font-weight: 700;
   color: $ink;
   margin: 0;
 }
@@ -412,6 +417,7 @@
   display: block;
   font-size: 13px;
   color: $text-secondary;
+  margin-top: 5px;
   margin: 0;
 }
 
@@ -436,7 +442,7 @@
 
 .tattoo-drawer__label {
   font-size: 11px;
-  font-weight: 700;
+  font-weight: 500;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: $text-secondary;
@@ -460,6 +466,7 @@
 
   &::placeholder {
     color: $disabled;
+    font-size: 13px;
   }
 }
 
@@ -601,6 +608,20 @@
   background: $ink;
   border-radius: 999px;
   font-size: 14px;
+}
+
+.tattoo-generator-hint {
+  text-align: center;
+  font-size: 11px;
+  color: $disabled;
+  margin: 8px 0 0;
+}
+
+.style-picker-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding-top: 4px;
 }
 
 .style-pill {
