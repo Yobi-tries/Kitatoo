@@ -1,4 +1,4 @@
-<% content_for(:title, "Conversation with #{@conversation.other_participant_name(current_user)} — Kitatoo") %>
+<% content_for(:meta_title, "Conversation with #{@conversation.other_participant_name(current_user)} — Kitatoo") %>
 
 <%= turbo_stream_from @conversation %>
 

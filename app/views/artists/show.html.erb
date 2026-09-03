@@ -1,4 +1,4 @@
-<% content_for(:title, "#{@artist_profile.display_name}, Tattoo Artist — Kitatoo") %>
+<% content_for(:meta_title, "#{@artist_profile.display_name}, Tattoo Artist — Kitatoo") %>
 
 <% owner = user_signed_in? && current_user.artist_profile == @artist_profile %>
 
