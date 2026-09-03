@@ -10,24 +10,38 @@
     <div class="row g-3">
       <div class="col-md-6">
         <label class="tattoo-drawer__label d-block">Tattoo design</label>
-        <%= image_tag local_assigns[:source_image_url].presence || "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBTAA7",
-              class: "tattoo-drawer__image mb-2 #{"d-none" if local_assigns[:source_image_url].blank?}",
-              data: { "body-preview-source-target": "preview" }, alt: "Selected tattoo design" %>
+        <div class="tattoo-source-preview mb-2 <%= "d-none" if local_assigns[:source_image_url].blank? %>"
+             data-body-preview-source-target="previewWrap">
+          <%= image_tag local_assigns[:source_image_url].presence || "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBTAA7",
+                class: "tattoo-drawer__image",
+                data: { "body-preview-source-target": "preview" }, alt: "Selected tattoo design" %>
+          <button type="button" class="reference-thumb-remove" aria-label="Remove tattoo design"
+                  data-action="body-preview-source#removeDesign">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
         <label class="body-upload-dropzone <%= "d-none" if local_assigns[:source_image_url].present? %>"
                data-body-preview-source-target="uploadField">
           <i class="fa-solid fa-cloud-arrow-up"></i>
           <span class="body-upload-dropzone-title">Upload image</span>
           <span class="body-upload-dropzone-hint">PNG, JPG</span>
           <input type="file" name="design_image" accept="image/*" class="visually-hidden"
+                 data-body-preview-source-target="designPhotoInput"
                  data-action="change->body-preview-source#designImageSelected">
         </label>
       </div>
 
       <div class="col-md-6">
         <label class="tattoo-drawer__label d-block">Your body photo</label>
-        <%= image_tag "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBTAA7",
-              class: "tattoo-drawer__image mb-2 d-none",
-              data: { "body-preview-source-target": "bodyPreview" }, alt: "Your body photo" %>
+        <div class="tattoo-source-preview mb-2 d-none" data-body-preview-source-target="bodyPreviewWrap">
+          <%= image_tag "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBTAA7",
+                class: "tattoo-drawer__image",
+                data: { "body-preview-source-target": "bodyPreview" }, alt: "Your body photo" %>
+          <button type="button" class="reference-thumb-remove" aria-label="Remove body photo"
+                  data-action="body-preview-source#removeBodyPhoto">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
         <label class="body-upload-dropzone" data-body-preview-source-target="bodyUploadField">
           <i class="fa-solid fa-camera"></i>
           <span class="body-upload-dropzone-title">Upload body photo</span>

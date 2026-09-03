@@ -2,8 +2,8 @@ import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
   static targets = [
-    "generationIdInput", "preview", "uploadField",
-    "bodyPhotoInput", "bodyPreview", "bodyUploadField", "bodyPreviewCard"
+    "generationIdInput", "preview", "previewWrap", "uploadField", "designPhotoInput",
+    "bodyPhotoInput", "bodyPreview", "bodyPreviewWrap", "bodyUploadField", "bodyPreviewCard"
   ]
 
   useGenerated(event) {
@@ -12,7 +12,7 @@ export default class extends Controller {
     this.generationIdInputTarget.value = generationId
     this.#revoke("designObjectUrl")
     this.previewTarget.src = imageUrl
-    this.previewTarget.classList.remove("d-none")
+    this.previewWrapTarget.classList.remove("d-none")
     this.uploadFieldTarget.classList.add("d-none")
 
     this.dispatch("open-card", { target: this.bodyPreviewCardTarget })
@@ -28,7 +28,7 @@ export default class extends Controller {
     this.designObjectUrl = URL.createObjectURL(file)
 
     this.previewTarget.src = this.designObjectUrl
-    this.previewTarget.classList.remove("d-none")
+    this.previewWrapTarget.classList.remove("d-none")
     this.uploadFieldTarget.classList.add("d-none")
   }
 
@@ -40,8 +40,34 @@ export default class extends Controller {
     this.bodyPhotoObjectUrl = URL.createObjectURL(file)
 
     this.bodyPreviewTarget.src = this.bodyPhotoObjectUrl
-    this.bodyPreviewTarget.classList.remove("d-none")
+    this.bodyPreviewWrapTarget.classList.remove("d-none")
     this.bodyUploadFieldTarget.classList.add("d-none")
+  }
+
+  removeDesign() {
+    this.generationIdInputTarget.value = ""
+    this.#revoke("designObjectUrl")
+    this.designPhotoInputTarget.value = ""
+
+    this.previewTarget.src = ""
+    this.previewWrapTarget.classList.add("d-none")
+    this.uploadFieldTarget.classList.remove("d-none")
+  }
+
+  removeBodyPhoto() {
+    this.#revoke("bodyPhotoObjectUrl")
+    this.bodyPhotoInputTarget.value = ""
+
+    this.bodyPreviewTarget.src = ""
+    this.bodyPreviewWrapTarget.classList.add("d-none")
+    this.bodyUploadFieldTarget.classList.remove("d-none")
+  }
+
+  // "Try another photo": keep the generated result visible, only reset the
+  // two source inputs so the form is ready for a fresh submission.
+  resetSources() {
+    this.removeDesign()
+    this.removeBodyPhoto()
   }
 
   disconnect() {
