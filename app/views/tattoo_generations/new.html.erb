@@ -2,8 +2,10 @@
 
 <%= render "shared/topappbar" %>
 
-<%= turbo_stream_from [ current_user, :tattoo_generations ] %>
-<%= turbo_stream_from [ current_user, :body_previews ] %>
+<% if user_signed_in? %>
+  <%= turbo_stream_from [ current_user, :tattoo_generations ] %>
+  <%= turbo_stream_from [ current_user, :body_previews ] %>
+<% end %>
 
 <div class="container tattoo-generator-page" data-controller="body-preview-source">
   <div class="tattoo-generator-hero">

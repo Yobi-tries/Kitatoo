@@ -2,10 +2,8 @@
   <%= link_to root_path, class: "topappbar-title" do %><span class="topappbar-title__accent">Ki</span>tatoo<% end %>
 
   <div class="topappbar-right">
-    <% if user_signed_in? %>
-      <%= link_to new_tattoo_generation_path, class: "topappbar-search-btn", "aria-label": "AI Tattoo Generator" do %>
-        <i class="fa-solid fa-wand-magic-sparkles"></i>
-      <% end %>
+    <%= link_to new_tattoo_generation_path, class: "topappbar-search-btn", "aria-label": "AI Tattoo Generator" do %>
+      <i class="fa-solid fa-wand-magic-sparkles"></i>
     <% end %>
     <button type="button" class="topappbar-search-btn" data-action="search-modal#open" aria-label="Search">
       <span class="material-symbols-outlined">search</span>
