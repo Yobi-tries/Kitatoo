@@ -16,11 +16,19 @@
 
 .profile-form-title {
   font-family: $headers-font;
-  font-size: 28px;
+  // Sized to keep the longest profile-form title ("Locations and
+  // availabilities") on a single line at both the card's full desktop width
+  // and its mobile width -- see the 576px breakpoint below.
+  font-size: 23px;
   font-weight: 800;
   letter-spacing: -0.02em;
   color: $ink;
   margin-bottom: 6px;
+  white-space: nowrap;
+
+  @media (max-width: 576px) {
+    font-size: 13px;
+  }
 }
 
 .profile-form-hint {
@@ -160,5 +168,31 @@
   @media (max-width: 576px) {
     grid-template-columns: 1fr;
     gap: 8px;
+  }
+}
+
+.profile-form--addresses {
+  .profile-form-header {
+    margin-bottom: 6px;
+  }
+
+  .profile-form-back {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: -8px;
+    margin-bottom: 2px;
+    color: $ink;
+    text-decoration: none;
+  }
+
+  .section-label {
+    margin-top: 24px;
+  }
+
+  .profile-form-btn--danger {
+    margin-top: 12px;
   }
 }
