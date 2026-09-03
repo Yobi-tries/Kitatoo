@@ -526,6 +526,14 @@
   object-fit: cover;
 }
 
+// Wraps a single "See on body" source preview (tattoo design or body photo)
+// so its .reference-thumb-remove "x" button can be positioned against it.
+.tattoo-source-preview {
+  position: relative;
+  display: block;
+  width: 100%;
+}
+
 .tattoo-drawer__action {
   border-radius: 999px;
   padding: 10px 20px;
