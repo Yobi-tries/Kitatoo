@@ -1,3 +1,5 @@
+<% content_for(:title, "AI Tattoo Generator — Kitatoo") %>
+
 <%= render "shared/topappbar" %>
 
 <%= turbo_stream_from [ current_user, :tattoo_generations ] %>

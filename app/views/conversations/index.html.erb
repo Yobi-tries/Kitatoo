@@ -1,3 +1,5 @@
+<% content_for(:title, "My Messages — Kitatoo") %>
+
 <%= turbo_stream_from "conversations_#{current_user.id}" %>
 <%= render "shared/topappbar" %>
 
