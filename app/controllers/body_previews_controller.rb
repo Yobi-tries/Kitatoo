@@ -27,6 +27,11 @@ class BodyPreviewsController < ApplicationController
     end
   end
 
+  def mark_viewed
+    current_user.body_previews.find(params[:id]).mark_viewed!
+    head :no_content
+  end
+
   private
 
   def source_generation

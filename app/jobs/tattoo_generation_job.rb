@@ -23,6 +23,7 @@ class TattooGenerationJob < ApplicationJob
       image_url: upload["secure_url"],
       image_public_id: upload["public_id"]
     )
+    tattoo_generation.broadcast_notification_badge
   rescue RubyLLM::Error, RubyLLM::UnsupportedAttachmentError, CloudinaryException, Faraday::Error => e
     tattoo_generation.update!(status: :failed)
     Rails.logger.error("TattooGenerationJob failed for ##{tattoo_generation_id}: #{e.message}")
