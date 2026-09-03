@@ -13,6 +13,7 @@ class Booking < ApplicationRecord
 
   after_create_commit :broadcast_bookings_refresh
   after_create_commit :mark_creator_notified
+  after_create_commit :broadcast_notifications
   after_update_commit :broadcast_status_change
   after_update_commit :notify_other_party, if: :saved_change_to_status?
 
@@ -41,7 +42,8 @@ class Booking < ApplicationRecord
   private
 
   def mark_creator_notified
-    update_column(:client_notified_at, Time.current)
+    now = Time.current
+    update_columns(client_notified_at: now, artist_notified_at: now - 1.second)
   end
 
   def notify_other_party
@@ -71,6 +73,10 @@ class Booking < ApplicationRecord
     )
     Turbo::StreamsChannel.broadcast_refresh_to(conversation) if conversation
 
+    broadcast_notifications
+  end
+
+  def broadcast_notifications
     Turbo::StreamsChannel.broadcast_refresh_to("notifications_#{client_id}")
     Turbo::StreamsChannel.broadcast_refresh_to("notifications_#{availability.artist_profile.user_id}")
   end

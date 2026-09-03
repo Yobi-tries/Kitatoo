@@ -18,5 +18,8 @@ class Message < ApplicationRecord
 
     Turbo::StreamsChannel.broadcast_refresh_to("conversations_#{conversation.client_id}")
     Turbo::StreamsChannel.broadcast_refresh_to("conversations_#{conversation.artist_profile.user_id}")
+
+    Turbo::StreamsChannel.broadcast_refresh_to("notifications_#{conversation.client_id}")
+    Turbo::StreamsChannel.broadcast_refresh_to("notifications_#{conversation.artist_profile.user_id}")
   }
 end

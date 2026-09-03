@@ -126,8 +126,11 @@
                 data: { turbo_method: :patch, turbo_confirm: "Cancel this confirmed booking?", confirm_button_label: "Cancel booking" },
                 class: "booking-card-cancel", title: "Cancel" %>
         <% else %>
-          <%= link_to artist_path(@conversation.artist_profile), class: "booking-card-profile" do %>
-            <i class="fa-solid fa-location-dot"></i> Get directions
+          <% addr = confirmed_booking.availability.address %>
+          <% if addr.latitude.present? %>
+            <a href="https://www.google.com/maps/search/?api=1&query=<%= addr.latitude %>,<%= addr.longitude %>" target="_blank" class="booking-card-profile">
+              <i class="fa-solid fa-location-dot"></i> Get directions
+            </a>
           <% end %>
         <% end %>
       </div>
