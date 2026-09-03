@@ -1,7 +1,11 @@
 class TattooGenerationsController < ApplicationController
+  skip_before_action :authenticate_user!, only: :new
+
   MAX_REFERENCE_IMAGES = 3
 
   def new
+    return unless user_signed_in?
+
     @tattoo_generation = current_user.tattoo_generations.order(created_at: :desc).first
     @body_preview = current_user.body_previews.order(created_at: :desc).first
   end
