@@ -8,7 +8,7 @@
       <div class="tattoo-generator-form-block">
         <label class="tattoo-drawer__label d-block">
           Your idea
-          <span class="text-muted small">(optional if you add a reference image)</span>
+          <span class="text-muted small">(optional if you add an image)</span>
         </label>
 
         <textarea
@@ -33,8 +33,6 @@
           class: "btn btn-primary w-100 tattoo-drawer__submit mt-3",
           data: { turbo_submits_with: "Generating..." } %>
 
-    <p class="text-center text-muted small mt-2 mb-0">
-      Takes ~45–60 seconds
-    </p>
+    <p class="tattoo-generator-hint">~ 45 – 60sec</p>
   <% end %>
 </div>

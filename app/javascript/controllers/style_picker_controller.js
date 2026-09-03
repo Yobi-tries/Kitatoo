@@ -1,10 +1,13 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["pill", "selected", "unselected"]
-  static values = { max: { type: Number, default: 1 }, preselected: Array }
+  static targets = ["pill", "selected", "unselected", "moreButton"]
+  static values = { max: { type: Number, default: 1 }, preselected: Array, visibleCount: { type: Number, default: 3 } }
 
   connect() {
+    this.expanded = false
+    this.#collapse()
+
     this.preselectedValue.forEach((id) => {
       const pill = this.pillTargets.find((p) => p.dataset.tagId === String(id))
       if (pill) this.#select(pill)
@@ -16,7 +19,6 @@ export default class extends Controller {
     if (pill.dataset.selected === "true") {
       this.#deselect(pill)
     } else {
-      // Selecting a new style replaces any previously selected one(s) up to max.
       while (this.#selectedCount() >= this.maxValue) {
         const previous = this.pillTargets.find((p) => p.dataset.selected === "true")
         if (!previous) break
@@ -26,8 +28,29 @@ export default class extends Controller {
     }
   }
 
+  expand() {
+    this.expanded = true
+    this.#showAll()
+    if (this.hasMoreButtonTarget) this.moreButtonTarget.hidden = true
+  }
+
+  #collapse() {
+    const unselected = this.pillTargets.filter((p) => p.dataset.selected === "false")
+    unselected.forEach((pill, i) => {
+      pill.hidden = i >= this.visibleCountValue
+    })
+    if (this.hasMoreButtonTarget) {
+      this.moreButtonTarget.hidden = unselected.length <= this.visibleCountValue
+    }
+  }
+
+  #showAll() {
+    this.pillTargets.forEach((pill) => { pill.hidden = false })
+  }
+
   #select(pill) {
     pill.dataset.selected = "true"
+    pill.hidden = false
     pill.className = "style-tile style-picker-card"
     const img = pill.dataset.tagImage
     pill.innerHTML = `
@@ -44,6 +67,7 @@ export default class extends Controller {
     pill.className = "badge rounded-pill text-bg-light border style-pill"
     pill.innerHTML = pill.dataset.tagName
     this.unselectedTarget.appendChild(pill)
+    if (!this.expanded) this.#collapse()
   }
 
   #selectedCount() {

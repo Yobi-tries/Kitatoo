@@ -1,10 +1,11 @@
 <div class="mb-3" data-controller="style-picker" data-style-picker-max-value="1"
-     data-style-picker-preselected-value="<%= (selected_style_ids || []).to_json %>">
+     data-style-picker-preselected-value="<%= (selected_style_ids || []).to_json %>"
+     data-style-picker-visible-count-value="3">
   <label class="tattoo-drawer__label d-block">Style <span class="text-muted small">Optional · Choose one</span></label>
 
   <div class="style-picker-selected mb-2" data-style-picker-target="selected"></div>
 
-  <div class="d-flex flex-wrap gap-2" data-style-picker-target="unselected">
+  <div class="style-picker-pills" data-style-picker-target="unselected">
     <% Tag.order(:name).each do |tag| %>
       <% img_rel_path = "styles/#{tag.name.parameterize}.webp" %>
       <% has_image = Rails.root.join("app/assets/images", img_rel_path).exist? %>
@@ -16,5 +17,10 @@
         <%= tag.name %>
       </span>
     <% end %>
+    <span class="badge rounded-pill text-bg-light border style-pill style-pill--more"
+          role="button" data-style-picker-target="moreButton"
+          data-action="click->style-picker#expand">
+      •••
+    </span>
   </div>
 </div>
