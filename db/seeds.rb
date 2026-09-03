@@ -106,50 +106,6 @@ puts "Creating availabilities..."
   )
 end
 
-puts "Creating confirmed bookings..."
-
-# Main studio is closed Wednesdays and Sundays — nudge these fixed offsets forward so
-# they never silently land on a closed day no matter what "today" happens to be.
-next_open_weekday = ->(offset) {
-  offset += 1 while [ 0, 3 ].include?(offset.days.from_now.wday) # Sunday, Wednesday
-  offset
-}
-fred_offset = next_open_weekday.call(5)
-sam_offset = next_open_weekday.call(12)
-
-[
-  { client: fred_user, starts_at: fred_offset.days.from_now.change(hour: 11),
-    duration: 90, description: "Small blackwork piece on the forearm." },
-  { client: second_client_user, starts_at: sam_offset.days.from_now.change(hour: 11),
-    duration: 45, description: "Fine line geometric design on the wrist." }
-].each do |data|
-  conversation = Conversation.create!(client: data[:client], artist_profile: artist_profile)
-  request_time = [ data[:starts_at] - rand(3..8).days, Time.current - rand(1..5).days ].min
-  conversation.messages.create!(
-    user: data[:client], body: "Hi! I'd love to book a session: #{data[:description]}", created_at: request_time
-  )
-  reply_time = [ request_time + rand(2..20).hours, Time.current ].min
-  conversation.messages.create!(
-    user: artist_user, body: "Thanks for reaching out! I'd be happy to take that on, let's lock in a slot.",
-    created_at: reply_time
-  )
-  conversation.update_columns(created_at: request_time, updated_at: reply_time)
-
-  booking_availability = artist_profile.availabilities.create!(
-    address: address,
-    starts_at: data[:starts_at],
-    ends_at: data[:starts_at] + data[:duration].minutes,
-    state: :booked
-  )
-
-  booking_availability.build_booking(
-    client: data[:client],
-    description: data[:description],
-    duration: data[:duration],
-    status: :confirmed
-  ).save!
-end
-
 puts "Adding day offs to InkMaster's schedule..."
 artist_profile.update!(
   schedule: artist_profile.schedule.merge(
@@ -204,330 +160,80 @@ riverside_schedule = {
 address.update!(schedule: main_schedule)
 address2.update!(schedule: riverside_schedule)
 
-puts "Creating extra clients for InkMaster bookings..."
-
-# A client with an active booking (selected/artist_confirmed/confirmed) can't be given
-# another booking of any status, so this pool is reserved for exactly one active booking
-# each; completed/cancelled history draws from a separate, freely-reusable pool below.
-inkmaster_clients = [
-  { username: "claireb",   first_name: "Claire",   last_name: "Bernard" },
-  { username: "hugom",     first_name: "Hugo",     last_name: "Martin" },
-  { username: "leadub",    first_name: "Lea",      last_name: "Dubois" },
-  { username: "tomp",      first_name: "Tom",      last_name: "Petit" },
-  { username: "ninar",     first_name: "Nina",     last_name: "Roux" },
-  { username: "maximel",   first_name: "Maxime",   last_name: "Leroy" },
-  { username: "chloeb",    first_name: "Chloe",    last_name: "Blanc" },
-  { username: "victorm",   first_name: "Victor",   last_name: "Moreau" },
-  { username: "juliettef", first_name: "Juliette", last_name: "Fournier" },
-  { username: "antoineg",  first_name: "Antoine",  last_name: "Girard" },
-  { username: "sarahl",    first_name: "Sarah",    last_name: "Lambert" },
-  { username: "romaind",   first_name: "Romain",   last_name: "David" },
-  { username: "camillet",  first_name: "Camille",  last_name: "Thomas" },
-  { username: "lucasr",    first_name: "Lucas",    last_name: "Robert" },
-  { username: "emmar",     first_name: "Emma",     last_name: "Richard" },
-  { username: "paulb",     first_name: "Paul",     last_name: "Bonnet" },
-  { username: "ines",      first_name: "Ines",     last_name: "Simon" },
-  { username: "theom",     first_name: "Theo",     last_name: "Mercier" },
-  { username: "aliced",    first_name: "Alice",    last_name: "Dumas" },
-  { username: "julesv",    first_name: "Jules",    last_name: "Vidal" },
-  { username: "margauxc",  first_name: "Margaux",  last_name: "Colin" },
-  { username: "noaht",     first_name: "Noah",     last_name: "Traore" }
-].map do |data|
-  User.create!(
-    email: "#{data[:username]}@test.local",
-    password: "password",
-    username: data[:username],
-    first_name: data[:first_name],
-    last_name: data[:last_name],
-    birthdate: rand(20..45).years.ago
-  )
-end
-
-inkmaster_history_clients = [
-  { username: "oceaneh",  first_name: "Oceane",  last_name: "Henry" },
-  { username: "gabrield", first_name: "Gabriel", last_name: "Durand" },
-  { username: "manonp",   first_name: "Manon",   last_name: "Perrin" },
-  { username: "nathanb",  first_name: "Nathan",  last_name: "Bertrand" },
-  { username: "lounaf",   first_name: "Louna",   last_name: "Faure" },
-  { username: "adamg",    first_name: "Adam",    last_name: "Girard" },
-  { username: "jadeh",    first_name: "Jade",    last_name: "Renard" },
-  { username: "liamf",    first_name: "Liam",    last_name: "Fontaine" }
-].map do |data|
-  User.create!(
-    email: "#{data[:username]}@test.local",
-    password: "password",
-    username: data[:username],
-    first_name: data[:first_name],
-    last_name: data[:last_name],
-    birthdate: rand(20..45).years.ago
-  )
-end
-
-# Description paired with the duration it implies, so a booking's slot length always
-# matches the size of the project once the artist has confirmed a duration.
-booking_options = [
-  { description: "Small blackwork geometric piece on the ankle.", duration: 60 },
-  { description: "Fine line botanical design wrapping the forearm.", duration: 90 },
-  { description: "Traditional anchor with banner on the calf.", duration: 75 },
-  { description: "Dotwork mandala on the shoulder blade.", duration: 120 },
-  { description: "Minimalist line art of a mountain range on the ribs.", duration: 45 },
-  { description: "Cover-up consultation for an old tribal piece.", duration: 30 },
-  { description: "Watercolor-style floral piece on the thigh.", duration: 105 },
-  { description: "Geometric wolf head on the upper arm.", duration: 90 },
-  { description: "Script quote along the collarbone.", duration: 45 },
-  { description: "Japanese wave panel on the back, second session.", duration: 180 },
-  { description: "Small blackwork snake wrapping the wrist.", duration: 60 },
-  { description: "Fine line portrait touch-up session.", duration: 60 },
-  { description: "Neo-traditional rose on the bicep.", duration: 75 },
-  { description: "Abstract linework sleeve, second session.", duration: 150 },
-  { description: "Dotwork sacred geometry on the sternum.", duration: 120 },
-  { description: "Realism eye piece on the forearm, first session.", duration: 105 },
-  { description: "Small lettering piece behind the ear.", duration: 30 },
-  { description: "Blackwork half sleeve, third session.", duration: 180 },
-  { description: "Geometric fox silhouette on the calf.", duration: 60 },
-  { description: "Fine line constellation on the shoulder.", duration: 45 }
-]
-
-artist_replies = [
-  "Thanks for reaching out! That sounds like a great project, let me check my calendar.",
-  "I love this idea, let's make it happen. I'll confirm a duration shortly.",
-  "Got it, thanks for the details! I'll get back to you today.",
-  "Perfect, I've already got some good references for that style."
-]
-client_followups = [
-  "Sounds good, thank you!",
-  "Perfect, see you then!",
-  "Great, thanks for confirming!",
-  "Awesome, looking forward to it."
-]
+puts "Creating InkMaster demo clients and bookings for presentation..."
 
 def seed_weekday_open?(schedule, date)
   return false if (schedule["days_off"] || []).include?(date.to_s)
-
   schedule.dig("days", date.strftime("%A").downcase).present?
 end
 
-# Walks forward (step: 1) or backward (step: -1) from the given address's cursor until
-# it finds a day that's actually open per that address's own weekly hours/days off, so
-# every seeded booking lands on a time the artist has really made himself available.
-def seed_next_offset(schedule, cursors, address, step, used_offsets)
-  offset = cursors[address]
-  loop do
-    date = offset >= 0 ? offset.days.from_now.to_date : offset.abs.days.ago.to_date
-    if seed_weekday_open?(schedule, date) && !used_offsets.include?(offset)
-      used_offsets << offset
-      cursors[address] = offset + step
-      return offset
-    end
-    offset += step
-  end
-end
+# Find the next open day on main schedule
+next_open_offset = 2
+next_open_offset += 1 until seed_weekday_open?(main_schedule, next_open_offset.days.from_now.to_date)
+second_open_offset = next_open_offset + 1
+second_open_offset += 1 until seed_weekday_open?(main_schedule, second_open_offset.days.from_now.to_date)
 
-def seed_slot_start(schedule, offset, duration)
-  date = offset >= 0 ? offset.days.from_now.to_date : offset.abs.days.ago.to_date
-  day_config = schedule.dig("days", date.strftime("%A").downcase)
-  window_start = Time.parse(day_config["start"])
-  window_end = Time.parse(day_config["end"])
-  slack = ((window_end - window_start) / 60).to_i - duration
-  padding = slack.positive? ? [ 0, 30, 60 ].select { |m| m <= slack }.sample : 0
-
-  date.in_time_zone.change(hour: window_start.hour, min: window_start.min) + padding.minutes
-end
-
-def seed_conversation_thread(conversation, client, artist_user, description, request_time, artist_replies:, client_followups:)
-  return if conversation.messages.exists?
-
-  conversation.messages.create!(
-    user: client, body: "Hi! I'd love to book a session: #{description}", created_at: request_time
-  )
-  last_time = request_time
-
-  if rand < 0.5
-    last_time = [ last_time + rand(2..20).hours, Time.current ].min
-    conversation.messages.create!(user: artist_user, body: artist_replies.sample, created_at: last_time)
-
-    if rand < 0.5
-      last_time = [ last_time + rand(1..24).hours, Time.current ].min
-      conversation.messages.create!(user: client, body: client_followups.sample, created_at: last_time)
-    end
-  end
-
-  conversation.update_columns(created_at: request_time, updated_at: last_time)
-end
-
-def seed_booking(address:, schedule:, client:, artist_user:, offset:, status:, option:, artist_replies:, client_followups:)
-  duration = status == :selected ? (schedule["slot_duration"] || 45) : option[:duration]
-  starts_at = seed_slot_start(schedule, offset, duration)
-  artist_profile = address.artist_profile
-
-  conversation = Conversation.find_or_create_by!(client: client, artist_profile: artist_profile)
-  request_time = [ starts_at - rand(2..10).days, Time.current - rand(1..5).days ].min
-  seed_conversation_thread(conversation, client, artist_user, option[:description], request_time,
-                            artist_replies: artist_replies, client_followups: client_followups)
-
-  availability = artist_profile.availabilities.create!(
-    address: address,
-    starts_at: starts_at,
-    ends_at: starts_at + duration.minutes,
-    state: %i[confirmed completed cancelled].include?(status) ? :booked : :open
-  )
-
-  availability.build_booking(
-    client: client,
-    description: option[:description],
-    duration: status == :selected ? nil : duration,
-    status: status
-  ).save!
-end
-
-puts "Creating a large batch of InkMaster bookings across both addresses..."
-
-addresses = [ address, address2 ]
-schedules = [ main_schedule, riverside_schedule ]
-
-# Picks the next Friday (and the Saturday right after it) that are both actually open on
-# the main schedule, relative to Date.current — used below for the hand-written "demo
-# week" bookings, so those never drift into a hardcoded date that no longer makes sense.
-sept_fri_offset = 1
-loop do
-  sept_fri_offset += 1 until sept_fri_offset.days.from_now.wday == 5
-  fri_date = sept_fri_offset.days.from_now.to_date
-  break if seed_weekday_open?(main_schedule, fri_date) && seed_weekday_open?(main_schedule, fri_date + 1)
-
-  sept_fri_offset += 7
-end
-sept_sat_offset = sept_fri_offset + 1
-
-# Days already used by the two hand-written "confirmed" bookings, the 3 legacy open
-# availabilities created above, and the Friday/Saturday demo bookings created further
-# down, so the generator below never lands on the same day.
-used_offsets = [ 1, 2, 3, fred_offset, sam_offset, sept_fri_offset, sept_sat_offset ]
-future_cursors = { address => 1, address2 => 1 }
-past_cursors = { address => -1, address2 => -1 }
-
-def seed_batch(count, clients, status, addresses, schedules, cursors, step, used_offsets, booking_options,
-               artist_user, artist_replies, client_followups)
-  count.times do |i|
-    idx = i.even? ? 0 : 1
-    addr, sched = addresses[idx], schedules[idx]
-    offset = seed_next_offset(sched, cursors, addr, step, used_offsets)
-    seed_booking(address: addr, schedule: sched, client: clients[i], artist_user: artist_user, offset: offset,
-                 status: status, option: booking_options.sample, artist_replies: artist_replies,
-                 client_followups: client_followups)
-  end
-end
-
-# Pending requests, awaiting the artist's response — spread across both addresses
-seed_batch(6, inkmaster_clients[0, 6], :selected, addresses, schedules, future_cursors, 1, used_offsets,
-           booking_options, artist_user, artist_replies, client_followups)
-
-# Duration set by the artist, awaiting the client's confirmation
-seed_batch(4, inkmaster_clients[6, 4], :artist_confirmed, addresses, schedules, future_cursors, 1, used_offsets,
-           booking_options, artist_user, artist_replies, client_followups)
-
-# Confirmed sessions over the coming weeks, for agenda navigation
-seed_batch(8, inkmaster_clients[10, 8], :confirmed, addresses, schedules, future_cursors, 1, used_offsets,
-           booking_options, artist_user, artist_replies, client_followups)
-
-# Confirmed sessions already past, still needing to be marked completed
-seed_batch(4, inkmaster_clients[18, 4], :confirmed, addresses, schedules, past_cursors, -1, used_offsets,
-           booking_options, artist_user, artist_replies, client_followups)
-
-history_pool = inkmaster_history_clients.cycle
-
-# Completed sessions, for the History view + CSV export
-seed_batch(16, history_pool.first(16), :completed, addresses, schedules, past_cursors, -1, used_offsets,
-           booking_options, artist_user, artist_replies, client_followups)
-
-# Cancelled bookings
-seed_batch(6, history_pool.first(6), :cancelled, addresses, schedules, past_cursors, -1, used_offsets,
-           booking_options, artist_user, artist_replies, client_followups)
-
-puts "Adding extra same-day bookings for today, tomorrow, and the day after..."
-
-# inkmaster_history_clients only carry completed/cancelled bookings so far, so they're
-# free to also take on one of these extra confirmed sessions each.
-same_day_clients = inkmaster_history_clients.dup
-
-# Skips whichever of today/tomorrow/day-after happens to be the reserved Friday or
-# Saturday demo day below, so this filler never competes with those hand-written bookings.
-([ 0, 1, 2 ] - [ sept_fri_offset, sept_sat_offset ]).each do |offset|
-  date = offset.days.from_now.to_date
-  addr = seed_weekday_open?(main_schedule, date) ? address : address2
-  next unless seed_weekday_open?(addr.schedule, date)
-
-  2.times do
-    client = same_day_clients.shift
-    next unless client
-
-    option = booking_options.sample
-    day_start = Time.parse(addr.schedule.dig("days", date.strftime("%A").downcase)["start"])
-    desired_start = date.in_time_zone.change(hour: day_start.hour, min: day_start.min)
-    slot = Availability.next_available_slot(artist_profile: artist_profile, starts_at: desired_start,
-                                             ends_at: desired_start + option[:duration].minutes, schedule: addr.schedule)
-    next unless slot
-
-    conversation = Conversation.find_or_create_by!(client: client, artist_profile: artist_profile)
-    request_time = [ slot[:starts_at] - rand(2..10).days, Time.current - rand(1..5).days ].min
-    seed_conversation_thread(conversation, client, artist_user, option[:description], request_time,
-                              artist_replies: artist_replies, client_followups: client_followups)
-
-    availability = artist_profile.availabilities.create!(
-      address: addr, starts_at: slot[:starts_at], ends_at: slot[:ends_at], state: :booked
-    )
-    availability.build_booking(client: client, description: option[:description], duration: option[:duration],
-                                status: :confirmed).save!
-  end
-end
-
-puts "Adding InkMaster confirmed bookings for the upcoming Friday and Saturday..."
-
-sept_clients = [
-  { username: "florad", first_name: "Flora", last_name: "Dubois" },
-  { username: "hugotr", first_name: "Hugo",  last_name: "Trentin" },
-  { username: "ninaqc", first_name: "Nina",  last_name: "Quach" },
-  { username: "leom",   first_name: "Leo",   last_name: "Marchetti" },
-  { username: "saral",  first_name: "Sara",  last_name: "Lenoir" }
+demo_clients = [
+  { username: "claireb",   first_name: "Claire",   last_name: "Bernard",  description: "Small blackwork geometric piece on the ankle." },
+  { username: "hugom",     first_name: "Hugo",     last_name: "Martin",   description: "Fine line botanical design wrapping the forearm." },
+  { username: "leadub",    first_name: "Lea",      last_name: "Dubois",   description: "Dotwork mandala on the shoulder blade." },
+  { username: "ninar",     first_name: "Nina",     last_name: "Roux",     description: "Minimalist line art of a mountain range on the ribs." },
+  { username: "maximel",   first_name: "Maxime",   last_name: "Leroy",    description: "Geometric wolf head on the upper arm." },
+  { username: "chloeb",    first_name: "Chloe",    last_name: "Blanc",    description: "Script quote along the collarbone." }
 ].map do |data|
-  User.create!(
-    email: "#{data[:username]}@test.local", password: "password", username: data[:username],
-    first_name: data[:first_name], last_name: data[:last_name], birthdate: rand(20..45).years.ago
+  user = User.create!(
+    email: "#{data[:username]}@test.local", password: "password",
+    username: data[:username], first_name: data[:first_name],
+    last_name: data[:last_name], birthdate: rand(20..45).years.ago
   )
+  { user: user, description: data[:description] }
 end
 
-sept_friday = sept_fri_offset.days.from_now.to_date
-sept_saturday = sept_sat_offset.days.from_now.to_date
-
-sept_bookings = [
-  { date: sept_friday, hour: 9, client: sept_clients[0], duration: 60,
-    description: "Small blackwork script on the ribs." },
-  { date: sept_friday, hour: 11, client: sept_clients[1], duration: 75,
-    description: "Geometric dotwork pattern on the forearm." },
-  { date: sept_friday, hour: 13, client: sept_clients[2], duration: 60,
-    description: "Fine line botanical piece on the shoulder." },
-  { date: sept_saturday, hour: 10, client: sept_clients[3], duration: 45,
-    description: "Blackwork sleeve, second session." },
-  { date: sept_saturday, hour: 12, client: sept_clients[4], duration: 60,
-    description: "Small dotwork mandala on the wrist." }
-]
-
-sept_bookings.each do |data|
-  desired_start = data[:date].in_time_zone.change(hour: data[:hour])
-  slot = Availability.next_available_slot(artist_profile: artist_profile, starts_at: desired_start,
-                                           ends_at: desired_start + data[:duration].minutes, schedule: address.schedule)
-  raise "No slot available near #{data[:date]} #{data[:hour]}:00 for InkMaster" unless slot
-
-  conversation = Conversation.find_or_create_by!(client: data[:client], artist_profile: artist_profile)
-  request_time = [ slot[:starts_at] - rand(3..15).days, Time.current - rand(1..10).days ].min
-  seed_conversation_thread(conversation, data[:client], artist_user, data[:description], request_time,
-                            artist_replies: artist_replies, client_followups: client_followups)
-
-  availability = artist_profile.availabilities.create!(
-    address: address, starts_at: slot[:starts_at], ends_at: slot[:ends_at], state: :booked
+# 6 conversations with messages
+demo_clients.each_with_index do |data, i|
+  conversation = Conversation.create!(client: data[:user], artist_profile: artist_profile)
+  request_time = Time.current - rand(1..5).days
+  conversation.messages.create!(
+    user: data[:user], body: "Hi! I'd love to book a session: #{data[:description]}", created_at: request_time
   )
-  availability.build_booking(client: data[:client], description: data[:description],
-                              duration: data[:duration], status: :confirmed).save!
+  reply_time = [ request_time + rand(2..12).hours, Time.current ].min
+  conversation.messages.create!(
+    user: artist_user, body: [ "Thanks for reaching out! That sounds like a great project.",
+      "I love this idea, let's make it happen!", "Got it, I'll check my calendar.",
+      "Perfect, I've got some good references for that style." ].sample,
+    created_at: reply_time
+  )
+  if i < 4
+    followup_time = [ reply_time + rand(1..8).hours, Time.current ].min
+    conversation.messages.create!(
+      user: data[:user], body: [ "Sounds good, thank you!", "Perfect, looking forward to it!",
+        "Great, thanks!", "Awesome, can't wait!" ].sample,
+      created_at: followup_time
+    )
+    conversation.update_columns(created_at: request_time, updated_at: followup_time)
+  else
+    conversation.update_columns(created_at: request_time, updated_at: reply_time)
+  end
 end
+
+# 1 booking pending (selected) — Claire
+pending_start = next_open_offset.days.from_now.change(hour: 14)
+pending_avail = artist_profile.availabilities.create!(
+  address: address, starts_at: pending_start, ends_at: pending_start + 45.minutes, state: :open
+)
+pending_avail.build_booking(
+  client: demo_clients[0][:user], description: demo_clients[0][:description], status: :selected
+).save!
+
+# 1 booking artist_confirmed — Hugo
+confirmed_start = second_open_offset.days.from_now.change(hour: 15)
+confirmed_avail = artist_profile.availabilities.create!(
+  address: address, starts_at: confirmed_start, ends_at: confirmed_start + 90.minutes, state: :open
+)
+confirmed_avail.build_booking(
+  client: demo_clients[1][:user], description: demo_clients[1][:description],
+  duration: 90, status: :artist_confirmed
+).save!
 
 puts "Done!"
 
@@ -788,7 +494,41 @@ tue_sat_schedule = {
   find_artist_profile(username).addresses.first.update!(schedule: tue_sat_schedule)
 end
 
+def seed_conversation_thread(conversation, client, artist_user, description, request_time, artist_replies:, client_followups:)
+  return if conversation.messages.exists?
+
+  conversation.messages.create!(
+    user: client, body: "Hi! I'd love to book a session: #{description}", created_at: request_time
+  )
+  last_time = request_time
+
+  if rand < 0.5
+    last_time = [ last_time + rand(2..20).hours, Time.current ].min
+    conversation.messages.create!(user: artist_user, body: artist_replies.sample, created_at: last_time)
+
+    if rand < 0.5
+      last_time = [ last_time + rand(1..24).hours, Time.current ].min
+      conversation.messages.create!(user: client, body: client_followups.sample, created_at: last_time)
+    end
+  end
+
+  conversation.update_columns(created_at: request_time, updated_at: last_time)
+end
+
 puts "Adding tattoolover's bookings, likes, and conversations across several artists..."
+
+artist_replies = [
+  "Thanks for reaching out! That sounds like a great project, let me check my calendar.",
+  "I love this idea, let's make it happen. I'll confirm a duration shortly.",
+  "Got it, thanks for the details! I'll get back to you today.",
+  "Perfect, I've already got some good references for that style."
+]
+client_followups = [
+  "Sounds good, thank you!",
+  "Perfect, see you then!",
+  "Great, thanks for confirming!",
+  "Awesome, looking forward to it."
+]
 
 # Nudges a (possibly negative) day offset away from zero until it lands on a weekday
 # that isn't in closed_wdays (0 = Sunday ... 6 = Saturday) — same idea as the InkMaster
