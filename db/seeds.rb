@@ -235,6 +235,63 @@ confirmed_avail.build_booking(
   duration: 90, status: :artist_confirmed
 ).save!
 
+puts "Adding InkMaster's completed booking history for the last 3 full weeks..."
+
+history_options = [
+  { description: "Small blackwork geometric piece on the ankle.", duration: 60 },
+  { description: "Fine line botanical design wrapping the forearm.", duration: 90 },
+  { description: "Dotwork mandala on the shoulder blade.", duration: 75 },
+  { description: "Traditional anchor with banner on the calf.", duration: 60 },
+  { description: "Script quote along the collarbone.", duration: 45 },
+  { description: "Cover-up consultation for an old tribal piece.", duration: 30 }
+]
+
+history_clients = [
+  { username: "oceaneh",  first_name: "Oceane",  last_name: "Henry" },
+  { username: "gabrield", first_name: "Gabriel", last_name: "Durand" },
+  { username: "manonp",   first_name: "Manon",   last_name: "Perrin" },
+  { username: "nathanb",  first_name: "Nathan",  last_name: "Bertrand" },
+  { username: "lounaf",   first_name: "Louna",   last_name: "Faure" }
+].map do |data|
+  User.create!(
+    email: "#{data[:username]}@test.local", password: "password",
+    username: data[:username], first_name: data[:first_name],
+    last_name: data[:last_name], birthdate: rand(20..45).years.ago
+  )
+end
+
+# The 3 calendar weeks (Monday-Sunday) right before the current week, entirely relative
+# to Date.current so this never drifts into a fixed date that stops making sense.
+this_monday = Date.current - ((Date.current.wday - 1) % 7)
+history_start = this_monday - 21
+history_end = this_monday - 1
+history_open_days = (history_start..history_end).select { |date| seed_weekday_open?(main_schedule, date) }
+
+# 3 bookings per open day, spread evenly across that day's hours so none overlap.
+# A handful of days get one of their 3 slots cancelled instead of completed.
+history_open_days.each_with_index do |date, day_index|
+  day_config = main_schedule["days"][date.strftime("%A").downcase]
+  window_start = Time.parse(day_config["start"])
+  window_end = Time.parse(day_config["end"])
+  third = ((window_end - window_start) / 60).to_i / 3
+
+  3.times do |slot_index|
+    option = history_options.sample
+    duration = [ option[:duration], third - 15 ].min
+    starts_at = date.in_time_zone.change(hour: window_start.hour, min: window_start.min) +
+                (slot_index * third).minutes
+    status = (day_index % 3 == 2 && slot_index == 1) ? :cancelled : :completed
+    client = history_clients[(day_index * 3 + slot_index) % history_clients.size]
+
+    availability = artist_profile.availabilities.create!(
+      address: address, starts_at: starts_at, ends_at: starts_at + duration.minutes, state: :booked
+    )
+    availability.build_booking(
+      client: client, description: option[:description], duration: duration, status: status
+    ).save!
+  end
+end
+
 puts "Done!"
 
 puts "Creating artists..."
@@ -242,7 +299,7 @@ artists = [
   { username: "inkline",      status: "Studio owner",    display_name: "Ink Line Studio",  styles: "Blackwork, Fine Line",    city: "Lausanne",  street: "Rue de Bourg 12",        zipcode: "1003",  published: true },
   { username: "noiretgris",   status: "Independent",     display_name: "Noir et Gris",     styles: "Realism, Blackwork",      city: "Geneve",    street: "Rue du Rhone 45",        zipcode: "1204",  published: true },
   { username: "sionink",      status: "Studio resident", display_name: "Sion Ink",         styles: "Traditional, Japanese",   city: "Sion",      street: "Avenue de la Gare 8",    zipcode: "1950",  published: true },
-  { username: "kaiirezumi",   status: "Guest artist",    display_name: "Kai Irezumi",      styles: "Japanese, Blackwork",     city: "Geneve",    street: "Boulevard Carl-Vogt 3",  zipcode: "1205",  published: true },
+  { username: "kaiirezumi",   status: "professional",    display_name: "Kai Irezumi",      styles: "Japanese, Blackwork",     city: "Geneve",    street: "Boulevard Carl-Vogt 3",  zipcode: "1205",  published: true },
   { username: "mnemosyne",    status: "Independent",     display_name: "Mnemosyne Tattoo", styles: "Surrealism, Fine Line",   city: "Neuchatel", street: "Rue du Seyon 5",         zipcode: "2000",  published: true },
   { username: "brouillon",    status: "Apprentice",      display_name: "Studio Brouillon", styles: "Watercolor",              city: "Martigny",  street: "Rue des Alpes 2",        zipcode: "1920",  published: false },
   { username: "aiguillefine", status: "Studio resident", display_name: "Aiguille Fine",    styles: "Fine Line, Watercolor",   city: "Lyon",      street: "Rue de la Republique 24", zipcode: "69002", published: true },
